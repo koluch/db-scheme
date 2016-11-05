@@ -1,0 +1,23 @@
+.workarea {
+    margin: 20px;
+    position: relative;
+    width: 800px;
+    height: 600px;
+    background: #fcfff2;
+    border: 1px solid #aaaaaa;
+}
+
+.table {
+    position: absolute;
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+
+    &__name {
+        font-weight: bold;
+    }
+
+    &__attrs {
+        border: 1px solid black;
+    }
+}

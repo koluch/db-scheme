@@ -1,0 +1,6 @@
+[options]
+  suppress_type=$FlowIssue
+  module.name_mapper='^~/\(.*\)' -> '<PROJECT_ROOT>/src/js/\1'
+
+[libs]
+  ./node_modules/fbjs/flow/lib
