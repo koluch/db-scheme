@@ -1,7 +1,7 @@
 {
-  "name": "DB Scheme Tool",
+  "name": "db_scheme_tool",
   "scripts": {
-    "debug:flow": "./node_modules/.bin/flow status; fswatch -e '/\\.' -o . | xargs -n 1 -I{} ./flow status",
+    "debug:flow": "./node_modules/.bin/flow status; fswatch -e '/\\.' -o . | xargs -n 1 -I{} ./node_modules/.bin/flow status",
     "debug:webpack": "./node_modules/.bin/webpack --watch",
     "debug": "concurrently \"npm run debug:flow\" \"npm run debug:webpack\" -p \"[{name}]\" -c \"bgBlue.green,bgMagenta\" -n \"flow,webpack\""
   },
@@ -33,6 +33,9 @@
     "measure-text": "0.0.4",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
-    "react-konva": "^1.0.6"
+    "react-konva": "^1.0.6",
+    "react-redux": "^4.4.5",
+    "redux": "^3.6.0",
+    "redux-logger": "^2.7.4"
   }
 }

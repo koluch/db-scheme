@@ -1,8 +1,8 @@
 // @flow
 import type {TFontStyle} from './TFontStyle.js'
-import type {TTableAttrStyle} from './TTableAttrStyle'
+import type {TAttrStyle} from './TAttrStyle'
 
 export type TTableStyle = {
     font: TFontStyle,
-    attrs: TTableAttrStyle,
+    attrs: TAttrStyle,
 }

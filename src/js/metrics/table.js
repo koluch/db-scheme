@@ -4,7 +4,7 @@ import type {TAttr} from '~/types/TAttr'
 import type {TTable} from '~/types/TTable'
 import type {TTableShape} from '~/types/TTableShape'
 import type {TTableStyle} from '~/types/TTableStyle'
-import type {TTableAttrStyle} from '~/types/TTableAttrStyle'
+import type {TAttrStyle} from '~/types/TAttrStyle'
 import type {TSize} from '~/types/TSize'
 import type {TBounds} from '~/types/TBounds'
 
@@ -24,7 +24,7 @@ export const getHeaderBounds = (tableShape: TTableShape, style: TTableStyle): TB
     }
 }
 
-export const getAttrsSize = (attrs: Array<TAttr>, style: TTableAttrStyle): TSize => {
+export const getAttrsSize = (attrs: Array<TAttr>, style: TAttrStyle): TSize => {
     const {font} = style
     const sizes = attrs.map((attr) => getTextSize(attr.name, font))
     return {
@@ -33,7 +33,7 @@ export const getAttrsSize = (attrs: Array<TAttr>, style: TTableAttrStyle): TSize
     }
 }
 
-export const getAttrSize = (attrs: Array<TAttr>, style: TTableAttrStyle): TSize => {
+export const getAttrSize = (attrs: Array<TAttr>, style: TAttrStyle): TSize => {
     const {width, height} = getAttrsSize(attrs, style)
     return {
         width,

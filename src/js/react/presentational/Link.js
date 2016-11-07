@@ -7,6 +7,8 @@ import type {TTableShape} from '~/types/TTableShape'
 import type {TTableStyle} from '~/types/TTableStyle'
 import type {TBounds} from '~/types/TBounds'
 
+import { createSelector } from 'reselect'
+
 import * as tableMetrics from '~/metrics/table'
 
 type PropsType = {
@@ -38,8 +40,6 @@ const calculatePath = (b1: TBounds, b2: TBounds): Array<[number, number]> => {
         end,
     ]
 }
-
-
 
 class Link extends React.Component {
     props: PropsType

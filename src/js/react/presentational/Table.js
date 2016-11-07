@@ -4,6 +4,7 @@ import React from 'react'
 import type {TTableShape} from '~/types/TTableShape'
 import type {TTableStyle} from '~/types/TTableStyle'
 import {Layer, Rect, Stage, Group, Text} from 'react-konva'
+import { createSelector } from 'reselect'
 
 import {getHeaderSize, getAttrsSize, getShapeSize} from '~/metrics/table'
 
