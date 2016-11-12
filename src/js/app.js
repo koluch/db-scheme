@@ -92,16 +92,20 @@ const reducer = (state: TState = initialState, action: TAction): TState => {
             }
             return {
                 ...state,
-                tableShapes: state.tableShapes.map((nextTableShape) => {
+                tableShapes: state.tableShapes.map((nextTableShape): TTableShape => {
                     if (nextTableShape.table.name === name) {
                         return {
                             ...nextTableShape,
+                            active: true,
                             x: nextTableShape.x + dif.x,
                             y: nextTableShape.y + dif.y,
                         }
                     }
                     else {
-                        return nextTableShape
+                        return {
+                            ...nextTableShape,
+                            active: false,
+                        }
                     }
                 }),
                 dnd: {
@@ -110,7 +114,6 @@ const reducer = (state: TState = initialState, action: TAction): TState => {
                 },
             }
         }
-
     }
     return state
 }

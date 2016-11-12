@@ -7,11 +7,11 @@ import type {TTableShape} from '~/types/TTableShape'
 import type {TTableStyle} from '~/types/TTableStyle'
 import type {TBounds} from '~/types/TBounds'
 
-import { createSelector } from 'reselect'
+import {createSelector} from 'reselect'
 
 import * as tableMetrics from '~/metrics/table'
 
-type PropsType = {
+type TProps = {
     linkShape: TLinkShape,
     tableShapes: Array<TTableShape>,
     tableStyle: TTableStyle,
@@ -42,7 +42,7 @@ const calculatePath = (b1: TBounds, b2: TBounds): Array<[number, number]> => {
 }
 
 class Link extends React.Component {
-    props: PropsType
+    props: TProps
 
     render(): React.Element<*> {
         const {linkShape, tableShapes, tableStyle} = this.props
