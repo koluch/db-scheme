@@ -6,6 +6,7 @@ import type {TTableShape} from '~/types/TTableShape'
 import type {TLinkShape} from '~/types/TLinkShape'
 import type {TSize} from '~/types/TSize'
 import type {TWorkareaStyle} from '~/types/TWorkareaStyle'
+import type {TLink} from '~/types/TLink'
 import Table from './Table'
 import Link from './Link'
 
@@ -56,7 +57,7 @@ class Workarea extends React.Component {
                         return <Link
                             tableStyle={style.table}
                             key={key}
-                            tableShapes={tables}
+                            tables={tables}
                             linkShape={linkShape}
                         />
                     })}

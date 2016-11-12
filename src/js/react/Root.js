@@ -1,27 +1,30 @@
 // @flow
 import React from 'react'
 import {connect} from 'react-redux'
+import {createSelector} from 'reselect'
 
 import type {TTableShape} from '~/types/TTableShape'
 import type {TLinkShape} from '~/types/TLinkShape'
 import type {TWorkareaStyle} from '~/types/TWorkareaStyle'
 import type {TState} from '~/types/TState'
 import type {TAction} from '~/types/TAction'
+import type {TBounds} from '~/types/TBounds'
+import type {TPoint} from '~/types/TPoint'
 
 import Workarea from './presentational/Workarea'
-import {Layer, Rect, Stage, Group} from 'react-konva'
-import type { Dispatch, Store } from 'redux'
+import type {Dispatch, Store} from 'redux'
+import * as tableMetrics from '~/metrics/table'
+
 
 
 type TProps = {
-    tableShapes: Array<TTableShape>,
-    linkShapes: Array<TLinkShape>,
+    tables: Array<TTableShape>,
+    links: Array<TLinkShape>,
 
     onTableClick: (tableShape: TTableShape) => void,
     onTableMouseDown: (tableShape: TTableShape, e: any) => void,
     onMouseUp: () => void,
     onMouseMove: (e: any) => void,
-
 }
 
 const fontStyle = {
@@ -38,6 +41,30 @@ const tableStyle = {
     },
 }
 
+
+const calculatePath = (b1: TBounds, b2: TBounds): Array<TPoint> => {
+    const CONNECTION_LINE_WIDTH = 10
+    const start = {x: b1.x, y: b1.y + b1.height / 2}
+    const end = {x: b2.x, y: b2.y + b2.height / 2}
+
+    //const c1 = [start[0] - CONNECTION_LINE_WIDTH, start[1]]
+    //const c2 = [end[0] - CONNECTION_LINE_WIDTH, end[1]]
+    const c1 = start
+    const c2 = end
+
+    const middle1 = {x: c1.x + (c2.x - c1.x) / 2, y: c1.y}
+    const middle2 = {x: middle1.x, y: c2.y}
+
+    return [
+        start,
+        //c1,
+        middle1,
+        middle2,
+        //c2,
+        end,
+    ]
+}
+
 const workareaStyle: TWorkareaStyle = {
     table: tableStyle,
 }
@@ -48,66 +75,10 @@ class Root extends React.Component {
         super(props)
     }
 
-    //handleTableClick = (tableShape: TTableShape) => {
-    //    this.setState({
-    //        ...this.state,
-    //        tables: this.state.tables.map((nextTableShape) => ({
-    //            ...nextTableShape,
-    //            active: nextTableShape.table.name === tableShape.table.name,
-    //        })),
-    //    })
-    //}
-    //
-    //handleTableMouseDown = (tableShape: TTableShape, e: any) => {
-    //    this.setState({
-    //        ...this.state,
-    //        movingTable: tableShape.active,
-    //        movingLastPoint: {x: e.evt.offsetX, y: e.evt.offsetY},
-    //    })
-    //}
-    //
-    //handleStageMouseUp = () => {
-    //    this.setState({
-    //        ...this.state,
-    //        movingTable: false,
-    //        movingLastPoint: null,
-    //    })
-    //}
-    //
-    //handleStageMouseMove = (e: any) => {
-    //    const newPoint = {x: e.evt.offsetX, y: e.evt.offsetY}
-    //    const {movingTable, movingLastPoint} = this.state
-    //    if (movingTable) {
-    //        let dif = {x: 0, y: 0}
-    //        if (movingLastPoint != null) {
-    //            dif = {
-    //                x: newPoint.x - movingLastPoint.x,
-    //                y: newPoint.y - movingLastPoint.y,
-    //            }
-    //        }
-    //        this.setState({
-    //            ...this.state,
-    //            tables: this.state.tables.map((nextTableShape) => {
-    //                if (nextTableShape.active === true) {
-    //                    return {
-    //                        ...nextTableShape,
-    //                        x: nextTableShape.x + dif.x,
-    //                        y: nextTableShape.y + dif.y,
-    //                    }
-    //                }
-    //                else {
-    //                    return nextTableShape
-    //                }
-    //            }),
-    //            movingLastPoint: newPoint,
-    //        })
-    //    }
-    //}
-
     render(): React.Element<*> {
         const {
-            tableShapes,
-            linkShapes,
+            tables,
+            links,
             onTableClick,
             onTableMouseDown,
             onMouseUp,
@@ -119,8 +90,8 @@ class Root extends React.Component {
 
         return (
             <Workarea
-                tables={tableShapes}
-                links={linkShapes}
+                tables={tables}
+                links={links}
                 style={workareaStyle}
                 size={{width, height}}
                 onTableClick={onTableClick}
@@ -133,10 +104,45 @@ class Root extends React.Component {
 }
 
 const mapStateToProps = (state: TState): * => {
+    const {tables, links} = state
+
     const {dnd} = state
     return {
-        tableShapes: state.tableShapes,
-        linkShapes: state.linkShapes,
+        tables: state.tables,
+        links: state.links.map((linkState): TLinkShape => {
+            const {link} = linkState
+            const {from, to} = link
+
+            const tableShapeFrom = tables.filter((x) => x.table.name === from.table)[0]
+            if (!tableShapeFrom) {
+                throw new Error(`Table "${from.table}" doesn't exists, unable to draw link`)
+            }
+
+            const tableShapeTo = tables.filter((x) => x.table.name === to.table)[0]
+            if (!tableShapeTo) {
+                throw new Error(`Table "${to.table}" doesn't exists, unable to draw link`)
+            }
+
+            const attrFrom = tableShapeFrom.table.attrs.filter((x) => x.name === from.attr)[0]
+            if (!attrFrom) {
+                throw new Error(`Attribute "${from.table}.${from.attr}" doesn't exists, unable to draw link`)
+            }
+
+            const attrTo = tableShapeFrom.table.attrs.filter((x) => x.name === to.attr)[0]
+            if (!attrTo) {
+                throw new Error(`Attribute "${to.table}.${to.attr}" doesn't exists, unable to draw link`)
+            }
+
+            const attrFromBounds = tableMetrics.getAttrBounds(tableShapeFrom, attrFrom, tableStyle)
+            const attrToBounds = tableMetrics.getAttrBounds(tableShapeTo, attrTo, tableStyle)
+
+            const path = calculatePath(attrFromBounds, attrToBounds)
+
+            return {
+                link,
+                path,
+            }
+        }),
         isDnd: dnd !== false,
     }
 }
@@ -144,7 +150,7 @@ const mapStateToProps = (state: TState): * => {
 const mapDispatchToProps = (dispatch: Dispatch<TAction>): * => {
     return {
         dispatch,
-        onTableClick: (tableShape:TTableShape) => {
+        onTableClick: (tableShape: TTableShape): * => {
             dispatch({type: 'SET_ACTIVE_TABLE', name: tableShape.table.name})
         },
         onTableMouseDown: (tableShape: TTableShape, e: any) => {
@@ -161,7 +167,7 @@ const mapDispatchToProps = (dispatch: Dispatch<TAction>): * => {
     }
 }
 
-const mergeProps = (stateProps, dispatchProps) => {
+const mergeProps = (stateProps, dispatchProps): * => {
     const {isDnd} = stateProps
     const {dispatch} = dispatchProps
 

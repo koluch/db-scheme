@@ -13,7 +13,7 @@ import type {TLinkShape} from '~/types/TLinkShape'
 import Root from '~/react/Root'
 
 const initialState = {
-    tableShapes: [
+    tables: [
         {
             table: {
                 name: 'posts', attrs: [
@@ -41,7 +41,7 @@ const initialState = {
             active: false,
         },
     ],
-    linkShapes: [
+    links: [
         {
             link: {from: {table: 'comments', attr: 'post_id'}, to: {table: 'posts', attr: 'id'}},
         },
@@ -56,7 +56,7 @@ const reducer = (state: TState = initialState, action: TAction): TState => {
         const {name} = action
         return {
             ...state,
-            tableShapes: state.tableShapes.map((tableShape) => ({
+            tables: state.tables.map((tableShape) => ({
                 ...tableShape,
                 active: tableShape.table.name === name,
             })),
@@ -92,7 +92,7 @@ const reducer = (state: TState = initialState, action: TAction): TState => {
             }
             return {
                 ...state,
-                tableShapes: state.tableShapes.map((nextTableShape): TTableShape => {
+                tables: state.tables.map((nextTableShape): TTableShape => {
                     if (nextTableShape.table.name === name) {
                         return {
                             ...nextTableShape,
