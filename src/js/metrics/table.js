@@ -55,9 +55,7 @@ export const getAttrsBounds = (tableShape: TTableShape, style: TTableStyle): TBo
 
 export const getAttrBounds = (tableShape: TTableShape, attr: TAttr, style: TTableStyle): TBounds => {
     const {x, y} = getAttrsBounds(tableShape, style)
-
     const {width, height} = getAttrSize(tableShape.table.attrs, style.attrs)
-
     const {table: {attrs}} = tableShape
 
     for (let i = 0; i < attrs.length; ++i) {
@@ -65,7 +63,7 @@ export const getAttrBounds = (tableShape: TTableShape, attr: TAttr, style: TTabl
         if (TAttrMethods.equals(nextAttr, attr)) {
             return {
                 x,
-                y,
+                y: y + (height * i),
                 width,
                 height,
             }

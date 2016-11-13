@@ -2,6 +2,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {createSelector} from 'reselect'
+import type {Dispatch, Store} from 'redux'
 
 import type {TTableShape} from '~/types/TTableShape'
 import type {TLinkShape} from '~/types/TLinkShape'
@@ -12,9 +13,9 @@ import type {TBounds} from '~/types/TBounds'
 import type {TPoint} from '~/types/TPoint'
 
 import Workarea from './presentational/svg/Workarea'
-import type {Dispatch, Store} from 'redux'
 import * as tableMetrics from '~/metrics/table'
 
+import {workareaStyle} from './styles.js'
 
 type TProps = {
     tables: Array<TTableShape>,
@@ -25,21 +26,6 @@ type TProps = {
     onMouseUp: () => void,
     onMouseMove: (point: TPoint) => void,
 }
-
-const fontStyle = {
-    size: 24,
-    style: 'normal',
-    weight: 'normal',
-    family: 'Arial',
-}
-
-const tableStyle = {
-    font: fontStyle,
-    attrs: {
-        font: fontStyle,
-    },
-}
-
 
 const calculatePath = (b1: TBounds, b2: TBounds): Array<TPoint> => {
     const CONNECTION_LINE_WIDTH = 10
@@ -62,10 +48,6 @@ const calculatePath = (b1: TBounds, b2: TBounds): Array<TPoint> => {
         //c2,
         end,
     ]
-}
-
-const workareaStyle: TWorkareaStyle = {
-    table: tableStyle,
 }
 
 class Root extends React.Component {
@@ -132,8 +114,8 @@ const mapStateToProps = (state: TState): * => {
                 throw new Error(`Attribute "${to.table}.${to.attr}" doesn't exists, unable to draw link`)
             }
 
-            const attrFromBounds = tableMetrics.getAttrBounds(tableShapeFrom, attrFrom, tableStyle)
-            const attrToBounds = tableMetrics.getAttrBounds(tableShapeTo, attrTo, tableStyle)
+            const attrFromBounds = tableMetrics.getAttrBounds(tableShapeFrom, attrFrom, workareaStyle.table)
+            const attrToBounds = tableMetrics.getAttrBounds(tableShapeTo, attrTo, workareaStyle.table)
 
             const path = calculatePath(attrFromBounds, attrToBounds)
 
