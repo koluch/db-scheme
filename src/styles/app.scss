@@ -21,3 +21,12 @@
         border: 1px solid black;
     }
 }
+
+svg.workarea {
+    -webkit-user-select: none;
+    cursor: default;
+
+    * {
+        shape-rendering: crispEdges
+    }
+}

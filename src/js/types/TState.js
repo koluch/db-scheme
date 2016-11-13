@@ -4,7 +4,12 @@ import type {TLink} from './TLink'
 import type {TPoint} from './TPoint'
 
 export type TDndTargetType = 'TABLE'
-export type TDndTarget = false | {type: 'TABLE', name: string, lastPoint: TPoint}
+export type TDndTarget = false | {
+    type: 'TABLE',
+    name: string,
+    startPoint: TPoint,
+    lastPoint: TPoint
+}
 
 export type TTableState = {
     table: TTable,

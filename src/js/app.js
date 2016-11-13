@@ -88,16 +88,36 @@ const reducer = (state: TState = initialState, action: TAction): TState => {
                 dnd: {
                     type: 'TABLE',
                     name,
+                    startPoint,
                     lastPoint: startPoint,
                 },
             }
         }
     }
     else if (action.type === 'STOP_DND') {
-        return {
-            ...state,
-            dnd: false,
+        const {dnd, tables} = state
+        const {point} = action
+        if (dnd !== false) {
+            if (dnd.type === 'TABLE') {
+                const {startPoint} = dnd
+                const setActive = point.x === startPoint.x && point.y === startPoint.y
+                if (setActive) {
+                    return {
+                        ...state,
+                        dnd: false,
+                        tables: tables.map((tableState) => ({
+                            ...tableState,
+                            active: tableState.table.name === dnd.name,
+                        })),
+                    }
+                }
+            }
+            return {
+                ...state,
+                dnd: false,
+            }
         }
+        return state
     }
     else if (action.type === 'MOUSE_MOVE') {
         const {point} = action
@@ -114,7 +134,6 @@ const reducer = (state: TState = initialState, action: TAction): TState => {
                     if (nextTableShape.table.name === name) {
                         return {
                             ...nextTableShape,
-                            active: true,
                             x: nextTableShape.x + dif.x,
                             y: nextTableShape.y + dif.y,
                         }
@@ -122,7 +141,6 @@ const reducer = (state: TState = initialState, action: TAction): TState => {
                     else {
                         return {
                             ...nextTableShape,
-                            active: false,
                         }
                     }
                 }),

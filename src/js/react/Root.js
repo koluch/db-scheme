@@ -23,7 +23,7 @@ type TProps = {
 
     onTableClick: (tableShape: TTableShape) => void,
     onTableMouseDown: (tableShape: TTableShape, point: TPoint) => void,
-    onMouseUp: () => void,
+    onMouseUp: (point: TPoint) => void,
     onMouseMove: (point: TPoint) => void,
 }
 
@@ -132,7 +132,6 @@ const mapDispatchToProps = (dispatch: Dispatch<TAction>): * => {
     return {
         dispatch,
         onTableClick: (tableShape: TTableShape): * => {
-            dispatch({type: 'SET_ACTIVE_TABLE', name: tableShape.table.name})
         },
         onTableMouseDown: (tableShape: TTableShape, point: TPoint) => {
             dispatch({
@@ -142,8 +141,8 @@ const mapDispatchToProps = (dispatch: Dispatch<TAction>): * => {
                 startPoint: point,
             })
         },
-        onMouseUp: () => {
-            dispatch({type: 'STOP_DND'})
+        onMouseUp: (point: TPoint) => {
+            dispatch({type: 'STOP_DND', point})
         },
     }
 }

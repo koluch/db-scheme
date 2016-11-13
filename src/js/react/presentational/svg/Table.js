@@ -82,7 +82,8 @@ class Table extends React.Component {
                       width={width}
                       height={height}
                       fill={'white'}
-                      stroke={'black'}
+                      stroke={active ? 'black' : 'gray'}
+                      strokeWidth={active ? '2' : '1'}
                 />
                 {this.renderHeader()}
                 {this.renderAttrs()}

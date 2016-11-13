@@ -8,5 +8,5 @@ export type TAction =
     TActionInit
         | {type: 'SET_ACTIVE_TABLE', name: string}
         | {type: 'START_DND', targetType: TDndTargetType, name: string, startPoint: TPoint}
-        | {type: 'STOP_DND'}
+        | {type: 'STOP_DND', point: TPoint}
         | {type: 'MOUSE_MOVE', point: TPoint}

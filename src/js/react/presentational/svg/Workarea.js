@@ -18,7 +18,7 @@ type PropsType = {
     size: TSize,
     onTableClick: (tableShape: TTableShape) => void,
     onTableMouseDown: (tableShape: TTableShape, point: TPoint) => void,
-    onMouseUp: () => void,
+    onMouseUp: (point: TPoint) => void,
     onMouseMove: (point: TPoint) => void,
 }
 
@@ -44,10 +44,11 @@ class Workarea extends React.Component {
 
         return (
             <svg
+                className="workarea"
                 viewBox={`0 0 ${width} ${height}`}
                 width={width}
                 height={height}
-                onMouseUp={onMouseUp}
+                onMouseUp={(e) => onMouseUp({x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY})}
                 onMouseMove={(e) => onMouseMove({x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY})}>
                 {links.map((linkShape: TLinkShape) => {
                     const {link: {from, to}} = linkShape
