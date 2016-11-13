@@ -11,10 +11,9 @@ import type {TAction} from '~/types/TAction'
 import type {TBounds} from '~/types/TBounds'
 import type {TPoint} from '~/types/TPoint'
 
-import Workarea from './presentational/Workarea'
+import Workarea from './presentational/svg/Workarea'
 import type {Dispatch, Store} from 'redux'
 import * as tableMetrics from '~/metrics/table'
-
 
 
 type TProps = {
@@ -22,13 +21,13 @@ type TProps = {
     links: Array<TLinkShape>,
 
     onTableClick: (tableShape: TTableShape) => void,
-    onTableMouseDown: (tableShape: TTableShape, e: any) => void,
+    onTableMouseDown: (tableShape: TTableShape, point: TPoint) => void,
     onMouseUp: () => void,
-    onMouseMove: (e: any) => void,
+    onMouseMove: (point: TPoint) => void,
 }
 
 const fontStyle = {
-    size: 16,
+    size: 24,
     style: 'normal',
     weight: 'normal',
     family: 'Arial',
@@ -153,12 +152,12 @@ const mapDispatchToProps = (dispatch: Dispatch<TAction>): * => {
         onTableClick: (tableShape: TTableShape): * => {
             dispatch({type: 'SET_ACTIVE_TABLE', name: tableShape.table.name})
         },
-        onTableMouseDown: (tableShape: TTableShape, e: any) => {
+        onTableMouseDown: (tableShape: TTableShape, point: TPoint) => {
             dispatch({
                 type: 'START_DND',
                 targetType: 'TABLE',
                 name: tableShape.table.name,
-                startPoint: {x: e.evt.offsetX, y: e.evt.offsetY},
+                startPoint: point,
             })
         },
         onMouseUp: () => {
@@ -174,9 +173,9 @@ const mergeProps = (stateProps, dispatchProps): * => {
     return {
         ...stateProps,
         ...dispatchProps,
-        onMouseMove: (e) => {
+        onMouseMove: (point: TPoint) => {
             if (isDnd) {
-                dispatch({type: 'MOUSE_MOVE', point: {x: e.evt.offsetX, y: e.evt.offsetY}})
+                dispatch({type: 'MOUSE_MOVE', point})
             }
         },
     }

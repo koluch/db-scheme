@@ -7,6 +7,7 @@ import type {TLinkShape} from '~/types/TLinkShape'
 import type {TSize} from '~/types/TSize'
 import type {TWorkareaStyle} from '~/types/TWorkareaStyle'
 import type {TLink} from '~/types/TLink'
+import type {TPoint} from '~/types/TPoint'
 import Table from './Table'
 import Link from './Link'
 
@@ -17,9 +18,9 @@ type PropsType = {
     style: TWorkareaStyle,
     size: TSize,
     onTableClick: (tableShape: TTableShape) => void,
-    onTableMouseDown: (tableShape: TTableShape) => void,
+    onTableMouseDown: (tableShape: TTableShape, point: TPoint) => void,
     onMouseUp: () => void,
-    onMouseMove: () => void,
+    onMouseMove: (point: TPoint) => void,
 }
 
 class Workarea extends React.Component {
@@ -48,7 +49,7 @@ class Workarea extends React.Component {
                 width={width}
                 height={height}
                 onMouseUp={onMouseUp}
-                onMouseMove={onMouseMove}>
+                onMouseMove={(e) => onMouseMove({x: e.evt.offsetX, y: e.evt.offsetY})}>
                 <Layer ref="canvas">
                     <Rect x="0" y="0" width={width} height={height} fill="#eeffed"/>
                     {links.map((linkShape: TLinkShape) => {
