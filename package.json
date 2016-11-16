@@ -3,13 +3,10 @@
   "scripts": {
     "debug:flow": "./node_modules/.bin/flow status; fswatch -e '/\\.' -o . | xargs -n 1 -I{} ./node_modules/.bin/flow status",
     "debug:webpack": "./node_modules/.bin/webpack --watch",
-    "debug": "concurrently \"npm run debug:flow\" \"npm run debug:webpack\" -p \"[{name}]\" -c \"bgBlue.green,bgMagenta\" -n \"flow,webpack\""
+    "debug:server": "./node_modules/.bin/http-server -p 3000 ./bin",
+    "debug": "./node_modules/.bin/concurrently \"npm run debug:flow\" \"npm run debug:webpack\" \"npm run debug:server\" -p \"[{name}]\" -c \"bgBlue.green,bgYellow.black,bgCyan.black\" -n \"flow,webpack,server\""
   },
   "devDependencies": {
-    "webpack": "^1.13.2",
-    "style-loader": "^0.13.1",
-    "css-loader": "^0.25.0",
-    "sass-loader": "^4.0.2",
     "babel-cli": "^6.16.0",
     "babel-core": "^6.14.0",
     "babel-eslint": "^6.1.2",
@@ -21,11 +18,17 @@
     "babel-plugin-transform-react-jsx": "^6.8.0",
     "babel-preset-es2015": "^6.14.0",
     "babel-preset-react": "^6.11.1",
+    "copy-webpack-plugin": "^4.0.1",
+    "css-loader": "^0.25.0",
     "eslint": "^3.6.0",
     "eslint-plugin-flowtype": "^2.19.0",
     "flow-bin": "^0.32.0",
+    "http-server": "^0.9.0",
     "node-sass": "^3.11.1",
-    "tcomb": "^3.2.15"
+    "sass-loader": "^4.0.2",
+    "style-loader": "^0.13.1",
+    "tcomb": "^3.2.15",
+    "webpack": "^1.13.2"
   },
   "dependencies": {
     "concurrently": "^3.1.0",
