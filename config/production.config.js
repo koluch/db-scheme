@@ -3,16 +3,19 @@ var path = require('path')
 
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 
+const ROOT = path.resolve(__dirname + '/..')
+
 module.exports = [
     // scripts
     {
+        context: ROOT,
         entry: {
-            app: "./src/js/app.js",
-            vendor: ["react", "react-dom"],
+            app: path.resolve(ROOT + '/src/js/app.js'),
+            vendor: ['react', 'react-dom'],
         },
         output: {
-            path: './bin/js',
-            filename: "[name].bundle.js"
+            path: path.resolve(ROOT + '/build/js'),
+            filename: '[name].bundle.js',
         },
         module: {
             loaders: [
@@ -24,7 +27,7 @@ module.exports = [
                 {
                     test: /\.scss$/,
                     loaders: ['style', 'css', 'sass'],
-                }
+                },
             ],
         },
         plugins: [
@@ -32,24 +35,28 @@ module.exports = [
                 name: 'vendor',
                 filename: 'vendor.bundle.js',
             }),
-            //new webpack.DefinePlugin({
-            //    "process.env": {
-            //        NODE_ENV: JSON.stringify("production")
-            //    }
-            //})
+            new webpack.DefinePlugin({
+                'process.env': {
+                    NODE_ENV: JSON.stringify('production')
+                }
+            }),
+            new webpack.optimize.DedupePlugin(),
+            new webpack.optimize.UglifyJsPlugin(),
+            new webpack.optimize.AggressiveMergingPlugin()
         ],
         resolve: {
-            alias: {'~': path.resolve(__dirname + '/src/js')},
-        }
+            alias: {'~': path.resolve(ROOT + '/src/js')},
+        },
     },
     // styles
     {
+        context: path.resolve(__dirname + '/..'),
         entry: {
-            app: "./src/styles/app.scss",
+            app: path.resolve(ROOT + '/src/styles/app.scss'),
         },
         output: {
-            path: './bin/css',
-            filename: "[name].bundle.css"
+            path: path.resolve(ROOT + '/build/css'),
+            filename: '[name].bundle.css',
         },
         module: {
             loaders: [
@@ -62,7 +69,7 @@ module.exports = [
     },
     // static
     {
-        context: path.join(__dirname, '.'),
+        context: path.resolve(__dirname + '/..'),
         output: {
             path: '',
             filename: '[name]',
@@ -78,8 +85,8 @@ module.exports = [
         plugins: [
             new CopyWebpackPlugin([
                 {
-                    from: path.join(__dirname, '/src/static'),
-                    to: path.join(__dirname, '/bin')
+                    from: path.join(__dirname, '../src/static'),
+                    to: path.join(__dirname, '../build'),
                 },
             ])
         ]
