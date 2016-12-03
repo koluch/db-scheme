@@ -2,14 +2,14 @@
 
 import type {TFontStyle} from '~/types/TFontStyle'
 
-type MeasureResultType = {
+type TMeasureResult = {
     width: number,
     height: number,
 }
 
 let ctx = null
 
-export const getTextSize = (text: string, style: TFontStyle): MeasureResultType => {
+export const getTextSize = (text: string, style: TFontStyle): TMeasureResult => {
     const {
         size,
         weight,
@@ -21,7 +21,7 @@ export const getTextSize = (text: string, style: TFontStyle): MeasureResultType 
 
     if (ctx === null) {
         const canvas = document.createElement('canvas')
-        ctx = ((canvas.getContext('2d') : any) : CanvasRenderingContext2D)
+        ctx = ((canvas.getContext('2d'): any): CanvasRenderingContext2D) // eslint-disable-line flowtype/no-weak-types
     }
 
     ctx.font = font

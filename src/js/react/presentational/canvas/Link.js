@@ -17,11 +17,10 @@ type TProps = {
 }
 
 
-
 class Link extends React.Component {
     props: TProps
 
-    render(): React.Element<*> {
+    render() {
         const {linkShape, tables, tableStyle} = this.props
         const {link: {from, to}, path} = linkShape
 

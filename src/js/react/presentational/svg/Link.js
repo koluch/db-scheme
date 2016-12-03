@@ -19,11 +19,11 @@ type TProps = {
 class Link extends React.Component {
     props: TProps
 
-    render(): React.Element<*> {
+    render(): * {
         const {linkShape, tables, tableStyle} = this.props
         const {link: {from, to}, path} = linkShape
 
-        const points = path.map(({x,y}) => `${x},${y}`).join(' ')
+        const points = path.map(({x, y}) => `${x},${y}`).join(' ')
 
         return (
             <polyline fill="none" stroke="black" points={points}>

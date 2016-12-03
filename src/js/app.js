@@ -3,14 +3,14 @@ import ReactDOM from 'react-dom'
 import React from 'react'
 import {Provider} from 'react-redux'
 import {applyMiddleware, createStore} from 'redux'
-import createLogger from 'redux-logger';
+import createLogger from 'redux-logger'
 
 import type {TState} from '~/types/TState'
 import type {TAction} from '~/types/TAction'
 import type {TTableShape} from '~/types/TTableShape'
 import type {TLinkShape} from '~/types/TLinkShape'
 
-import Root from '~/react/Root'
+import Root from '~/react/container/Root'
 
 const initialState = {
     tables: [
@@ -65,8 +65,6 @@ const initialState = {
         },
     ],
     dnd: false,
-    movingTable: false,
-    movingLastPoint: null,
 }
 
 const reducer = (state: TState = initialState, action: TAction): TState => {

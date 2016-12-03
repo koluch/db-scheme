@@ -8,7 +8,7 @@ export type TDndTarget = false | {
     type: 'TABLE',
     name: string,
     startPoint: TPoint,
-    lastPoint: TPoint
+    lastPoint: TPoint,
 }
 
 export type TTableState = {
@@ -26,5 +26,4 @@ export type TState = {
     tables: Array<TTableState>,
     links: Array<TLinkState>,
     dnd: TDndTarget,
-    movingLastPoint: ?{x: number, y: number},
 }

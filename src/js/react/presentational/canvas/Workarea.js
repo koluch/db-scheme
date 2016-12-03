@@ -12,7 +12,7 @@ import Table from './Table'
 import Link from './Link'
 
 
-type PropsType = {
+type TProps = {
     tables: Array<TTableShape>,
     links: Array<TLinkShape>,
     style: TWorkareaStyle,
@@ -24,9 +24,9 @@ type PropsType = {
 }
 
 class Workarea extends React.Component {
-    props: PropsType
+    props: TProps
 
-    render(): React.Element<*> {
+    render() {
         const {
             tables,
             links,

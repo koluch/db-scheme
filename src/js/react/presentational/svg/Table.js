@@ -7,7 +7,7 @@ import type {TPoint} from '~/types/TPoint'
 
 import {getHeaderSize, getAttrsSize, getShapeSize} from '~/metrics/table'
 
-type PropsType = {
+type TProps = {
     style: TTableStyle,
     tableShape: TTableShape,
     onClick: (tableShape: TTableShape) => void,
@@ -15,9 +15,9 @@ type PropsType = {
 }
 
 class Table extends React.Component {
-    props: PropsType
+    props: TProps
 
-    renderAttrs(): Array<React.Element<*>> {
+    renderAttrs() {
         const {tableShape: {table: {attrs}, x, y}, style} = this.props
         const {width, height} = getAttrsSize(attrs, style.attrs)
 
@@ -36,7 +36,7 @@ class Table extends React.Component {
         ))
     }
 
-    renderHeader(): React.Element<*> {
+    renderHeader() {
         const {tableShape, style} = this.props
         const {table, x, y} = tableShape
         const {width} = getShapeSize(tableShape, style)
@@ -61,12 +61,12 @@ class Table extends React.Component {
         </g>
     }
 
-    handleMouseDown(tableShape: TTableShape, e: any): void {
+    handleMouseDown(tableShape: TTableShape, e: *): * {
         const point = {x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY}
         this.props.onMouseDown.call(this, tableShape, point)
     }
 
-    render(): React.Element<*> {
+    render() {
         const {tableShape, style, onClick, onMouseDown} = this.props
         const {table, x, y, active} = tableShape
 

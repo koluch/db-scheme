@@ -11,7 +11,7 @@ import Table from './Table'
 import Link from './Link'
 
 
-type PropsType = {
+type TProps = {
     tables: Array<TTableShape>,
     links: Array<TLinkShape>,
     style: TWorkareaStyle,
@@ -23,9 +23,9 @@ type PropsType = {
 }
 
 class Workarea extends React.Component {
-    props: PropsType
+    props: TProps
 
-    render(): React.Element<*> {
+    render() {
         const {
             tables,
             links,
@@ -50,7 +50,7 @@ class Workarea extends React.Component {
                 height={height}
                 onMouseUp={(e) => onMouseUp({x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY})}
                 onMouseMove={(e) => onMouseMove({x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY})}>
-                {links.map((linkShape: TLinkShape) => {
+                {links.map((linkShape: TLinkShape): * => {
                     const {link: {from, to}} = linkShape
                     const key = `link-${from.table}-${from.attr}-${to.table}-${to.attr}`
                     return <Link

@@ -36,7 +36,6 @@
     "prefer-rest-params": "error",
     "prefer-spread": "error",
     "template-curly-spacing": ["error", "never"],
-    "no-duplicate-imports": "error",
     "no-unreachable": "error",
     "no-undef": "error",
     "no-unused-expressions": "error",
@@ -198,6 +197,7 @@
     "require-yield": "error",
     "yield-star-spacing": "error",
 
+    "no-duplicate-imports": "warn",
     "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
     "max-params": "warn",
     "max-statements-per-line": "warn",
@@ -239,10 +239,7 @@
       "annotateUndefined": "never",
       "excludeArrowFunctions": true
     }],
-    "flowtype/require-return-type": ["error", "always", {
-        "annotateUndefined": "never",
-        "excludeArrowFunctions": "expressionsOnly"
-    }],
+    "flowtype/require-return-type": "off",
     "flowtype/require-valid-file-annotation": "error",
     "flowtype/semi": ["error", "never"],
     "flowtype/space-after-type-colon": ["error","always"],

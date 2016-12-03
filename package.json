@@ -1,12 +1,14 @@
 {
   "name": "db_scheme_tool",
   "scripts": {
+    "lint": "./node_modules/.bin/eslint src/**",
+    "lint-n-fix": "./node_modules/.bin/eslint --fix src/**",
     "debug:flow": "./node_modules/.bin/flow status; fswatch -e '/\\.' -o . | xargs -n 1 -I{} ./node_modules/.bin/flow status",
     "debug:webpack": "./node_modules/.bin/webpack --watch --config config/development.config.js",
-    "debug:server": "./node_modules/.bin/http-server -p 3000 ./debug",
+    "debug:server": "./node_modules/.bin/http-server -p 3001 ./debug",
     "debug": "./node_modules/.bin/concurrently \"npm run debug:flow\" \"npm run debug:webpack\" \"npm run debug:server\" -p \"[{name}]\" -c \"bgBlue.green,bgYellow.black,bgCyan.black\" -n \"flow,webpack,server\"",
     "build:webpack": "./node_modules/.bin/webpack --config config/production.config.js",
-    "build": "npm run build:webpack"
+    "build": "npm run lint && npm run build:webpack"
   },
   "devDependencies": {
     "babel-cli": "^6.16.0",
@@ -22,7 +24,7 @@
     "babel-preset-react": "^6.11.1",
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.25.0",
-    "eslint": "^3.6.0",
+    "eslint": "^3.11.1",
     "eslint-plugin-flowtype": "^2.19.0",
     "flow-bin": "^0.32.0",
     "http-server": "^0.9.0",

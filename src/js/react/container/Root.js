@@ -12,10 +12,10 @@ import type {TAction} from '~/types/TAction'
 import type {TBounds} from '~/types/TBounds'
 import type {TPoint} from '~/types/TPoint'
 
-import Workarea from './presentational/svg/Workarea'
+import Workarea from './../presentational/svg/Workarea'
 import * as tableMetrics from '~/metrics/table'
 
-import {workareaStyle} from './styles.js'
+import {workareaStyle} from './../styles.js'
 
 type TProps = {
     tables: Array<TTableShape>,
@@ -52,11 +52,8 @@ const calculatePath = (b1: TBounds, b2: TBounds): Array<TPoint> => {
 
 class Root extends React.Component {
     props: TProps
-    constructor(props: TProps) {
-        super(props)
-    }
 
-    render(): React.Element<*> {
+    render(): * {
         const {
             tables,
             links,
@@ -131,8 +128,7 @@ const mapStateToProps = (state: TState): * => {
 const mapDispatchToProps = (dispatch: Dispatch<TAction>): * => {
     return {
         dispatch,
-        onTableClick: (tableShape: TTableShape): * => {
-        },
+        onTableClick: (tableShape: TTableShape) => { return },
         onTableMouseDown: (tableShape: TTableShape, point: TPoint) => {
             dispatch({
                 type: 'START_DND',

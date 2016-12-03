@@ -4,12 +4,11 @@ import React from 'react'
 import type {TTableShape} from '~/types/TTableShape'
 import type {TTableStyle} from '~/types/TTableStyle'
 import type {TPoint} from '~/types/TPoint'
-import {Layer, Rect, Stage, Group, Text} from 'react-konva'
-import { createSelector } from 'reselect'
+import {Rect, Group, Text} from 'react-konva'
 
 import {getHeaderSize, getAttrsSize, getShapeSize} from '~/metrics/table'
 
-type PropsType = {
+type TProps = {
     style: TTableStyle,
     tableShape: TTableShape,
     onClick: (tableShape: TTableShape) => void,
@@ -17,7 +16,7 @@ type PropsType = {
 }
 
 class Table extends React.Component {
-    props: PropsType
+    props: TProps
 
     renderAttrs(): Array<React.Element<*>> {
         const {tableShape: {table: {attrs}, x, y}, style} = this.props
@@ -35,7 +34,7 @@ class Table extends React.Component {
         ))
     }
 
-    render(): React.Element<*> {
+    render() {
         const {tableShape, style, onClick, onMouseDown} = this.props
         const {table, x, y, active} = tableShape
 
@@ -44,6 +43,8 @@ class Table extends React.Component {
         const {height: fontHeight} = headerSize
         const {width, height} = getShapeSize(tableShape, style)
 
+        const SHADOW_BLUR_ACTIVE = 10
+        const SHADOW_BLUR_INACTIVE = 1
         return (
             <Group
                 onClick={onClick.bind(this, tableShape)}
@@ -51,7 +52,7 @@ class Table extends React.Component {
                 <Rect
                       x={x} y={y} width={width} height={height}
                       fill={'white'}
-                      shadowBlur={active ? 10 : 1}
+                      shadowBlur={active ? SHADOW_BLUR_ACTIVE : SHADOW_BLUR_INACTIVE}
                 />
                 <Rect
                     key={tableShape.table.name}
