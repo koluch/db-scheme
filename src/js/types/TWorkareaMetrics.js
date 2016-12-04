@@ -5,7 +5,6 @@ import type {TPoint} from '~/types/TPoint'
 
 type TAttrMetrics = {
     size: TSize,
-    offset: TPoint,
 }
 
 type TTableHeaderMetrics = {

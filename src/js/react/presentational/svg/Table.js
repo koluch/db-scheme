@@ -55,8 +55,8 @@ class Table extends React.Component {
     renderAttrs() {
         const {tableShape, style, onAttrMouseDown, metrics} = this.props
         const {table: {attrs}, position: {x, y}} = tableShape
-        return attrs.map((attr) => {
-            const {size, offset} = metrics.attrs.filter(({name}) => name === attr.name)[0].metrics //todo: check for existence
+        return attrs.map((attr, i) => {
+            const {size} = metrics.attrs.filter(({name}) => name === attr.name)[0].metrics //todo: check for existence
             const {width, height} = size
             const onMouseDown = this.handleAttrMouseDown.bind(this, tableShape, attr)
             return <g
@@ -66,8 +66,8 @@ class Table extends React.Component {
                 onMouseDown={onMouseDown}>
                 <text
                     alignmentBaseline="hanging"
-                    x={x + offset.x}
-                    y={y + offset.y}
+                    x={x}
+                    y={y + size.height * i + metrics.header.size.height}
                     width={width}
                     height={height}
                     onMouseDown={onMouseDown}
