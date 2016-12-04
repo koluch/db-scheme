@@ -9,12 +9,17 @@ export type TDndTarget = false | {
     name: string,
     startPoint: TPoint,
     lastPoint: TPoint,
+} | {
+    type: 'ATTR',
+    name: string,
+    tableName: string,
+    startPoint: TPoint,
+    lastPoint: TPoint,
 }
 
 export type TTableState = {
     table: TTable,
-    x: number,
-    y: number,
+    position: TPoint,
     active: boolean,
 }
 

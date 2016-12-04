@@ -1,3 +1,4 @@
+// @flow
 import type {TWorkareaStyle} from '~/types/TWorkareaStyle'
 
 const fontStyle = {

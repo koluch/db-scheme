@@ -1,28 +1,31 @@
 // @flow
 import React from 'react'
 import {connect} from 'react-redux'
-import {createSelector} from 'reselect'
 import type {Dispatch, Store} from 'redux'
 
 import type {TTableShape} from '~/types/TTableShape'
 import type {TLinkShape} from '~/types/TLinkShape'
 import type {TWorkareaStyle} from '~/types/TWorkareaStyle'
-import type {TState} from '~/types/TState'
+import type {TState, TTableState} from '~/types/TState'
 import type {TAction} from '~/types/TAction'
+import type {TAttr} from '~/types/TAttr'
 import type {TBounds} from '~/types/TBounds'
 import type {TPoint} from '~/types/TPoint'
+import type {TWorkareaMetrics} from '~/types/TWorkareaMetrics'
 
 import Workarea from './../presentational/svg/Workarea'
 import * as tableMetrics from '~/metrics/table'
-
-import {workareaStyle} from './../styles.js'
+import * as metricsSelectors from '~/react/selectors/metrics'
+import {workareaStyle} from '~/react/styles'
 
 type TProps = {
     tables: Array<TTableShape>,
     links: Array<TLinkShape>,
+    metrics: TWorkareaMetrics,
 
     onTableClick: (tableShape: TTableShape) => void,
     onTableMouseDown: (tableShape: TTableShape, point: TPoint) => void,
+    onAttrMouseDown: (tableShape: TTableShape, attr: TAttr, point: TPoint) => void,
     onMouseUp: (point: TPoint) => void,
     onMouseMove: (point: TPoint) => void,
 }
@@ -55,12 +58,14 @@ class Root extends React.Component {
 
     render(): * {
         const {
+            metrics,
             tables,
             links,
             onTableClick,
             onTableMouseDown,
             onMouseUp,
             onMouseMove,
+            onAttrMouseDown,
             } = this.props
 
         const width = 800
@@ -71,11 +76,13 @@ class Root extends React.Component {
                 tables={tables}
                 links={links}
                 style={workareaStyle}
+                metrics={metrics}
                 size={{width, height}}
                 onTableClick={onTableClick}
                 onTableMouseDown={onTableMouseDown}
                 onMouseUp={onMouseUp}
                 onMouseMove={onMouseMove}
+                onAttrMouseDown={onAttrMouseDown}
             />
         )
     }
@@ -85,7 +92,10 @@ const mapStateToProps = (state: TState): * => {
     const {tables, links} = state
 
     const {dnd} = state
+
+    const metrics = metricsSelectors.workarea(state)
     return {
+        metrics,
         tables: state.tables,
         links: state.links.map((linkState): TLinkShape => {
             const {link} = linkState
@@ -111,8 +121,14 @@ const mapStateToProps = (state: TState): * => {
                 throw new Error(`Attribute "${to.table}.${to.attr}" doesn't exists, unable to draw link`)
             }
 
-            const attrFromBounds = tableMetrics.getAttrBounds(tableShapeFrom, attrFrom, workareaStyle.table)
-            const attrToBounds = tableMetrics.getAttrBounds(tableShapeTo, attrTo, workareaStyle.table)
+            const tableShapeFromMetrics = metrics.tables.filter(({name}) => name === tableShapeFrom.table.name)[0].metrics //todo: check
+            const tableShapeToMetrics = metrics.tables.filter(({name}) => name === tableShapeTo.table.name)[0].metrics //todo: check
+
+            const tableShapeFromPosition = {x: tableShapeFrom.position.x, y: tableShapeFrom.position.y}
+            const tableShapeToPosition = {x: tableShapeTo.position.x, y: tableShapeTo.position.y}
+
+            const attrFromBounds = tableMetrics.getAttrBounds(tableShapeFromMetrics, tableShapeFromPosition, attrFrom.name)
+            const attrToBounds = tableMetrics.getAttrBounds(tableShapeToMetrics, tableShapeToPosition, attrTo.name)
 
             const path = calculatePath(attrFromBounds, attrToBounds)
 
@@ -132,8 +148,22 @@ const mapDispatchToProps = (dispatch: Dispatch<TAction>): * => {
         onTableMouseDown: (tableShape: TTableShape, point: TPoint) => {
             dispatch({
                 type: 'START_DND',
-                targetType: 'TABLE',
-                name: tableShape.table.name,
+                target: {
+                    type: 'TABLE',
+                    name: tableShape.table.name,
+                },
+                startPoint: point,
+            })
+        },
+        onAttrMouseDown: (tableShape: TTableShape, attr: TAttr, point: TPoint) => {
+            dispatch({
+                type: 'START_DND',
+                target: {
+                    type: 'ATTR',
+                    name: attr.name,
+                    tableName: tableShape.table.name,
+                },
+                attrName: attr.name,
                 startPoint: point,
             })
         },

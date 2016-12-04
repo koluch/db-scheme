@@ -1,9 +1,9 @@
 // @flow
 import type {TTable} from './TTable'
+import type {TPoint} from './TPoint'
 
 export type TTableShape = {
     table: TTable,
-    x: number,
-    y: number,
+    position: TPoint,
     active: boolean,
 }

@@ -7,17 +7,22 @@ import type {TSize} from '~/types/TSize'
 import type {TWorkareaStyle} from '~/types/TWorkareaStyle'
 import type {TLink} from '~/types/TLink'
 import type {TPoint} from '~/types/TPoint'
+import type {TAttr} from '~/types/TAttr'
+import type {TWorkareaMetrics} from '~/types/TWorkareaMetrics'
+
 import Table from './Table'
 import Link from './Link'
 
 
 type TProps = {
+    metrics: TWorkareaMetrics,
     tables: Array<TTableShape>,
     links: Array<TLinkShape>,
     style: TWorkareaStyle,
     size: TSize,
     onTableClick: (tableShape: TTableShape) => void,
     onTableMouseDown: (tableShape: TTableShape, point: TPoint) => void,
+    onAttrMouseDown: (tableShape: TTableShape, attr: TAttr, point: TPoint) => void,
     onMouseUp: (point: TPoint) => void,
     onMouseMove: (point: TPoint) => void,
 }
@@ -31,16 +36,19 @@ class Workarea extends React.Component {
             links,
             style,
             size,
+            metrics,
             } = this.props
 
         const {
             onTableClick,
             onTableMouseDown,
+            onAttrMouseDown,
             onMouseUp,
             onMouseMove,
             } = this.props
 
         const {width, height} = size
+
 
         return (
             <svg
@@ -49,7 +57,8 @@ class Workarea extends React.Component {
                 width={width}
                 height={height}
                 onMouseUp={(e) => onMouseUp({x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY})}
-                onMouseMove={(e) => onMouseMove({x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY})}>
+                onMouseMove={(e) => onMouseMove({x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY})}
+            >
                 {links.map((linkShape: TLinkShape): * => {
                     const {link: {from, to}} = linkShape
                     const key = `link-${from.table}-${from.attr}-${to.table}-${to.attr}`
@@ -60,15 +69,18 @@ class Workarea extends React.Component {
                         linkShape={linkShape}
                     />
                 })}
-                {tables.map((tableShape: TTableShape) => (
-                    <Table
+                {tables.map((tableShape: TTableShape) => {
+                    const tableMetrics = metrics.tables.filter(({name}) => name === tableShape.table.name)[0].metrics //todo: check
+                    return <Table
+                        metrics={tableMetrics}
                         style={style.table}
                         key={tableShape.table.name}
                         tableShape={tableShape}
-                        onClick={onTableClick}
-                        onMouseDown={onTableMouseDown}
+                        onHeaderClick={onTableClick}
+                        onHeaderMouseDown={onTableMouseDown}
+                        onAttrMouseDown={onAttrMouseDown}
                     />
-                ))}
+                })}
             </svg>
         )
     }

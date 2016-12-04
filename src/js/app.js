@@ -11,6 +11,8 @@ import type {TTableShape} from '~/types/TTableShape'
 import type {TLinkShape} from '~/types/TLinkShape'
 
 import Root from '~/react/container/Root'
+import * as metricsSelectors from '~/react/selectors/metrics'
+import {getAttrBounds} from '~/metrics/table'
 
 const initialState = {
     tables: [
@@ -23,8 +25,10 @@ const initialState = {
                     {name: 'body'},
                 ],
             },
-            x: 0,
-            y: 0,
+            position: {
+                x: 0,
+                y: 0,
+            },
             active: true,
         },
         {
@@ -37,8 +41,10 @@ const initialState = {
                     {name: 'visible'},
                 ],
             },
-            x: 500,
-            y: 200,
+            position: {
+                x: 500,
+                y: 200,
+            },
             active: false,
         },
         {
@@ -48,8 +54,10 @@ const initialState = {
                     {name: 'name'},
                 ],
             },
-            x: 300,
-            y: 400,
+            position: {
+                x: 300,
+                y: 400,
+            },
             active: false,
         },
     ],
@@ -79,13 +87,27 @@ const reducer = (state: TState = initialState, action: TAction): TState => {
         }
     }
     else if (action.type === 'START_DND') {
-        if (action.targetType === 'TABLE') {
-            const {name, startPoint} = action
+        if (action.target.type === 'TABLE') {
+            const {target: {name}, startPoint} = action
             return {
                 ...state,
                 dnd: {
                     type: 'TABLE',
                     name,
+                    startPoint,
+                    lastPoint: startPoint,
+                },
+            }
+        }
+        else if (action.target.type === 'ATTR') {
+            const {target, startPoint} = action
+            const {name, tableName} = target
+            return {
+                ...state,
+                dnd: {
+                    type: 'ATTR',
+                    name,
+                    tableName,
                     startPoint,
                     lastPoint: startPoint,
                 },
@@ -120,32 +142,96 @@ const reducer = (state: TState = initialState, action: TAction): TState => {
     else if (action.type === 'MOUSE_MOVE') {
         const {point} = action
         const {dnd} = state
-        if (dnd !== false && dnd.type === 'TABLE') {
-            const {lastPoint, name} = dnd
-            const dif = {
-                x: point.x - lastPoint.x,
-                y: point.y - lastPoint.y,
+        if (dnd !== false) {
+            if (dnd.type === 'TABLE') {
+                const {lastPoint, name} = dnd
+                const dif = {
+                    x: point.x - lastPoint.x,
+                    y: point.y - lastPoint.y,
+                }
+                return {
+                    ...state,
+                    tables: state.tables.map((nextTableShape): TTableShape => {
+                        if (nextTableShape.table.name === name) {
+                            return {
+                                ...nextTableShape,
+                                position: {
+                                    x: nextTableShape.position.x + dif.x,
+                                    y: nextTableShape.position.y + dif.y,
+                                },
+                            }
+                        }
+                        else {
+                            return {
+                                ...nextTableShape,
+                            }
+                        }
+                    }),
+                    dnd: {
+                        ...dnd,
+                        type: 'TABLE',
+                        name: dnd.name,
+                        startPoint: dnd.startPoint,
+                        lastPoint: point,
+                    },
+                }
             }
-            return {
-                ...state,
-                tables: state.tables.map((nextTableShape): TTableShape => {
-                    if (nextTableShape.table.name === name) {
-                        return {
-                            ...nextTableShape,
-                            x: nextTableShape.x + dif.x,
-                            y: nextTableShape.y + dif.y,
-                        }
+            else if (dnd.type === 'ATTR') {
+                const {name: attrName, tableName} = dnd
+                const tableShape = state.tables.filter((tableShape) => tableShape.table.name === tableName)[0] //todo: check
+
+                const metrics = metricsSelectors.workarea(state)
+                const tableMetrics = metrics.tables.filter(({name}) => name === tableName)[0].metrics //todo: check
+
+                const hoveredAttr = tableShape.table.attrs.filter(({name}) => {
+                    const attrBounds = getAttrBounds(tableMetrics, tableShape.position, name)
+                    return point.y > attrBounds.y
+                        && point.y < attrBounds.y + attrBounds.height
+                        && point.x > attrBounds.x
+                        && point.x < attrBounds.x + attrBounds.width
+                })[0]
+
+                if (hoveredAttr && hoveredAttr.name !== attrName) {
+                    const attrIndex = tableShape.table.attrs
+                        .map(({name}, i) => ({name, i}))
+                        .filter(({name}) => name === attrName)
+                        .map(({i}) => i)[0]
+                    const hoveredAttrIndex = tableShape.table.attrs
+                        .map(({name}, i) => ({name, i}))
+                        .filter(({name}) => name === hoveredAttr.name)
+                        .map(({i}) => i)[0]
+
+                    const newAttrList = [...tableShape.table.attrs]
+                    const [removed] = newAttrList.splice(attrIndex, 1)
+                    newAttrList.splice(hoveredAttrIndex, 0, removed)
+
+                    return {
+                        ...state,
+                        tables: state.tables.map((nextTableShape): TTableShape => {
+                            if (nextTableShape.table.name === tableName) {
+                                return {
+                                    ...nextTableShape,
+                                    table: {
+                                        ...nextTableShape.table,
+                                        attrs: newAttrList,
+                                    },
+                                }
+                            }
+                            else {
+                                return {
+                                    ...nextTableShape,
+                                }
+                            }
+                        }),
+                        dnd: {
+                            type: 'ATTR',
+                            name: dnd.name,
+                            tableName: dnd.tableName,
+                            startPoint: dnd.startPoint,
+                            lastPoint: point,
+                        },
                     }
-                    else {
-                        return {
-                            ...nextTableShape,
-                        }
-                    }
-                }),
-                dnd: {
-                    ...dnd,
-                    lastPoint: point,
-                },
+                }
             }
         }
     }

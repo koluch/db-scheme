@@ -1,5 +1,4 @@
 // @flow
-
 import type {TAttr} from '~/types/TAttr'
 import type {TTable} from '~/types/TTable'
 import type {TTableShape} from '~/types/TTableShape'
@@ -7,89 +6,60 @@ import type {TTableStyle} from '~/types/TTableStyle'
 import type {TAttrStyle} from '~/types/TAttrStyle'
 import type {TSize} from '~/types/TSize'
 import type {TBounds} from '~/types/TBounds'
+import type {TPoint} from '~/types/TPoint'
+
+import type {TTableMetrics} from '~/types/TWorkareaMetrics'
 
 import * as TAttrMethods from '~/types/TAttr'
 
 import {getTextSize} from './text'
 
-export const getHeaderSize = (table: TTable, style: TTableStyle): TSize => {
-    return getTextSize(table.name, style.font)
-}
-
-export const getHeaderBounds = (tableShape: TTableShape, style: TTableStyle): TBounds => {
-    return {
-        ...getTextSize(tableShape.table.name, style.font),
-        x: tableShape.x,
-        y: tableShape.y,
-    }
-}
-
-export const getAttrsSize = (attrs: Array<TAttr>, style: TAttrStyle): TSize => {
-    const {font} = style
-    const sizes = attrs.map((attr) => getTextSize(attr.name, font))
-    return {
-        width: Math.max(...sizes.map((x) => x.width)),
-        height: sizes.map((x) => x.height).reduce((acc, x) => acc + x, 0),
-    }
-}
-
-export const getAttrSize = (attrs: Array<TAttr>, style: TAttrStyle): TSize => {
-    const {width, height} = getAttrsSize(attrs, style)
-    return {
-        width,
-        height: height / attrs.length,
-    }
-}
-
-export const getAttrsBounds = (tableShape: TTableShape, style: TTableStyle): TBounds => {
-    const headerBounds = getHeaderBounds(tableShape, style)
-    const {height, width} = getAttrsSize(tableShape.table.attrs, style.attrs)
-
-    return {
-        x: tableShape.x,
-        y: tableShape.y + headerBounds.height,
-        height,
-        width,
-    }
-}
-
-export const getAttrBounds = (tableShape: TTableShape, attr: TAttr, style: TTableStyle): TBounds => {
-    const {x, y} = getAttrsBounds(tableShape, style)
-    const {width, height} = getAttrSize(tableShape.table.attrs, style.attrs)
-    const {table: {attrs}} = tableShape
+export const getAttrBounds = (metrics: TTableMetrics, position: TPoint, attrName: string): TBounds => {
+    const {attrs} = metrics
 
     for (let i = 0; i < attrs.length; ++i) {
-        const nextAttr = attrs[i]
-        if (TAttrMethods.equals(nextAttr, attr)) {
+        const {name, metrics} = attrs[i]
+        if (name === attrName) {
             return {
-                x,
-                y: y + (height * i),
-                width,
-                height,
+                ...metrics.size,
+                x: metrics.offset.x + position.x,
+                y: metrics.offset.y + position.y,
             }
         }
     }
-    throw new Error(`Attribute "${attr.name}" is not defined in table "${tableShape.table.name}"`)
+    throw new Error(`Attribute "${attrName}" hasn't found in metrics`)
 }
 
-export const getShapeSize = (tableShape: TTableShape, style: TTableStyle): TSize => {
-    const headerSize = getHeaderSize(tableShape.table, style)
-    const attrsSize = getAttrsSize(tableShape.table.attrs, style)
+export const getMetrics = (table: TTable, style: TTableStyle): TTableMetrics => {
+    const headerTextSize = getTextSize(table.name, style.font)
+    const attrTextSizes = table.attrs.map(({name}) => getTextSize(name, style.font))
 
+    const tableWidth = Math.max(headerTextSize.width, ...attrTextSizes.map(({width}) => width));
     return {
-        width: Math.max(headerSize.width, attrsSize.width),
-        height: headerSize.height + attrsSize.height,
-    }
-}
-
-export const getShapeBounds = (tableShape: TTableShape, style: TTableStyle): TBounds => {
-    const headerSize = getHeaderSize(tableShape.table, style)
-    const attrsSize = getAttrsSize(tableShape.table.attrs, style)
-
-    return {
-        x: tableShape.x,
-        y: tableShape.y,
-        width: Math.max(headerSize.width, attrsSize.width),
-        height: headerSize.height + attrsSize.height,
+        size: {
+            width: tableWidth,
+            height: headerTextSize.height + attrTextSizes.map(({height}) => height).reduce((acc, x) => acc + x, 0),
+        },
+        header: {
+            size: {
+                width: tableWidth,
+                height: headerTextSize.height,
+            },
+        },
+        attrs: table.attrs.map((attr, i) => {
+            return {
+                name: attr.name,
+                metrics: {
+                    size: {
+                        width: tableWidth,
+                        height: attrTextSizes[i].height,
+                    },
+                    offset: {
+                        x: 0,
+                        y: headerTextSize.height + attrTextSizes[i].height * i,
+                    },
+                },
+            }
+        }),
     }
 }
