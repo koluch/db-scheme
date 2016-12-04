@@ -128,7 +128,16 @@ const mapStateToProps = (state: TState): * => {
             const tableShapeToPosition = {x: tableShapeTo.position.x, y: tableShapeTo.position.y}
 
             const attrFromBounds = tableMetrics.getAttrBounds(tableShapeFromMetrics, tableShapeFromPosition, attrFrom.name)
+            if (!attrFromBounds) {
+                throw new Error(`Unable to get attribue bounds for
+                 attribute "${from.table}.${from.attr}": attribute doesnt exists`)
+            }
+
             const attrToBounds = tableMetrics.getAttrBounds(tableShapeToMetrics, tableShapeToPosition, attrTo.name)
+            if (!attrToBounds) {
+                throw new Error(`Unable to get attribue bounds for
+                 attribute "${to.table}.${to.attr}": attribute doesnt exists`)
+            }
 
             const path = calculatePath(attrFromBounds, attrToBounds)
 

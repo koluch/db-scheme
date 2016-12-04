@@ -14,9 +14,8 @@ import * as TAttrMethods from '~/types/TAttr'
 
 import {getTextSize} from './text'
 
-export const getAttrBounds = (metrics: TTableMetrics, position: TPoint, attrName: string): TBounds => {
+export const getAttrBounds = (metrics: TTableMetrics, position: TPoint, attrName: string): ?TBounds => {
     const {attrs, header} = metrics
-
     for (let i = 0; i < attrs.length; ++i) {
         const {name, metrics} = attrs[i]
         if (name === attrName) {
@@ -27,7 +26,8 @@ export const getAttrBounds = (metrics: TTableMetrics, position: TPoint, attrName
             }
         }
     }
-    throw new Error(`Attribute "${attrName}" hasn't found in metrics`)
+
+    return null
 }
 
 export const getMetrics = (table: TTable, style: TTableStyle): TTableMetrics => {
