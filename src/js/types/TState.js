@@ -6,13 +6,13 @@ import type {TPoint} from './TPoint'
 export type TDndTargetType = 'TABLE'
 export type TDndTarget = false | {
     type: 'TABLE',
-    name: string,
+    table: string,
     startPoint: TPoint,
     lastPoint: TPoint,
 } | {
     type: 'ATTR',
-    name: string,
-    tableName: string,
+    attr: string,
+    table: string,
     startPoint: TPoint,
     lastPoint: TPoint,
 }
@@ -27,8 +27,15 @@ export type TLinkState = {
     link: TLink,
 }
 
+export type TTco = false | {
+    type: 'ADD_LINK',
+    table: string,
+    attr: string,
+}
+
 export type TState = {
     tables: Array<TTableState>,
     links: Array<TLinkState>,
     dnd: TDndTarget,
+    tco: TTco, // two-click operation
 }

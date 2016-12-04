@@ -25,6 +25,8 @@ type TProps = {
     onAttrMouseDown: (tableShape: TTableShape, attr: TAttr, point: TPoint) => void,
     onMouseUp: (point: TPoint) => void,
     onMouseMove: (point: TPoint) => void,
+    onAddLinkClick: (tableShape: TTableShape, attr: TAttr) => void,
+    onAttrClick: (tableShape: TTableShape, attr: TAttr) => void,
 }
 
 class Workarea extends React.Component {
@@ -45,6 +47,8 @@ class Workarea extends React.Component {
             onAttrMouseDown,
             onMouseUp,
             onMouseMove,
+            onAddLinkClick,
+            onAttrClick,
             } = this.props
 
         const {width, height} = size
@@ -79,6 +83,8 @@ class Workarea extends React.Component {
                         onHeaderClick={onTableClick}
                         onHeaderMouseDown={onTableMouseDown}
                         onAttrMouseDown={onAttrMouseDown}
+                        onAddLinkClick={onAddLinkClick}
+                        onAttrClick={onAttrClick}
                     />
                 })}
             </svg>

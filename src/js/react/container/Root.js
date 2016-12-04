@@ -26,6 +26,8 @@ type TProps = {
     onTableClick: (tableShape: TTableShape) => void,
     onTableMouseDown: (tableShape: TTableShape, point: TPoint) => void,
     onAttrMouseDown: (tableShape: TTableShape, attr: TAttr, point: TPoint) => void,
+    onAttrClick: (tableShape: TTableShape, attr: TAttr) => void,
+    onAddLinkClick: (tableShape: TTableShape, attr: TAttr) => void,
     onMouseUp: (point: TPoint) => void,
     onMouseMove: (point: TPoint) => void,
 }
@@ -66,6 +68,8 @@ class Root extends React.Component {
             onMouseUp,
             onMouseMove,
             onAttrMouseDown,
+            onAttrClick,
+            onAddLinkClick,
             } = this.props
 
         const width = 800
@@ -83,15 +87,15 @@ class Root extends React.Component {
                 onMouseUp={onMouseUp}
                 onMouseMove={onMouseMove}
                 onAttrMouseDown={onAttrMouseDown}
+                onAttrClick={onAttrClick}
+                onAddLinkClick={onAddLinkClick}
             />
         )
     }
 }
 
 const mapStateToProps = (state: TState): * => {
-    const {tables, links} = state
-
-    const {dnd} = state
+    const {tables, links, dnd, tco} = state
 
     const metrics = metricsSelectors.workarea(state)
     return {
@@ -116,7 +120,7 @@ const mapStateToProps = (state: TState): * => {
                 throw new Error(`Attribute "${from.table}.${from.attr}" doesn't exists, unable to draw link`)
             }
 
-            const attrTo = tableShapeFrom.table.attrs.filter((x) => x.name === to.attr)[0]
+            const attrTo = tableShapeTo.table.attrs.filter((x) => x.name === to.attr)[0]
             if (!attrTo) {
                 throw new Error(`Attribute "${to.table}.${to.attr}" doesn't exists, unable to draw link`)
             }
@@ -147,6 +151,7 @@ const mapStateToProps = (state: TState): * => {
             }
         }),
         isDnd: dnd !== false,
+        tco,
     }
 }
 
@@ -159,7 +164,7 @@ const mapDispatchToProps = (dispatch: Dispatch<TAction>): * => {
                 type: 'START_DND',
                 target: {
                     type: 'TABLE',
-                    name: tableShape.table.name,
+                    table: tableShape.table.name,
                 },
                 startPoint: point,
             })
@@ -169,21 +174,31 @@ const mapDispatchToProps = (dispatch: Dispatch<TAction>): * => {
                 type: 'START_DND',
                 target: {
                     type: 'ATTR',
-                    name: attr.name,
-                    tableName: tableShape.table.name,
+                    attr: attr.name,
+                    table: tableShape.table.name,
                 },
-                attrName: attr.name,
+                attr: attr.name,
                 startPoint: point,
             })
         },
         onMouseUp: (point: TPoint) => {
             dispatch({type: 'STOP_DND', point})
         },
+        onAddLinkClick: (tableShape: TTableShape, attr: TAttr) => {
+            dispatch({
+                type: 'START_TCO',
+                attrs: {
+                    type: 'ADD_LINK',
+                    attr: attr.name,
+                    table: tableShape.table.name,
+                },
+            })
+        },
     }
 }
 
 const mergeProps = (stateProps, dispatchProps): * => {
-    const {isDnd} = stateProps
+    const {isDnd, tco} = stateProps
     const {dispatch} = dispatchProps
 
     return {
@@ -192,6 +207,24 @@ const mergeProps = (stateProps, dispatchProps): * => {
         onMouseMove: (point: TPoint) => {
             if (isDnd) {
                 dispatch({type: 'MOUSE_MOVE', point})
+            }
+        },
+        onAttrClick: (tableShape: TTableShape, attr: TAttr) => {
+            if (tco !== false) {
+                if (tco.type === 'ADD_LINK') {
+                    dispatch({type: 'STOP_TCO'})
+                    dispatch({
+                        type: 'ADD_LINK',
+                        from: {
+                            table: tco.table,
+                            attr: tco.attr,
+                        },
+                        to: {
+                            table: tableShape.table.name,
+                            attr: attr.name,
+                        },
+                    })
+                }
             }
         },
     }

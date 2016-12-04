@@ -14,11 +14,11 @@ import * as TAttrMethods from '~/types/TAttr'
 
 import {getTextSize} from './text'
 
-export const getAttrBounds = (metrics: TTableMetrics, position: TPoint, attrName: string): ?TBounds => {
+export const getAttrBounds = (metrics: TTableMetrics, position: TPoint, attr: string): ?TBounds => {
     const {attrs, header} = metrics
     for (let i = 0; i < attrs.length; ++i) {
         const {name, metrics} = attrs[i]
-        if (name === attrName) {
+        if (name === attr) {
             return {
                 ...metrics.size,
                 x: position.x,

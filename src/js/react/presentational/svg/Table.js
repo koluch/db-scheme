@@ -14,6 +14,8 @@ type TProps = {
     onHeaderClick: (tableShape: TTableShape) => void,
     onHeaderMouseDown: (tableShape: TTableShape, point: TPoint) => void,
     onAttrMouseDown: (tableShape: TTableShape, attr: TAttr, point: TPoint) => void,
+    onAddLinkClick: (tableShape: TTableShape, attr: TAttr) => void,
+    onAttrClick: (tableShape: TTableShape, attr: TAttr) => void,
 }
 
 class Table extends React.Component {
@@ -52,8 +54,12 @@ class Table extends React.Component {
         this.props.onAttrMouseDown(tableShape, attr, point)
     }
 
+    handleAddLinkClick(tableShape: TTableShape, attr: TAttr): * {
+        this.props.onAddLinkClick(tableShape, attr)
+    }
+
     renderAttrs() {
-        const {tableShape, style, onAttrMouseDown, metrics} = this.props
+        const {tableShape, style, onAttrMouseDown, onAttrClick, metrics} = this.props
         const {table: {attrs}, position: {x, y}} = tableShape
         return attrs.map((attr, i) => {
             const {size} = metrics.attrs.filter(({name}) => name === attr.name)[0].metrics //todo: check for existence
@@ -71,9 +77,29 @@ class Table extends React.Component {
                     width={width}
                     height={height}
                     onMouseDown={onMouseDown}
+                    onClick={onAttrClick.bind(this, tableShape, attr)}
                     fontSize={style.attrs.font.size}>
                     {attr.name}
                 </text>
+                <rect
+                    fill="green"
+                    x={x + width}
+                    y={y + size.height * i + metrics.header.size.height}
+                    width={20}
+                    height={20}
+                />
+                <text
+                    x={x + width + 5}
+                    y={y + size.height * i + size.height / 2 + metrics.header.size.height}
+                >+</text>
+                <rect
+                    fill="transparent"
+                    x={x + width}
+                    y={y + size.height * i + metrics.header.size.height}
+                    width={20}
+                    height={20}
+                    onClick={this.handleAddLinkClick.bind(this, tableShape, attr)}
+                />
             </g>
         })
     }

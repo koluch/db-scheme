@@ -5,11 +5,17 @@ type TActionInit = {type: "@@redux/INIT"}
 
 type TDndAttrs = {
     type: 'TABLE',
-    name: string,
+    table: string,
 } | {
     type: 'ATTR',
-    name: string,
-    tableName: string,
+    attr: string,
+    table: string,
+}
+
+type TTcoAttrs = {
+    type: 'ADD_LINK',
+    table: string,
+    attr: string,
 }
 
 export type TAction =
@@ -18,3 +24,6 @@ export type TAction =
         | {type: 'START_DND', target: TDndAttrs, startPoint: TPoint}
         | {type: 'STOP_DND', point: TPoint}
         | {type: 'MOUSE_MOVE', point: TPoint}
+        | {type: 'START_TCO', attrs: TTcoAttrs}
+        | {type: 'STOP_TCO'}
+        | {type: 'ADD_LINK', from: {table: string, attr: string}, to: {table: string, attr: string}}
