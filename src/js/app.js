@@ -9,10 +9,13 @@ import type {TState} from '~/types/TState'
 import type {TAction} from '~/types/TAction'
 import type {TTableShape} from '~/types/TTableShape'
 import type {TLinkShape} from '~/types/TLinkShape'
+import type {TPoint} from '~/types/TPoint'
+import type {TBounds} from '~/types/TBounds'
+import type {TTable} from '~/types/TTable'
 
 import Root from '~/react/container/Root'
 import * as metricsSelectors from '~/react/selectors/metrics'
-import {getAttrBounds} from '~/metrics/table'
+import {getAttrBounds, getTableBounds, getHeaderBounds} from '~/metrics/table'
 
 const initialState = {
     tables: [
@@ -74,73 +77,67 @@ const initialState = {
     ],
     dnd: false,
     tco: false,
+    mouseState: {type: 'MOUSE_UP'},
+}
+
+//todo: move to helper
+const isInBounds = (point: TPoint, bounds: TBounds): boolean => {
+    return point.x >= bounds.x
+        && point.y >= bounds.y
+        && point.x <= bounds.x + bounds.width
+        && point.y <= bounds.y + bounds.height
+}
+
+type TClickTarget = {
+    type: 'TABLE',
+    table: string,
+} | {
+    type: 'TABLE_HEADER',
+    table: string,
+} | {
+    type: 'ATTR',
+    table: string,
+    attr: string,
+} | {
+    type: 'NONE',
+}
+
+// Detect target
+const detectTarget = (state: TState, point: TPoint): TClickTarget => {
+    const metrics = metricsSelectors.workarea(state)
+    const targetTableState = state.tables.filter(({table, position}) => {
+        const tableMetrics = metrics.tables.filter((x) => x.name === table.name)[0].metrics // todo: check
+        const tableBounds = getTableBounds(tableMetrics, position)
+        if (!tableBounds) throw new Error(`Table bounds are not defined: "${table.name}"`)
+        return isInBounds(point, tableBounds)
+    })[0] //todo: check if more
+    if (targetTableState) {
+        const {table, position} = targetTableState
+        const tableMetrics = metrics.tables.filter((x) => x.name === table.name)[0].metrics // todo: check
+        const headerBounds = getHeaderBounds(tableMetrics, position)
+        if (!headerBounds) throw new Error(`Table header bounds are not defined: "${table.name}"`)
+        if (isInBounds(point, headerBounds)) {
+            return {type: 'TABLE_HEADER', table: targetTableState.table.name}
+        }
+        else {
+            const targetAttr = table.attrs.filter((attr) => {
+                const attrBounds = getAttrBounds(tableMetrics, position, attr.name)
+                if (!attrBounds) throw new Error(`Table attr bounds are not defined: "${table.name}.${attr.name}"`)
+                return isInBounds(point, attrBounds)
+            })[0]
+            if (targetAttr) {
+                return {type: 'ATTR', table: targetTableState.table.name, attr: targetAttr.name}
+            }
+            else {
+                return {type: 'TABLE', table: targetTableState.table.name}
+            }
+        }
+    }
+    return {type: 'NONE'}
 }
 
 const reducer = (state: TState = initialState, action: TAction): TState => {
-    if (action.type === 'SET_ACTIVE_TABLE') {
-        const {name} = action
-        return {
-            ...state,
-            tables: state.tables.map((tableShape) => ({
-                ...tableShape,
-                active: tableShape.table.name === name,
-            })),
-        }
-    }
-    else if (action.type === 'START_DND') {
-        if (action.target.type === 'TABLE') {
-            const {target: {table}, startPoint} = action
-            return {
-                ...state,
-                dnd: {
-                    type: 'TABLE',
-                    table,
-                    startPoint,
-                    lastPoint: startPoint,
-                },
-            }
-        }
-        else if (action.target.type === 'ATTR') {
-            const {target, startPoint} = action
-            const {attr, table} = target
-            return {
-                ...state,
-                dnd: {
-                    type: 'ATTR',
-                    attr,
-                    table,
-                    startPoint,
-                    lastPoint: startPoint,
-                },
-            }
-        }
-    }
-    else if (action.type === 'STOP_DND') {
-        const {dnd, tables} = state
-        const {point} = action
-        if (dnd !== false) {
-            if (dnd.type === 'TABLE') {
-                const {startPoint} = dnd
-                const setActive = point.x === startPoint.x && point.y === startPoint.y
-                if (setActive) {
-                    return {
-                        ...state,
-                        dnd: false,
-                        tables: tables.map((tableState) => ({
-                            ...tableState,
-                            active: tableState.table.name === dnd.table,
-                        })),
-                    }
-                }
-            }
-            return {
-                ...state,
-                dnd: false,
-            }
-        }
-        return state
-    }
-    else if (action.type === 'MOUSE_MOVE') {
+    if (action.type === 'MOUSE_MOVE') {
         const {point} = action
         const {dnd} = state
         if (dnd !== false) {
@@ -273,6 +270,74 @@ const reducer = (state: TState = initialState, action: TAction): TState => {
             ]),
         }
     }
+    else if (action.type === 'MOUSE_DOWN') {
+        const {point} = action
+
+        const newMouseState = {type: 'MOUSE_DOWN', point: action.point}
+        const target = detectTarget(state, action.point)
+
+        if (target.type === 'TABLE_HEADER') {
+            const {table} = target
+            return {
+                ...state,
+                dnd: {
+                    type: 'TABLE',
+                    table,
+                    startPoint: point,
+                    lastPoint: point,
+                },
+                mouseState: newMouseState,
+            }
+        }
+        else if (target.type === 'ATTR') {
+            const {table, attr} = target
+            return {
+                ...state,
+                dnd: {
+                    type: 'ATTR',
+                    table,
+                    attr,
+                    startPoint: point,
+                    lastPoint: point,
+                },
+                mouseState: newMouseState,
+            }
+        }
+        return {
+            ...state,
+            mouseState: newMouseState,
+        }
+    }
+    else if (action.type === 'MOUSE_UP') {
+        const {mouseState} = state
+
+        const newMouseState = {type: 'MOUSE_UP'}
+        const newDndState = false
+
+        if (mouseState.type === 'MOUSE_DOWN') {
+            const isClick = action.point.x === mouseState.point.x && action.point.y === mouseState.point.y
+            if (isClick) {
+                const target = detectTarget(state, action.point)
+                if (target.type !== 'NONE') {
+                    return {
+                        ...state,
+                        tables: state.tables.map((tableShape) => ({
+                            ...tableShape,
+                            active: tableShape.table.name === target.table,
+                        })),
+                        mouseState: newMouseState,
+                        dnd: newDndState,
+                    }
+                }
+            }
+        }
+        return {
+            ...state,
+            mouseState: newMouseState,
+            dnd: newDndState,
+        }
+    }
+
     return state
 }
 

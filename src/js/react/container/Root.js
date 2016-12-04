@@ -23,12 +23,10 @@ type TProps = {
     links: Array<TLinkShape>,
     metrics: TWorkareaMetrics,
 
-    onTableClick: (tableShape: TTableShape) => void,
-    onTableMouseDown: (tableShape: TTableShape, point: TPoint) => void,
-    onAttrMouseDown: (tableShape: TTableShape, attr: TAttr, point: TPoint) => void,
     onAttrClick: (tableShape: TTableShape, attr: TAttr) => void,
     onAddLinkClick: (tableShape: TTableShape, attr: TAttr) => void,
     onMouseUp: (point: TPoint) => void,
+    onMouseDown: (point: TPoint) => void,
     onMouseMove: (point: TPoint) => void,
 }
 
@@ -63,11 +61,9 @@ class Root extends React.Component {
             metrics,
             tables,
             links,
-            onTableClick,
-            onTableMouseDown,
             onMouseUp,
             onMouseMove,
-            onAttrMouseDown,
+            onMouseDown,
             onAttrClick,
             onAddLinkClick,
             } = this.props
@@ -82,11 +78,9 @@ class Root extends React.Component {
                 style={workareaStyle}
                 metrics={metrics}
                 size={{width, height}}
-                onTableClick={onTableClick}
-                onTableMouseDown={onTableMouseDown}
                 onMouseUp={onMouseUp}
+                onMouseDown={onMouseDown}
                 onMouseMove={onMouseMove}
-                onAttrMouseDown={onAttrMouseDown}
                 onAttrClick={onAttrClick}
                 onAddLinkClick={onAddLinkClick}
             />
@@ -159,30 +153,11 @@ const mapDispatchToProps = (dispatch: Dispatch<TAction>): * => {
     return {
         dispatch,
         onTableClick: (tableShape: TTableShape) => { return },
-        onTableMouseDown: (tableShape: TTableShape, point: TPoint) => {
-            dispatch({
-                type: 'START_DND',
-                target: {
-                    type: 'TABLE',
-                    table: tableShape.table.name,
-                },
-                startPoint: point,
-            })
-        },
-        onAttrMouseDown: (tableShape: TTableShape, attr: TAttr, point: TPoint) => {
-            dispatch({
-                type: 'START_DND',
-                target: {
-                    type: 'ATTR',
-                    attr: attr.name,
-                    table: tableShape.table.name,
-                },
-                attr: attr.name,
-                startPoint: point,
-            })
-        },
         onMouseUp: (point: TPoint) => {
-            dispatch({type: 'STOP_DND', point})
+            dispatch({type: 'MOUSE_UP', point})
+        },
+        onMouseDown: (point: TPoint) => {
+            dispatch({type: 'MOUSE_DOWN', point})
         },
         onAddLinkClick: (tableShape: TTableShape, attr: TAttr) => {
             dispatch({

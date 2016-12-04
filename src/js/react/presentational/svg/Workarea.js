@@ -20,10 +20,8 @@ type TProps = {
     links: Array<TLinkShape>,
     style: TWorkareaStyle,
     size: TSize,
-    onTableClick: (tableShape: TTableShape) => void,
-    onTableMouseDown: (tableShape: TTableShape, point: TPoint) => void,
-    onAttrMouseDown: (tableShape: TTableShape, attr: TAttr, point: TPoint) => void,
     onMouseUp: (point: TPoint) => void,
+    onMouseDown: (point: TPoint) => void,
     onMouseMove: (point: TPoint) => void,
     onAddLinkClick: (tableShape: TTableShape, attr: TAttr) => void,
     onAttrClick: (tableShape: TTableShape, attr: TAttr) => void,
@@ -42,10 +40,8 @@ class Workarea extends React.Component {
             } = this.props
 
         const {
-            onTableClick,
-            onTableMouseDown,
-            onAttrMouseDown,
             onMouseUp,
+            onMouseDown,
             onMouseMove,
             onAddLinkClick,
             onAttrClick,
@@ -61,6 +57,7 @@ class Workarea extends React.Component {
                 width={width}
                 height={height}
                 onMouseUp={(e) => onMouseUp({x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY})}
+                onMouseDown={(e) => onMouseDown({x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY})}
                 onMouseMove={(e) => onMouseMove({x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY})}
             >
                 {links.map((linkShape: TLinkShape): * => {
@@ -80,9 +77,6 @@ class Workarea extends React.Component {
                         style={style.table}
                         key={tableShape.table.name}
                         tableShape={tableShape}
-                        onHeaderClick={onTableClick}
-                        onHeaderMouseDown={onTableMouseDown}
-                        onAttrMouseDown={onAttrMouseDown}
                         onAddLinkClick={onAddLinkClick}
                         onAttrClick={onAttrClick}
                     />
