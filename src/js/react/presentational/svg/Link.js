@@ -25,9 +25,21 @@ class Link extends React.Component {
 
         const points = path.map(({x, y}) => `${x},${y}`).join(' ')
 
+        const markerId = `marker-arrow.${from.table}.${from.attr}.${to.table}.${to.attr}`
         return (
-            <polyline fill="none" stroke="black" points={points}>
-            </polyline>
+            <g>
+                <marker id={markerId} markerWidth="13" markerHeight="13" refX="10" refY="6"
+                        orient="auto">
+                    <path d="M2,2 L2,11 L10,6 L2,2" fill="black"/>
+                </marker>
+                <polyline
+                    fill="none"
+                    stroke="black"
+                    points={points}
+                    style={{markerEnd: `url(#${markerId})`}}
+                    >
+                </polyline>
+            </g>
         )
     }
 }

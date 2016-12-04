@@ -5,5 +5,4 @@ import type {TPoint} from './TPoint'
 export type TTableShape = {
     table: TTable,
     position: TPoint,
-    active: boolean,
 }

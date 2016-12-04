@@ -12,6 +12,7 @@ import type {TAttr} from '~/types/TAttr'
 import type {TBounds} from '~/types/TBounds'
 import type {TPoint} from '~/types/TPoint'
 import type {TWorkareaMetrics} from '~/types/TWorkareaMetrics'
+import type {TSelected} from '~/types/TState'
 
 import Workarea from './../presentational/svg/Workarea'
 import * as tableMetrics from '~/metrics/table'
@@ -22,6 +23,7 @@ type TProps = {
     tables: Array<TTableShape>,
     links: Array<TLinkShape>,
     metrics: TWorkareaMetrics,
+    selected: TSelected,
 
     onAttrClick: (tableShape: TTableShape, attr: TAttr) => void,
     onAddLinkClick: (tableShape: TTableShape, attr: TAttr) => void,
@@ -61,6 +63,7 @@ class Root extends React.Component {
             metrics,
             tables,
             links,
+            selected,
             onMouseUp,
             onMouseMove,
             onMouseDown,
@@ -75,6 +78,7 @@ class Root extends React.Component {
             <Workarea
                 tables={tables}
                 links={links}
+                selected={selected}
                 style={workareaStyle}
                 metrics={metrics}
                 size={{width, height}}
@@ -94,6 +98,7 @@ const mapStateToProps = (state: TState): * => {
     const metrics = metricsSelectors.workarea(state)
     return {
         metrics,
+        selected: state.selected,
         tables: state.tables,
         links: state.links.map((linkState): TLinkShape => {
             const {link} = linkState

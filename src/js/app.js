@@ -32,7 +32,6 @@ const initialState = {
                 x: 0,
                 y: 0,
             },
-            active: true,
         },
         {
             table: {
@@ -48,7 +47,6 @@ const initialState = {
                 x: 500,
                 y: 200,
             },
-            active: false,
         },
         {
             table: {
@@ -61,7 +59,6 @@ const initialState = {
                 x: 300,
                 y: 400,
             },
-            active: false,
         },
     ],
     links: [
@@ -77,6 +74,7 @@ const initialState = {
     ],
     dnd: false,
     tco: false,
+    selected: false,
     mouseState: {type: 'MOUSE_UP'},
 }
 
@@ -313,26 +311,27 @@ const reducer = (state: TState = initialState, action: TAction): TState => {
 
         const newMouseState = {type: 'MOUSE_UP'}
         const newDndState = false
+        let selected = state.selected
 
         if (mouseState.type === 'MOUSE_DOWN') {
             const isClick = action.point.x === mouseState.point.x && action.point.y === mouseState.point.y
             if (isClick) {
                 const target = detectTarget(state, action.point)
-                if (target.type !== 'NONE') {
-                    return {
-                        ...state,
-                        tables: state.tables.map((tableShape) => ({
-                            ...tableShape,
-                            active: tableShape.table.name === target.table,
-                        })),
-                        mouseState: newMouseState,
-                        dnd: newDndState,
-                    }
+                if (target.type === 'TABLE_HEADER' || target.type === 'TABLE') {
+                    selected = {type: 'TABLE', table: target.table}
+                }
+                else if (target.type === 'ATTR') {
+                    selected = {type: 'ATTR', table: target.table, attr: target.attr}
+                }
+                else {
+                    selected = false
                 }
             }
         }
+
         return {
             ...state,
+            selected,
             mouseState: newMouseState,
             dnd: newDndState,
         }

@@ -11,6 +11,7 @@ type TProps = {
     metrics: TTableMetrics,
     style: TTableStyle,
     tableShape: TTableShape,
+    selected: false | {type: 'TABLE'} | {type: 'ATTR', name: string},
     onAddLinkClick: (tableShape: TTableShape, attr: TAttr) => void,
     onAttrClick: (tableShape: TTableShape, attr: TAttr) => void,
 }
@@ -19,10 +20,12 @@ class Table extends React.Component {
     props: TProps
 
     render() {
-        const {tableShape, metrics} = this.props
-        const {active, position: {x, y}} = tableShape
+        const {tableShape, metrics, selected} = this.props
+        const {position: {x, y}} = tableShape
 
         const {width, height} = metrics.size
+
+        const isTableActive = selected !== false && selected.type === 'TABLE'
 
         return (
             <g>
@@ -32,8 +35,8 @@ class Table extends React.Component {
                       width={width}
                       height={height}
                       fill={'white'}
-                      stroke={active ? 'black' : 'gray'}
-                      strokeWidth={active ? '2' : '1'}
+                      stroke={isTableActive ? 'black' : 'gray'}
+                      strokeWidth={isTableActive ? '2' : '1'}
                 />
                 {this.renderHeader()}
                 {this.renderAttrs()}
@@ -46,11 +49,13 @@ class Table extends React.Component {
     }
 
     renderAttrs() {
-        const {tableShape, style, onAttrClick, metrics} = this.props
+        const {tableShape, style, onAttrClick, metrics, selected} = this.props
         const {table: {attrs}, position: {x, y}} = tableShape
         return attrs.map((attr, i) => {
             const {size} = metrics.attrs.filter(({name}) => name === attr.name)[0].metrics //todo: check for existence
             const {width, height} = size
+            const isAttrActive = selected !== false && selected.type === 'ATTR' && selected.name === attr.name
+
             return <g
                 key={`attr-${attr.name}`}
                 x={x}
@@ -62,28 +67,29 @@ class Table extends React.Component {
                     width={width}
                     height={height}
                     onClick={onAttrClick.bind(this, tableShape, attr)}
+                    fill={isAttrActive ? "red" : "black"}
                     fontSize={style.attrs.font.size}>
                     {attr.name}
                 </text>
-                <rect
+                {isAttrActive && <rect
                     fill="green"
                     x={x + width}
                     y={y + size.height * i + metrics.header.size.height}
                     width={20}
                     height={20}
-                />
-                <text
+                />}
+                {isAttrActive && <text
                     x={x + width + 5}
                     y={y + size.height * i + size.height / 2 + metrics.header.size.height}
-                >+</text>
-                <rect
+                >+</text>}
+                {isAttrActive && <rect
                     fill="transparent"
                     x={x + width}
                     y={y + size.height * i + metrics.header.size.height}
                     width={20}
                     height={20}
                     onClick={this.handleAddLinkClick.bind(this, tableShape, attr)}
-                />
+                />}
             </g>
         })
     }

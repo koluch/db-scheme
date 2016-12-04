@@ -9,12 +9,14 @@ import type {TLink} from '~/types/TLink'
 import type {TPoint} from '~/types/TPoint'
 import type {TAttr} from '~/types/TAttr'
 import type {TWorkareaMetrics} from '~/types/TWorkareaMetrics'
+import type {TSelected} from '~/types/TState'
 
 import Table from './Table'
 import Link from './Link'
 
 
 type TProps = {
+    selected: TSelected,
     metrics: TWorkareaMetrics,
     tables: Array<TTableShape>,
     links: Array<TLinkShape>,
@@ -37,6 +39,7 @@ class Workarea extends React.Component {
             style,
             size,
             metrics,
+            selected,
             } = this.props
 
         const {
@@ -72,7 +75,15 @@ class Workarea extends React.Component {
                 })}
                 {tables.map((tableShape: TTableShape) => {
                     const tableMetrics = metrics.tables.filter(({name}) => name === tableShape.table.name)[0].metrics //todo: check
+                    let tableSelected = false
+                    if (selected !== false && selected.type === 'TABLE' && selected.table === tableShape.table.name) {
+                        tableSelected = {type: 'TABLE'}
+                    }
+                    else if (selected !== false && selected.type === 'ATTR' && selected.table === tableShape.table.name) {
+                        tableSelected = {type: 'ATTR', name: selected.attr}
+                    }
                     return <Table
+                        selected={tableSelected}
                         metrics={tableMetrics}
                         style={style.table}
                         key={tableShape.table.name}
