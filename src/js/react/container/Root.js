@@ -28,6 +28,7 @@ type TProps = {
     selected: TSelected,
 
     onTableClick: (tableShape: TTableShape) => void,
+    onWorkareaClick: () => void,
     onTableMouseDown: (tableShape: TTableShape, point: TPoint) => void,
     onAttrClick: (tableShape: TTableShape, attr: TAttr) => void,
     onAddLinkClick: (tableShape: TTableShape, attr: TAttr) => void,
@@ -219,6 +220,18 @@ const mergeProps = (stateProps, dispatchProps): * => {
     return {
         ...stateProps,
         ...dispatchProps,
+        onWorkareaClick: () => {
+            if (tco !== false) {
+                dispatch({
+                    type: 'STOP_TCO',
+                })
+            }
+            else {
+                dispatch({
+                    type: 'CANCEL_SELECT',
+                })
+            }
+        },
         onMouseMove: (point: TPoint) => {
             dispatch({
                 type: 'MOUSE_MOVE',
@@ -322,6 +335,7 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
             onAttrMouseDown,
             onTableMouseDown,
             onMouseUp,
+            onWorkareaClick,
         } = this.props
 
         const width = 800
@@ -335,6 +349,7 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                 style={workareaStyle}
                 metrics={metrics}
                 size={{width, height}}
+                onClick={onWorkareaClick}
                 onMouseMove={onMouseMove}
                 onAttrClick={onAttrClick}
                 onAddLinkClick={onAddLinkClick}

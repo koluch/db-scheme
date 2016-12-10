@@ -246,6 +246,12 @@ const reducer = (state: TState = initialState, action: TAction): TState => {
             }
         }
     }
+    else if (action.type === 'CANCEL_SELECT') {
+        return {
+            ...state,
+            selected: false,
+        }
+    }
     else if (action.type === 'START_TCO') {
         if (action.attrs.type === 'ADD_LINK') {
             const {attr, table} = action.attrs

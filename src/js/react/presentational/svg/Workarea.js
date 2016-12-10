@@ -31,10 +31,13 @@ type TProps = {
     onAddLinkClick: (tableShape: TTableShape, attr: TAttr) => void,
     onAttrClick: (tableShape: TTableShape, attr: TAttr) => void,
     onMouseUp: (point: TPoint) => void,
+    onClick: () => void,
 }
 
 class Workarea extends React.Component {
     props: TProps
+
+    workareaEl: *
 
     render() {
         const {
@@ -55,10 +58,10 @@ class Workarea extends React.Component {
             onAddLinkClick,
             onAttrClick,
             onMouseUp,
+            onClick,
             } = this.props
 
         const {width, height} = size
-
 
         return (
             <svg
@@ -68,7 +71,8 @@ class Workarea extends React.Component {
                 height={height}
                 onMouseUp={(e) => onMouseUp({x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY})}
                 onMouseMove={(e) => onMouseMove({x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY})}
-            >
+                ref={(el) => { this.workareaEl = el }}
+                onClick={(e) => { if (e.target === this.workareaEl) { onClick() } } }>
                 {newLink && <Link
                     linkShape={newLink}
                     style={style.newLink}

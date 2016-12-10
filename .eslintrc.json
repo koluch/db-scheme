@@ -78,7 +78,6 @@
     "accessor-pairs": "error",
     "array-callback-return": "error",
     "block-scoped-var": "error",
-    "complexity": "error",
     "curly": ["error", "multi-line"],
     "dot-location": ["error", "property"],
     "guard-for-in": "error",
@@ -204,6 +203,7 @@
     "max-depth": "warn",
     "max-len": ["warn", 120],
 
+    "complexity": "off",
     "no-process-env": "off",
     "max-statements": "off",
     "arrow-body-style": "off",
