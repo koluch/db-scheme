@@ -29,7 +29,7 @@ class FixClick extends React.Component {
 
     handleMouseDown = (e: *) => {
         this.setState({
-            start: {x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY}
+            start: {x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY},
         })
     }
 

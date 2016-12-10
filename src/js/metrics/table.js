@@ -52,7 +52,7 @@ export const getMetrics = (table: TTable, style: TTableStyle): TTableMetrics => 
     const headerTextSize = getTextSize(table.name, style.font)
     const attrTextSizes = table.attrs.map(({name}) => getTextSize(name, style.font))
 
-    const tableWidth = Math.max(headerTextSize.width, ...attrTextSizes.map(({width}) => width));
+    const tableWidth = Math.max(headerTextSize.width, ...attrTextSizes.map(({width}) => width))
     return {
         size: {
             width: tableWidth,

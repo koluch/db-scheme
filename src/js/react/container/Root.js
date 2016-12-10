@@ -18,6 +18,7 @@ import Workarea from './../presentational/svg/Workarea'
 import * as tableMetrics from '~/metrics/table'
 import * as metricsSelectors from '~/react/selectors/metrics'
 import {workareaStyle} from '~/react/styles'
+import {getAttrBounds, getTableBounds, getHeaderBounds} from '~/metrics/table'
 
 type TProps = {
     tables: Array<TTableShape>,
@@ -114,7 +115,7 @@ const mapStateToProps = (state: TState): * => {
                 path,
             }
         }),
-        isDnd: dnd !== false,
+        dnd,
         tco,
     }
 }
@@ -170,15 +171,62 @@ const mapDispatchToProps = (dispatch: Dispatch<TAction>): * => {
 }
 
 const mergeProps = (stateProps, dispatchProps): * => {
-    const {isDnd, tco} = stateProps
+    const {tco, dnd, tables, metrics} = stateProps
     const {dispatch} = dispatchProps
 
     return {
         ...stateProps,
         ...dispatchProps,
         onMouseMove: (point: TPoint) => {
-            if (isDnd) {
-                dispatch({type: 'MOUSE_MOVE', point})
+            if (dnd !== false) {
+                if (dnd.type === 'TABLE') {
+                    const {lastPoint, table} = dnd
+
+                    const tableState = tables.filter((tableState) => tableState.table.name === table)[0]
+                    if (tableState) {
+                        const dif = {
+                            x: point.x - lastPoint.x,
+                            y: point.y - lastPoint.y,
+                        }
+                        dispatch({
+                            type: 'MOVE_TABLE',
+                            table,
+                            position: {
+                                x: tableState.position.x + dif.x,
+                                y: tableState.position.y + dif.y,
+                            },
+                        })
+                    }
+                }
+                else if (dnd.type === 'ATTR') {
+                    const {attr, table} = dnd
+                    const tableShape = tables.filter((tableShape) => tableShape.table.name === table)[0] //todo: check
+                    const tableMetrics = metrics.tables.filter(({name}) => name === table)[0].metrics //todo: check
+
+                    const hoveredAttr = tableShape.table.attrs.filter(({name}) => {
+                        const attrBounds = getAttrBounds(tableMetrics, tableShape.position, name)
+                        if (attrBounds) {
+                            return point.y > attrBounds.y
+                                && point.y < attrBounds.y + attrBounds.height
+                                && point.x > attrBounds.x
+                                && point.x < attrBounds.x + attrBounds.width
+                        }
+                        return false
+                    })[0]
+
+                    if (hoveredAttr && hoveredAttr.name !== attr) {
+                        dispatch({
+                            type: 'SWITCH_ATTRS',
+                            table,
+                            attr1: attr,
+                            attr2: hoveredAttr.name,
+                        })
+                    }
+                }
+                dispatch({
+                    type: 'UPDATE_DND',
+                    lastPoint: point,
+                })
             }
         },
         onAttrClick: (tableShape: TTableShape, attr: TAttr) => {

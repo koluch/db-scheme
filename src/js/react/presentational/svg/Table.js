@@ -22,7 +22,6 @@ type TProps = {
 }
 
 
-
 class Table extends React.Component {
     props: TProps
 
@@ -74,6 +73,7 @@ class Table extends React.Component {
             const isAttrActive = selected !== false && selected.type === 'ATTR' && selected.name === attr.name
 
             const onMouseDown = this.handleAttrMouseDown.bind(this, tableShape, attr)
+            const ADD_LINK_BUTTON_MARGIN = 5
             return <g
                 key={`attr-${attr.name}`}
                 x={x}
@@ -87,7 +87,7 @@ class Table extends React.Component {
                     height={height}
                     onMouseDown={onMouseDown}
                     onClick={onAttrClick.bind(this, tableShape, attr)}
-                    fill={isAttrActive ? "red" : "black"}
+                    fill={isAttrActive ? 'red' : 'black'}
                     fontSize={style.attrs.font.size}>
                     {attr.name}
                 </text>
@@ -99,7 +99,7 @@ class Table extends React.Component {
                     height={20}
                 />}
                 {isAttrActive && <text
-                    x={x + width + 5}
+                    x={x + width + ADD_LINK_BUTTON_MARGIN}
                     y={y + size.height * i + size.height / 2 + metrics.header.size.height}
                 >+</text>}
                 {isAttrActive && <rect

@@ -7,13 +7,11 @@ export type TDndTargetType = 'TABLE'
 export type TDndTarget = false | {
     type: 'TABLE',
     table: string,
-    startPoint: TPoint,
     lastPoint: TPoint,
 } | {
     type: 'ATTR',
     attr: string,
     table: string,
-    startPoint: TPoint,
     lastPoint: TPoint,
 }
 

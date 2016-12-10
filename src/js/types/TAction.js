@@ -23,7 +23,10 @@ export type TAction =
     TActionInit
         | {type: 'SELECT', target: 'TABLE', table: string}
         | {type: 'SELECT', target: 'ATTR', table: string, attr: string}
+        | {type: 'MOVE_TABLE', table: string, position: TPoint}
+        | {type: 'SWITCH_ATTRS', table: string, attr1: string, attr2: string}
         | {type: 'START_DND', attrs: TDndAttrs, startPoint: TPoint}
+        | {type: 'UPDATE_DND', lastPoint: TPoint}
         | {type: 'STOP_DND', point: TPoint}
         | {type: 'MOUSE_MOVE', point: TPoint}
         | {type: 'START_TCO', attrs: TTcoAttrs}

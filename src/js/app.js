@@ -102,103 +102,60 @@ type TClickTarget = {
 
 
 const reducer = (state: TState = initialState, action: TAction): TState => {
-    if (action.type === 'MOUSE_MOVE') {
-        const {point} = action
+    if (action.type === 'MOVE_TABLE') {
         const {dnd} = state
-        if (dnd !== false) {
-            if (dnd.type === 'TABLE') {
-                const {lastPoint, table} = dnd
-                const dif = {
-                    x: point.x - lastPoint.x,
-                    y: point.y - lastPoint.y,
-                }
-                return {
-                    ...state,
-                    tables: state.tables.map((nextTableShape): TTableShape => {
-                        if (nextTableShape.table.name === table) {
-                            return {
-                                ...nextTableShape,
-                                position: {
-                                    x: nextTableShape.position.x + dif.x,
-                                    y: nextTableShape.position.y + dif.y,
-                                },
-                            }
-                        }
-                        else {
-                            return {
-                                ...nextTableShape,
-                            }
-                        }
-                    }),
-                    dnd: {
-                        ...dnd,
-                        type: 'TABLE',
-                        table: dnd.table,
-                        startPoint: dnd.startPoint,
-                        lastPoint: point,
-                    },
-                }
-            }
-            else if (dnd.type === 'ATTR') {
-                const {attr, table} = dnd
-                const tableShape = state.tables.filter((tableShape) => tableShape.table.name === table)[0] //todo: check
-
-                const metrics = metricsSelectors.workarea(state)
-                const tableMetrics = metrics.tables.filter(({name}) => name === table)[0].metrics //todo: check
-
-                const hoveredAttr = tableShape.table.attrs.filter(({name}) => {
-                    const attrBounds = getAttrBounds(tableMetrics, tableShape.position, name)
-                    if (attrBounds) {
-                        return point.y > attrBounds.y
-                            && point.y < attrBounds.y + attrBounds.height
-                            && point.x > attrBounds.x
-                            && point.x < attrBounds.x + attrBounds.width
+        const {table, position} = action
+        return {
+            ...state,
+            tables: state.tables.map((nextTableShape): TTableShape => {
+                if (nextTableShape.table.name === table) {
+                    return {
+                        ...nextTableShape,
+                        position,
                     }
-                    return false
-                })[0]
-
-                if (hoveredAttr && hoveredAttr.name !== attr) {
-                    const attrIndex = tableShape.table.attrs
+                }
+                else {
+                    return {
+                        ...nextTableShape,
+                    }
+                }
+            }),
+        }
+    }
+    else if (action.type === 'SWITCH_ATTRS') {
+        const {dnd} = state
+        const {table, attr1, attr2} = action
+        return {
+            ...state,
+            tables: state.tables.map((nextTableState): TTableShape => {
+                if (nextTableState.table.name === table) {
+                    const attrIndex = nextTableState.table.attrs
                         .map(({name}, i) => ({name, i}))
-                        .filter(({name}) => name === attr)
+                        .filter(({name}) => name === attr1)
                         .map(({i}) => i)[0]
-                    const hoveredAttrIndex = tableShape.table.attrs
+                    const hoveredAttrIndex = nextTableState.table.attrs
                         .map(({name}, i) => ({name, i}))
-                        .filter(({name}) => name === hoveredAttr.name)
+                        .filter(({name}) => name === attr2)
                         .map(({i}) => i)[0]
 
-                    const newAttrList = [...tableShape.table.attrs]
+                    const newAttrList = [...nextTableState.table.attrs]
                     const [removed] = newAttrList.splice(attrIndex, 1)
                     newAttrList.splice(hoveredAttrIndex, 0, removed)
 
                     return {
-                        ...state,
-                        tables: state.tables.map((nextTableShape): TTableShape => {
-                            if (nextTableShape.table.name === table) {
-                                return {
-                                    ...nextTableShape,
-                                    table: {
-                                        ...nextTableShape.table,
-                                        attrs: newAttrList,
-                                    },
-                                }
-                            }
-                            else {
-                                return {
-                                    ...nextTableShape,
-                                }
-                            }
-                        }),
-                        dnd: {
-                            type: 'ATTR',
-                            attr: dnd.attr,
-                            table: dnd.table,
-                            startPoint: dnd.startPoint,
-                            lastPoint: point,
+                        ...nextTableState,
+                        table: {
+                            ...nextTableState.table,
+                            attrs: newAttrList,
                         },
                     }
                 }
-            }
+                else {
+                    return {
+                        ...nextTableState,
+                    }
+                }
+            }),
         }
     }
     else if (action.type === 'START_DND') {
@@ -211,7 +168,6 @@ const reducer = (state: TState = initialState, action: TAction): TState => {
                 dnd: {
                     type: 'TABLE',
                     table,
-                    startPoint,
                     lastPoint: startPoint,
                 },
             }
@@ -231,24 +187,37 @@ const reducer = (state: TState = initialState, action: TAction): TState => {
             }
         }
     }
+    else if (action.type === 'UPDATE_DND') {
+        const {dnd} = state
+        const {lastPoint} = action
+        if (dnd !== false) {
+            if (dnd.type === 'TABLE') {
+                return {
+                    ...state,
+                    dnd: {
+                        type: 'TABLE',
+                        table: dnd.table,
+                        lastPoint,
+                    },
+                }
+            }
+            else if (dnd.type === 'ATTR') {
+                return {
+                    ...state,
+                    dnd: {
+                        type: 'ATTR',
+                        attr: dnd.attr,
+                        table: dnd.table,
+                        lastPoint,
+                    },
+                }
+            }
+        }
+    }
     else if (action.type === 'STOP_DND') {
         const {dnd, tables} = state
         const {point} = action
         if (dnd !== false) {
-            if (dnd.type === 'TABLE') {
-                const {startPoint} = dnd
-                const setActive = point.x === startPoint.x && point.y === startPoint.y
-                if (setActive) {
-                    return {
-                        ...state,
-                        dnd: false,
-                        tables: tables.map((tableState) => ({
-                            ...tableState,
-                            active: tableState.table.name === dnd.table,
-                        })),
-                    }
-                }
-            }
             return {
                 ...state,
                 dnd: false,
@@ -261,14 +230,14 @@ const reducer = (state: TState = initialState, action: TAction): TState => {
             const {table} = action
             return {
                 ...state,
-                selected: {type: 'TABLE', table}
+                selected: {type: 'TABLE', table},
             }
         }
         else if (action.target === 'ATTR') {
             const {table, attr} = action
             return {
                 ...state,
-                selected: {type: 'ATTR', table, attr}
+                selected: {type: 'ATTR', table, attr},
             }
         }
     }
