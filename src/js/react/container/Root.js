@@ -37,8 +37,19 @@ type TProps = {
 
 const calculatePath = (b1: TBounds, b2: TBounds): Array<TPoint> => {
     const CONNECTION_LINE_WIDTH = 10
-    const start = {x: b1.x, y: b1.y + b1.height / 2}
-    const end = {x: b2.x, y: b2.y + b2.height / 2}
+
+    let start = null
+    let end = null
+    // let end
+    if (b1.x < b2.x) {
+        start = {x: b1.x + b1.width, y: b1.y + b1.height / 2}
+        end = {x: b2.x, y: b2.y + b2.height / 2}
+    }
+    else {
+        start = {x: b1.x, y: b1.y + b1.height / 2}
+        end = {x: b2.x + b2.width, y: b2.y + b2.height / 2}
+    }
+
 
     //const c1 = [start[0] - CONNECTION_LINE_WIDTH, start[1]]
     //const c2 = [end[0] - CONNECTION_LINE_WIDTH, end[1]]

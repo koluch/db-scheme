@@ -25,18 +25,30 @@ class Link extends React.Component {
 
         const points = path.map(({x, y}) => `${x},${y}`).join(' ')
 
-        const markerId = `marker-arrow.${from.table}.${from.attr}.${to.table}.${to.attr}`
+        const markerEndId = `marker-end.${from.table}.${from.attr}.${to.table}.${to.attr}`
+        const markerStartId = `marker-start.${from.table}.${from.attr}.${to.table}.${to.attr}`
         return (
             <g>
-                <marker id={markerId} markerWidth="13" markerHeight="13" refX="10" refY="6"
-                        orient="auto">
-                    <path d="M2,2 L2,11 L10,6 L2,2" fill="black"/>
-                </marker>
+                <defs>
+                    <marker id={markerStartId} viewBox="0 0 10 10" refX="0" refY="2"
+                            markerUnits="userSpaceOnUse"
+                            markerWidth="10" markerHeight="10"
+                            orient="auto">
+                        <circle cx="3" cy="3" r="3" fill="black"/>
+                    </marker>
+                    <marker id={markerEndId} markerWidth="13" markerHeight="13" refX="10" refY="6"
+                            orient="auto">
+                        <path d="M2,2 L2,11 L10,6 L2,2" fill="black"/>
+                    </marker>
+                </defs>
                 <polyline
                     fill="none"
                     stroke="black"
                     points={points}
-                    style={{markerEnd: `url(#${markerId})`}}
+                    style={{
+                        markerStart: `url(#${markerStartId})`,
+                        markerEnd: `url(#${markerEndId})`,
+                    }}
                     >
                 </polyline>
             </g>
