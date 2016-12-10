@@ -79,18 +79,19 @@ class Table extends React.Component {
                 x={x}
                 y={y}
                 onMouseDown={onMouseDown}>
-                <text
-                    alignmentBaseline="hanging"
-                    x={x}
-                    y={y + size.height * i + metrics.header.size.height}
-                    width={width}
-                    height={height}
-                    onMouseDown={onMouseDown}
-                    onClick={onAttrClick.bind(this, tableShape, attr)}
-                    fill={isAttrActive ? 'red' : 'black'}
-                    fontSize={style.attrs.font.size}>
-                    {attr.name}
-                </text>
+                <FixClick onClick={onAttrClick.bind(this, tableShape, attr)}>
+                    <text
+                        alignmentBaseline="hanging"
+                        x={x}
+                        y={y + size.height * i + metrics.header.size.height}
+                        width={width}
+                        height={height}
+                        onMouseDown={onMouseDown}
+                        fill={isAttrActive ? 'red' : 'black'}
+                        fontSize={style.attrs.font.size}>
+                        {attr.name}
+                    </text>
+                </FixClick>
                 {isAttrActive && <rect
                     fill="green"
                     x={x + width}

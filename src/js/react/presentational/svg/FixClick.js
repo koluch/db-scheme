@@ -23,14 +23,20 @@ type TState = {
 class FixClick extends React.Component {
     props: TProps
 
-    state: TState
-
-    initialState: TState = {start: null}
+    state: TState = {start: null}
 
     handleMouseDown = (e: *) => {
         this.setState({
             start: {x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY},
         })
+    }
+
+    handleMouseMove = () => {
+        if (this.state.start !== null) {
+            this.setState({
+                start: null,
+            })
+        }
     }
 
     handleMouseUp = (e: *) => {
@@ -48,6 +54,7 @@ class FixClick extends React.Component {
             <g
                 onMouseDown={this.handleMouseDown}
                 onMouseUp={this.handleMouseUp}
+                onMouseMove={this.handleMouseMove}
             >
                 {this.props.children}
             </g>
