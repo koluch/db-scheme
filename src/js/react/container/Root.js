@@ -6,7 +6,7 @@ import type {Dispatch, Store} from 'redux'
 import type {TTableShape} from '~/types/TTableShape'
 import type {TLinkShape} from '~/types/TLinkShape'
 import type {TWorkareaStyle} from '~/types/TWorkareaStyle'
-import type {TState, TTableState} from '~/types/TState'
+import type {TState, TTableState, TLinkState} from '~/types/TState'
 import type {TAction} from '~/types/TAction'
 import type {TAttr} from '~/types/TAttr'
 import type {TBounds} from '~/types/TBounds'
@@ -65,8 +65,8 @@ const mapStateToProps = (state: TState): * => {
     return {
         metrics,
         selected: state.selected,
-        tables: state.tables,
-        links: state.links.map((linkState): TLinkShape => {
+        tables: state.tables.map((tableState: TTableState): TTableShape => tableState),
+        links: state.links.map((linkState: TLinkState): TLinkShape => {
             const {link} = linkState
             const {from, to} = link
 

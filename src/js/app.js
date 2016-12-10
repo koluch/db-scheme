@@ -5,10 +5,8 @@ import {Provider} from 'react-redux'
 import {applyMiddleware, createStore} from 'redux'
 import createLogger from 'redux-logger'
 
-import type {TState} from '~/types/TState'
+import type {TState, TTableState, TLinkState} from '~/types/TState'
 import type {TAction} from '~/types/TAction'
-import type {TTableShape} from '~/types/TTableShape'
-import type {TLinkShape} from '~/types/TLinkShape'
 import type {TPoint} from '~/types/TPoint'
 import type {TBounds} from '~/types/TBounds'
 import type {TTable} from '~/types/TTable'
@@ -107,16 +105,16 @@ const reducer = (state: TState = initialState, action: TAction): TState => {
         const {table, position} = action
         return {
             ...state,
-            tables: state.tables.map((nextTableShape): TTableShape => {
-                if (nextTableShape.table.name === table) {
+            tables: state.tables.map((nextTableState): TTableState => {
+                if (nextTableState.table.name === table) {
                     return {
-                        ...nextTableShape,
+                        ...nextTableState,
                         position,
                     }
                 }
                 else {
                     return {
-                        ...nextTableShape,
+                        ...nextTableState,
                     }
                 }
             }),
@@ -127,7 +125,7 @@ const reducer = (state: TState = initialState, action: TAction): TState => {
         const {table, attr1, attr2} = action
         return {
             ...state,
-            tables: state.tables.map((nextTableState): TTableShape => {
+            tables: state.tables.map((nextTableState): TTableState => {
                 if (nextTableState.table.name === table) {
                     const attrIndex = nextTableState.table.attrs
                         .map(({name}, i) => ({name, i}))
