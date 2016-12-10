@@ -22,11 +22,13 @@ type TProps = {
     links: Array<TLinkShape>,
     style: TWorkareaStyle,
     size: TSize,
-    onMouseUp: (point: TPoint) => void,
-    onMouseDown: (point: TPoint) => void,
+    onTableClick: (tableShape: TTableShape) => void,
+    onTableMouseDown: (tableShape: TTableShape, point: TPoint) => void,
+    onAttrMouseDown: (tableShape: TTableShape, attr: TAttr, point: TPoint) => void,
     onMouseMove: (point: TPoint) => void,
     onAddLinkClick: (tableShape: TTableShape, attr: TAttr) => void,
     onAttrClick: (tableShape: TTableShape, attr: TAttr) => void,
+    onMouseUp: (point: TPoint) => void,
 }
 
 class Workarea extends React.Component {
@@ -43,11 +45,13 @@ class Workarea extends React.Component {
             } = this.props
 
         const {
-            onMouseUp,
-            onMouseDown,
+            onTableClick,
+            onTableMouseDown,
+            onAttrMouseDown,
             onMouseMove,
             onAddLinkClick,
             onAttrClick,
+            onMouseUp,
             } = this.props
 
         const {width, height} = size
@@ -60,7 +64,6 @@ class Workarea extends React.Component {
                 width={width}
                 height={height}
                 onMouseUp={(e) => onMouseUp({x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY})}
-                onMouseDown={(e) => onMouseDown({x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY})}
                 onMouseMove={(e) => onMouseMove({x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY})}
             >
                 {links.map((linkShape: TLinkShape): * => {
@@ -88,6 +91,9 @@ class Workarea extends React.Component {
                         style={style.table}
                         key={tableShape.table.name}
                         tableShape={tableShape}
+                        onHeaderClick={onTableClick}
+                        onHeaderMouseDown={onTableMouseDown}
+                        onAttrMouseDown={onAttrMouseDown}
                         onAddLinkClick={onAddLinkClick}
                         onAttrClick={onAttrClick}
                     />

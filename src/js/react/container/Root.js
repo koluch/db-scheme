@@ -25,11 +25,13 @@ type TProps = {
     metrics: TWorkareaMetrics,
     selected: TSelected,
 
+    onTableClick: (tableShape: TTableShape) => void,
+    onTableMouseDown: (tableShape: TTableShape, point: TPoint) => void,
     onAttrClick: (tableShape: TTableShape, attr: TAttr) => void,
     onAddLinkClick: (tableShape: TTableShape, attr: TAttr) => void,
-    onMouseUp: (point: TPoint) => void,
-    onMouseDown: (point: TPoint) => void,
+    onAttrMouseDown: (tableShape: TTableShape, attr: TAttr, point: TPoint) => void,
     onMouseMove: (point: TPoint) => void,
+    onMouseUp: (point: TPoint) => void,
 }
 
 const calculatePath = (b1: TBounds, b2: TBounds): Array<TPoint> => {
@@ -53,43 +55,6 @@ const calculatePath = (b1: TBounds, b2: TBounds): Array<TPoint> => {
         //c2,
         end,
     ]
-}
-
-class Root extends React.Component {
-    props: TProps
-
-    render(): * {
-        const {
-            metrics,
-            tables,
-            links,
-            selected,
-            onMouseUp,
-            onMouseMove,
-            onMouseDown,
-            onAttrClick,
-            onAddLinkClick,
-            } = this.props
-
-        const width = 800
-        const height = 600
-
-        return (
-            <Workarea
-                tables={tables}
-                links={links}
-                selected={selected}
-                style={workareaStyle}
-                metrics={metrics}
-                size={{width, height}}
-                onMouseUp={onMouseUp}
-                onMouseDown={onMouseDown}
-                onMouseMove={onMouseMove}
-                onAttrClick={onAttrClick}
-                onAddLinkClick={onAddLinkClick}
-            />
-        )
-    }
 }
 
 const mapStateToProps = (state: TState): * => {
@@ -157,12 +122,39 @@ const mapStateToProps = (state: TState): * => {
 const mapDispatchToProps = (dispatch: Dispatch<TAction>): * => {
     return {
         dispatch,
-        onTableClick: (tableShape: TTableShape) => { return },
-        onMouseUp: (point: TPoint) => {
-            dispatch({type: 'MOUSE_UP', point})
+        onTableClick: (tableShape: TTableShape) => {
+            dispatch({
+                type: 'SELECT',
+                target: 'TABLE',
+                table: tableShape.table.name,
+            })
         },
-        onMouseDown: (point: TPoint) => {
-            dispatch({type: 'MOUSE_DOWN', point})
+        onTableMouseDown: (tableShape: TTableShape, point: TPoint) => {
+            dispatch({
+                type: 'START_DND',
+                attrs: {
+                    type: 'TABLE',
+                    table: tableShape.table.name,
+                },
+                startPoint: point,
+            })
+        },
+        onMouseUp: (point: TPoint) => {
+            dispatch({
+                type: 'STOP_DND',
+                point,
+            })
+        },
+        onAttrMouseDown: (tableShape: TTableShape, attr: TAttr, point: TPoint) => {
+            dispatch({
+                type: 'START_DND',
+                attrs: {
+                    type: 'ATTR',
+                    attr: attr.name,
+                    table: tableShape.table.name,
+                },
+                startPoint: point,
+            })
         },
         onAddLinkClick: (tableShape: TTableShape, attr: TAttr) => {
             dispatch({
@@ -206,8 +198,56 @@ const mergeProps = (stateProps, dispatchProps): * => {
                     })
                 }
             }
+            else {
+                dispatch({
+                    type: 'SELECT',
+                    target: 'ATTR',
+                    table: tableShape.table.name,
+                    attr: attr.name,
+                })
+            }
         },
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(Root)
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class extends React.Component {
+    props: TProps
+
+    render(): * {
+        const {
+            metrics,
+            tables,
+            links,
+            selected,
+            onMouseMove,
+            onAttrClick,
+            onAddLinkClick,
+            onTableClick,
+            onAttrMouseDown,
+            onTableMouseDown,
+            onMouseUp,
+        } = this.props
+
+        const width = 800
+        const height = 600
+
+        return (
+            <Workarea
+                tables={tables}
+                links={links}
+                selected={selected}
+                style={workareaStyle}
+                metrics={metrics}
+                size={{width, height}}
+                onMouseMove={onMouseMove}
+                onAttrClick={onAttrClick}
+                onAddLinkClick={onAddLinkClick}
+                onAttrMouseDown={onAttrMouseDown}
+                onTableClick={onTableClick}
+                onTableMouseDown={onTableMouseDown}
+                onMouseUp={onMouseUp}
+            />
+        )
+    }
+})
+

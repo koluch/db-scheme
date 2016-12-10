@@ -7,17 +7,29 @@ import type {TPoint} from '~/types/TPoint'
 import type {TAttr} from '~/types/TAttr'
 import type {TTableMetrics} from '~/types/TWorkareaMetrics'
 
+import FixClick from './FixClick'
+
 type TProps = {
     metrics: TTableMetrics,
     style: TTableStyle,
     tableShape: TTableShape,
     selected: false | {type: 'TABLE'} | {type: 'ATTR', name: string},
+    onHeaderClick: (tableShape: TTableShape) => void,
+    onHeaderMouseDown: (tableShape: TTableShape, point: TPoint) => void,
+    onAttrMouseDown: (tableShape: TTableShape, attr: TAttr, point: TPoint) => void,
     onAddLinkClick: (tableShape: TTableShape, attr: TAttr) => void,
     onAttrClick: (tableShape: TTableShape, attr: TAttr) => void,
 }
 
+
+
 class Table extends React.Component {
     props: TProps
+
+    handleHeaderMouseDown(tableShape: TTableShape, e: *): * {
+        const point = {x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY}
+        this.props.onHeaderMouseDown.call(this, tableShape, point)
+    }
 
     render() {
         const {tableShape, metrics, selected} = this.props
@@ -44,28 +56,36 @@ class Table extends React.Component {
         )
     }
 
+    handleAttrMouseDown(tableShape: TTableShape, attr: TAttr, e: *): * {
+        const point = {x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY}
+        this.props.onAttrMouseDown(tableShape, attr, point)
+    }
+
     handleAddLinkClick(tableShape: TTableShape, attr: TAttr): * {
         this.props.onAddLinkClick(tableShape, attr)
     }
 
     renderAttrs() {
-        const {tableShape, style, onAttrClick, metrics, selected} = this.props
+        const {tableShape, style, onAttrMouseDown, onAttrClick, metrics, selected} = this.props
         const {table: {attrs}, position: {x, y}} = tableShape
         return attrs.map((attr, i) => {
             const {size} = metrics.attrs.filter(({name}) => name === attr.name)[0].metrics //todo: check for existence
             const {width, height} = size
             const isAttrActive = selected !== false && selected.type === 'ATTR' && selected.name === attr.name
 
+            const onMouseDown = this.handleAttrMouseDown.bind(this, tableShape, attr)
             return <g
                 key={`attr-${attr.name}`}
                 x={x}
-                y={y}>
+                y={y}
+                onMouseDown={onMouseDown}>
                 <text
                     alignmentBaseline="hanging"
                     x={x}
                     y={y + size.height * i + metrics.header.size.height}
                     width={width}
                     height={height}
+                    onMouseDown={onMouseDown}
                     onClick={onAttrClick.bind(this, tableShape, attr)}
                     fill={isAttrActive ? "red" : "black"}
                     fontSize={style.attrs.font.size}>
@@ -95,7 +115,7 @@ class Table extends React.Component {
     }
 
     renderHeader() {
-        const {tableShape, style, metrics} = this.props
+        const {tableShape, style, metrics, onHeaderClick} = this.props
         const {table, position: {x, y}} = tableShape
         const {size: {width, height}} = metrics.header
 
@@ -113,13 +133,15 @@ class Table extends React.Component {
                 fontSize={style.font.size}>
                 {table.name}
             </text>
-            <rect
-                x={x} y={y} width={width} height={height}
-                fill="transparent"
-            />
+            <FixClick onClick={onHeaderClick.bind(this, tableShape)}>
+                <rect
+                    x={x} y={y} width={width} height={height}
+                    fill="transparent"
+                    onMouseDown={this.handleHeaderMouseDown.bind(this, tableShape)}
+                />
+            </FixClick>
         </g>
     }
-
 }
 
 export default Table
