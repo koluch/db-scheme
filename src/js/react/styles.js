@@ -15,6 +15,16 @@ const tableStyle = {
     },
 }
 
+const linkStyle = {
+    strokeStyle: 'solid',
+}
+
+const newLinkStyle = {
+    strokeStyle: 'dashed',
+}
+
 export const workareaStyle: TWorkareaStyle = {
     table: tableStyle,
+    link: linkStyle,
+    newLink: newLinkStyle,
 }

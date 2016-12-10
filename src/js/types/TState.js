@@ -30,8 +30,6 @@ export type TTco = false | {
     attr: string,
 }
 
-export type TMouseState = {type: 'MOUSE_DOWN', point: TPoint} | {type: 'MOUSE_UP'}
-
 export type TSelected = false | {
     type: 'TABLE',
     table: string,
@@ -55,7 +53,7 @@ export type TState = {
     tables: Array<TTableState>,
     links: Array<TLinkState>,
     selected: TSelected,
-    mouseState: TMouseState,
+    mousePosition: TPoint,
     dnd: TDndTarget,
     tco: TTco, // two-click operation
 }

@@ -10,6 +10,7 @@ import type {TPoint} from '~/types/TPoint'
 import type {TAttr} from '~/types/TAttr'
 import type {TWorkareaMetrics} from '~/types/TWorkareaMetrics'
 import type {TSelected} from '~/types/TState'
+import type {TLinkStyle} from '~/types/TLinkStyle'
 
 import Table from './Table'
 import Link from './Link'
@@ -19,6 +20,7 @@ type TProps = {
     selected: TSelected,
     metrics: TWorkareaMetrics,
     tables: Array<TTableShape>,
+    newLink: ?TLinkShape,
     links: Array<TLinkShape>,
     style: TWorkareaStyle,
     size: TSize,
@@ -42,6 +44,7 @@ class Workarea extends React.Component {
             size,
             metrics,
             selected,
+            newLink,
             } = this.props
 
         const {
@@ -66,14 +69,17 @@ class Workarea extends React.Component {
                 onMouseUp={(e) => onMouseUp({x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY})}
                 onMouseMove={(e) => onMouseMove({x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY})}
             >
+                {newLink && <Link
+                    linkShape={newLink}
+                    style={style.newLink}
+                />}
                 {links.map((linkShape: TLinkShape): * => {
-                    const {link: {from, to}} = linkShape
-                    const key = `link-${from.table}-${from.attr}-${to.table}-${to.attr}`
+                    const {path} = linkShape
+                    const key = `link-${path.map(({x, y}) => `${x},${y}`).join(';')}`
                     return <Link
-                        tableStyle={style.table}
                         key={key}
-                        tables={tables}
                         linkShape={linkShape}
+                        style={style.link}
                     />
                 })}
                 {tables.map((tableShape: TTableShape) => {

@@ -73,7 +73,7 @@ const initialState = {
     dnd: false,
     tco: false,
     selected: false,
-    mouseState: {type: 'MOUSE_UP'},
+    mousePosition: {x: 0, y: 0},
 }
 
 //todo: move to helper
@@ -118,6 +118,13 @@ const reducer = (state: TState = initialState, action: TAction): TState => {
                     }
                 }
             }),
+        }
+    }
+    else if (action.type === 'MOUSE_MOVE') {
+        const {point} = action
+        return {
+            ...state,
+            mousePosition: point,
         }
     }
     else if (action.type === 'SWITCH_ATTRS') {

@@ -23,6 +23,7 @@ import {getAttrBounds, getTableBounds, getHeaderBounds} from '~/metrics/table'
 type TProps = {
     tables: Array<TTableShape>,
     links: Array<TLinkShape>,
+    newLink: ?TLinkShape,
     metrics: TWorkareaMetrics,
     selected: TSelected,
 
@@ -70,13 +71,43 @@ const calculatePath = (b1: TBounds, b2: TBounds): Array<TPoint> => {
 }
 
 const mapStateToProps = (state: TState): * => {
-    const {tables, links, dnd, tco} = state
-
+    const {tables, links, dnd, tco, mousePosition} = state
     const metrics = metricsSelectors.workarea(state)
+
+    let newLink = null
+    if (tco !== false) {
+        if (tco.type === 'ADD_LINK') {
+            const {table, attr} = tco
+
+            const tableShapeFrom = tables.filter((x) => x.table.name === table)[0]
+            if (!tableShapeFrom) {
+                throw new Error(`Table "${table}" doesn't exists, unable to draw link`)
+            }
+
+            const attrFrom = tableShapeFrom.table.attrs.filter((x) => x.name === attr)[0]
+            if (!attrFrom) {
+                throw new Error(`Attribute "${table}.${attr}" doesn't exists, unable to draw link`)
+            }
+
+            const tableShapeFromMetrics = metrics.tables.filter(({name}) => name === tableShapeFrom.table.name)[0].metrics //todo: check
+            const attrFromBounds = tableMetrics.getAttrBounds(tableShapeFromMetrics, tableShapeFrom.position, attrFrom.name)
+            if (!attrFromBounds) {
+                throw new Error(`Unable to get attribue bounds for
+                 attribute "${table}.${attr}": attribute doesnt exists`)
+            }
+            const attrToBounds = {...mousePosition, width: 0, height: 0}
+
+            const path = calculatePath(attrFromBounds, attrToBounds)
+            newLink = {path}
+        }
+    }
+
+
     return {
         metrics,
         selected: state.selected,
         tables: state.tables.map((tableState: TTableState): TTableShape => tableState),
+        newLink,
         links: state.links.map((linkState: TLinkState): TLinkShape => {
             const {link} = linkState
             const {from, to} = link
@@ -189,6 +220,11 @@ const mergeProps = (stateProps, dispatchProps): * => {
         ...stateProps,
         ...dispatchProps,
         onMouseMove: (point: TPoint) => {
+            dispatch({
+                type: 'MOUSE_MOVE',
+                point,
+            })
+
             if (dnd !== false) {
                 if (dnd.type === 'TABLE') {
                     const {lastPoint, table} = dnd
@@ -277,6 +313,7 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
             metrics,
             tables,
             links,
+            newLink,
             selected,
             onMouseMove,
             onAttrClick,
@@ -305,6 +342,7 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                 onTableClick={onTableClick}
                 onTableMouseDown={onTableMouseDown}
                 onMouseUp={onMouseUp}
+                newLink={newLink}
             />
         )
     }
