@@ -275,15 +275,24 @@ const reducer = (state: TState = initialState, action: TAction): TState => {
         const {from, to} = action
         const filteredLinks = state.links.filter(({link}) => {
             return !(link.from.table === from.table
-                && link.from.attr === from.attr
-                && link.to.table === to.table
-                && link.to.attr === to.attr)
+            && link.from.attr === from.attr
+            && link.to.table === to.table
+            && link.to.attr === to.attr)
         })
         return {
             ...state,
             links: filteredLinks.concat([
                 {link: {from, to}},
             ]),
+        }
+    }
+    else if (action.type === 'DELETE_LINK') {
+        const {table, attr} = action
+        return {
+            ...state,
+            links: state.links.filter(({link}) => (
+                !(link.from.table === table && link.from.attr === attr)
+            )),
         }
     }
     return state

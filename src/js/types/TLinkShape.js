@@ -1,7 +1,8 @@
 // @flow
 import type {TLink} from './TLink'
-import type {TPoint} from './TPoint'
+import type {TPath} from './TPath'
 
 export type TLinkShape = {
-    path: Array<TPoint>,
+    link: TLink,
+    path: TPath,
 }

@@ -6,6 +6,7 @@ import type {TLinkShape} from '~/types/TLinkShape'
 import type {TSize} from '~/types/TSize'
 import type {TWorkareaStyle} from '~/types/TWorkareaStyle'
 import type {TLink} from '~/types/TLink'
+import type {TPath} from '~/types/TPath'
 import type {TPoint} from '~/types/TPoint'
 import type {TAttr} from '~/types/TAttr'
 import type {TWorkareaMetrics} from '~/types/TWorkareaMetrics'
@@ -20,7 +21,7 @@ type TProps = {
     selected: TSelected,
     metrics: TWorkareaMetrics,
     tables: Array<TTableShape>,
-    newLink: ?TLinkShape,
+    newLink: ?TPath,
     links: Array<TLinkShape>,
     style: TWorkareaStyle,
     size: TSize,
@@ -29,6 +30,7 @@ type TProps = {
     onAttrMouseDown: (tableShape: TTableShape, attr: TAttr, point: TPoint) => void,
     onMouseMove: (point: TPoint) => void,
     onAddLinkClick: (tableShape: TTableShape, attr: TAttr) => void,
+    onDeleteLinkClick: (tableShape: TTableShape, attr: TAttr) => void,
     onAttrClick: (tableShape: TTableShape, attr: TAttr) => void,
     onMouseUp: (point: TPoint) => void,
     onClick: () => void,
@@ -56,6 +58,7 @@ class Workarea extends React.Component {
             onAttrMouseDown,
             onMouseMove,
             onAddLinkClick,
+            onDeleteLinkClick,
             onAttrClick,
             onMouseUp,
             onClick,
@@ -74,7 +77,7 @@ class Workarea extends React.Component {
                 ref={(el) => { this.workareaEl = el }}
                 onClick={(e) => { if (e.target === this.workareaEl) { onClick() } } }>
                 {newLink && <Link
-                    linkShape={newLink}
+                    path={newLink}
                     style={style.newLink}
                 />}
                 {links.map((linkShape: TLinkShape): * => {
@@ -82,7 +85,7 @@ class Workarea extends React.Component {
                     const key = `link-${path.map(({x, y}) => `${x},${y}`).join(';')}`
                     return <Link
                         key={key}
-                        linkShape={linkShape}
+                        path={linkShape.path}
                         style={style.link}
                     />
                 })}
@@ -101,10 +104,12 @@ class Workarea extends React.Component {
                         style={style.table}
                         key={tableShape.table.name}
                         tableShape={tableShape}
+                        links={links}
                         onHeaderClick={onTableClick}
                         onHeaderMouseDown={onTableMouseDown}
                         onAttrMouseDown={onAttrMouseDown}
                         onAddLinkClick={onAddLinkClick}
+                        onDeleteLinkClick={onDeleteLinkClick}
                         onAttrClick={onAttrClick}
                     />
                 })}

@@ -11,6 +11,7 @@ import type {TAction} from '~/types/TAction'
 import type {TAttr} from '~/types/TAttr'
 import type {TBounds} from '~/types/TBounds'
 import type {TPoint} from '~/types/TPoint'
+import type {TPath} from '~/types/TPath'
 import type {TWorkareaMetrics} from '~/types/TWorkareaMetrics'
 import type {TSelected} from '~/types/TState'
 
@@ -23,7 +24,7 @@ import {getAttrBounds, getTableBounds, getHeaderBounds} from '~/metrics/table'
 type TProps = {
     tables: Array<TTableShape>,
     links: Array<TLinkShape>,
-    newLink: ?TLinkShape,
+    newLink: ?TPath,
     metrics: TWorkareaMetrics,
     selected: TSelected,
 
@@ -32,6 +33,7 @@ type TProps = {
     onTableMouseDown: (tableShape: TTableShape, point: TPoint) => void,
     onAttrClick: (tableShape: TTableShape, attr: TAttr) => void,
     onAddLinkClick: (tableShape: TTableShape, attr: TAttr) => void,
+    onDeleteLinkClick: (tableShape: TTableShape, attr: TAttr) => void,
     onAttrMouseDown: (tableShape: TTableShape, attr: TAttr, point: TPoint) => void,
     onMouseMove: (point: TPoint) => void,
     onMouseUp: (point: TPoint) => void,
@@ -98,8 +100,7 @@ const mapStateToProps = (state: TState): * => {
             }
             const attrToBounds = {...mousePosition, width: 0, height: 0}
 
-            const path = calculatePath(attrFromBounds, attrToBounds)
-            newLink = {path}
+            newLink = calculatePath(attrFromBounds, attrToBounds)
         }
     }
 
@@ -208,6 +209,13 @@ const mapDispatchToProps = (dispatch: Dispatch<TAction>): * => {
                     attr: attr.name,
                     table: tableShape.table.name,
                 },
+            })
+        },
+        onDeleteLinkClick: (tableShape: TTableShape, attr: TAttr) => {
+            dispatch({
+                type: 'DELETE_LINK',
+                attr: attr.name,
+                table: tableShape.table.name,
             })
         },
     }
@@ -331,6 +339,7 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
             onMouseMove,
             onAttrClick,
             onAddLinkClick,
+            onDeleteLinkClick,
             onTableClick,
             onAttrMouseDown,
             onTableMouseDown,
@@ -353,6 +362,7 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                 onMouseMove={onMouseMove}
                 onAttrClick={onAttrClick}
                 onAddLinkClick={onAddLinkClick}
+                onDeleteLinkClick={onDeleteLinkClick}
                 onAttrMouseDown={onAttrMouseDown}
                 onTableClick={onTableClick}
                 onTableMouseDown={onTableMouseDown}

@@ -8,11 +8,12 @@ import type {TTableStyle} from '~/types/TTableStyle'
 import type {TLinkStyle} from '~/types/TLinkStyle'
 import type {TBounds} from '~/types/TBounds'
 import type {TPoint} from '~/types/TPoint'
+import type {TPath} from '~/types/TPath'
 
 import {createSelector} from 'reselect'
 
 type TProps = {
-    linkShape: TLinkShape,
+    path: TPath,
     style: TLinkStyle,
 }
 
@@ -22,8 +23,7 @@ class Link extends React.Component {
     props: TProps
 
     render(): * {
-        const {linkShape, style} = this.props
-        const {path} = linkShape
+        const {path, style} = this.props
 
         const points = path.map(({x, y}) => `${x},${y}`).join(' ')
 

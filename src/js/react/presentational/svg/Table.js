@@ -5,19 +5,23 @@ import type {TTableShape} from '~/types/TTableShape'
 import type {TTableStyle} from '~/types/TTableStyle'
 import type {TPoint} from '~/types/TPoint'
 import type {TAttr} from '~/types/TAttr'
+import type {TLinkShape} from '~/types/TLinkShape'
 import type {TTableMetrics} from '~/types/TWorkareaMetrics'
 
 import FixClick from './FixClick'
+import Attr from './Attr'
 
 type TProps = {
     metrics: TTableMetrics,
     style: TTableStyle,
     tableShape: TTableShape,
+    links: Array<TLinkShape>,
     selected: false | {type: 'TABLE'} | {type: 'ATTR', name: string},
     onHeaderClick: (tableShape: TTableShape) => void,
     onHeaderMouseDown: (tableShape: TTableShape, point: TPoint) => void,
     onAttrMouseDown: (tableShape: TTableShape, attr: TAttr, point: TPoint) => void,
     onAddLinkClick: (tableShape: TTableShape, attr: TAttr) => void,
+    onDeleteLinkClick: (tableShape: TTableShape, attr: TAttr) => void,
     onAttrClick: (tableShape: TTableShape, attr: TAttr) => void,
 }
 
@@ -55,63 +59,26 @@ class Table extends React.Component {
         )
     }
 
-    handleAttrMouseDown(tableShape: TTableShape, attr: TAttr, e: *): * {
-        const point = {x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY}
-        this.props.onAttrMouseDown(tableShape, attr, point)
-    }
-
-    handleAddLinkClick(tableShape: TTableShape, attr: TAttr): * {
-        this.props.onAddLinkClick(tableShape, attr)
-    }
-
     renderAttrs() {
-        const {tableShape, style, onAttrMouseDown, onAttrClick, metrics, selected} = this.props
+        const {tableShape, style, metrics, selected, links} = this.props
         const {table: {attrs}, position: {x, y}} = tableShape
+
         return attrs.map((attr, i) => {
             const {size} = metrics.attrs.filter(({name}) => name === attr.name)[0].metrics //todo: check for existence
-            const {width, height} = size
-            const isAttrActive = selected !== false && selected.type === 'ATTR' && selected.name === attr.name
 
-            const onMouseDown = this.handleAttrMouseDown.bind(this, tableShape, attr)
-            const ADD_LINK_BUTTON_MARGIN = 5
-            return <g
-                key={`attr-${attr.name}`}
-                x={x}
-                y={y}
-                onMouseDown={onMouseDown}>
-                <FixClick onClick={onAttrClick.bind(this, tableShape, attr)}>
-                    <text
-                        alignmentBaseline="hanging"
-                        x={x}
-                        y={y + size.height * i + metrics.header.size.height}
-                        width={width}
-                        height={height}
-                        onMouseDown={onMouseDown}
-                        fill={isAttrActive ? 'red' : 'black'}
-                        fontSize={style.attrs.font.size}>
-                        {attr.name}
-                    </text>
-                </FixClick>
-                {isAttrActive && <rect
-                    fill="green"
-                    x={x + width}
-                    y={y + size.height * i + metrics.header.size.height}
-                    width={20}
-                    height={20}
-                />}
-                {isAttrActive && <text
-                    x={x + width + ADD_LINK_BUTTON_MARGIN}
-                    y={y + size.height * i + size.height / 2 + metrics.header.size.height}
-                >+</text>}
-                {isAttrActive && <rect
-                    fill="transparent"
-                    x={x + width}
-                    y={y + size.height * i + metrics.header.size.height}
-                    width={20}
-                    height={20}
-                    onClick={this.handleAddLinkClick.bind(this, tableShape, attr)}
-                />}
-            </g>
+            return <Attr
+                key={attr.name}
+                name={attr.name}
+                style={style.attrs}
+                active={selected !== false && selected.type === 'ATTR' && selected.name === attr.name}
+                hasLink={links.some(({link: {from}}) => from.table === tableShape.table.name && from.attr === attr.name)}
+                size={size}
+                position={{x, y: y + size.height * i + metrics.header.size.height}}
+                onMouseDown={this.props.onAttrMouseDown.bind(this, tableShape, attr)}
+                onClick={this.props.onAttrClick.bind(this, tableShape, attr)}
+                onAddLinkClick={this.props.onAddLinkClick.bind(this, tableShape, attr)}
+                onDeleteLinkClick={this.props.onDeleteLinkClick.bind(this, tableShape, attr)}
+            />
         })
     }
 
