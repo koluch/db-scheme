@@ -447,7 +447,7 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
             download('scheme.png', dataUrl)
         }
 
-        const body = new XMLSerializer().serializeToString(document.querySelector('svg'))
+        const body = new XMLSerializer().serializeToString(document.querySelector('#for_export svg'))
         const encoded = window.btoa(body)
         img.src = 'data:image/svg+xml;base64,' + encoded
     }
@@ -460,6 +460,29 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
             <div>
                 <div><button onClick={this.handleTableCreateClick}>Create table</button></div>
                 <div><button onClick={this.exportToPng}>Export to PNG</button></div>
+                <div style={{display: 'none'}} id="for_export">
+                    <Workarea
+                        style={workareaStyle}
+                        size={{width, height}}
+                        tables={this.props.tables}
+                        links={this.props.links}
+                        selected={false}
+                        metrics={this.props.metrics}
+                        onClick={() => {}}
+                        onMouseMove={() => {}}
+                        onAttrClick={() => {}}
+                        onLinkAddClick={() => {}}
+                        onLinkDeleteClick={() => {}}
+                        onAttrDeleteClick={() => {}}
+                        onAttrMouseDown={() => {}}
+                        onTableClick={() => {}}
+                        onTableMouseDown={() => {}}
+                        onTableDeleteClick={() => {}}
+                        onMouseUp={() => {}}
+                        onAttrCreateClick={() => {}}
+                        newLink={null}
+                    />
+                </div>
                 <Workarea
                     style={workareaStyle}
                     size={{width, height}}

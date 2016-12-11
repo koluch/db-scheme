@@ -57,7 +57,7 @@ class Workarea extends React.Component {
 
         const {width, height} = size
 
-    return (
+        return (
             <svg
                 className="workarea"
                 viewBox={`0 0 ${width} ${height}`}
