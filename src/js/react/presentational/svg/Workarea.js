@@ -104,7 +104,6 @@ class Workarea extends React.Component {
                         style={style.table}
                         key={tableShape.table.name}
                         tableShape={tableShape}
-                        links={links}
                         onHeaderClick={onTableClick}
                         onHeaderMouseDown={onTableMouseDown}
                         onAttrMouseDown={onAttrMouseDown}

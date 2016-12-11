@@ -51,7 +51,7 @@ export type TSelected = false | {
 
 export type TState = {
     tables: Array<TTableState>,
-    links: Array<TLinkState>,
+    // links: Array<TLinkState>,
     selected: TSelected,
     mousePosition: TPoint,
     dnd: TDndTarget,

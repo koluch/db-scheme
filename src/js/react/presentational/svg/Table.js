@@ -15,7 +15,6 @@ type TProps = {
     metrics: TTableMetrics,
     style: TTableStyle,
     tableShape: TTableShape,
-    links: Array<TLinkShape>,
     selected: false | {type: 'TABLE'} | {type: 'ATTR', name: string},
     onHeaderClick: (tableShape: TTableShape) => void,
     onHeaderMouseDown: (tableShape: TTableShape, point: TPoint) => void,
@@ -60,7 +59,7 @@ class Table extends React.Component {
     }
 
     renderAttrs() {
-        const {tableShape, style, metrics, selected, links} = this.props
+        const {tableShape, style, metrics, selected} = this.props
         const {table: {attrs}, position: {x, y}} = tableShape
 
         return attrs.map((attr, i) => {
@@ -71,7 +70,7 @@ class Table extends React.Component {
                 name={attr.name}
                 style={style.attrs}
                 active={selected !== false && selected.type === 'ATTR' && selected.name === attr.name}
-                hasLink={links.some(({link: {from}}) => from.table === tableShape.table.name && from.attr === attr.name)}
+                hasLink={tableShape.table.foreignKeys.some(({from}) => from.attr === attr.name)}
                 size={size}
                 position={{x, y: y + size.height * i + metrics.header.size.height}}
                 onMouseDown={this.props.onAttrMouseDown.bind(this, tableShape, attr)}

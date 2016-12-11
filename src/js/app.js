@@ -25,6 +25,7 @@ const initialState = {
                     {name: 'user_id'},
                     {name: 'body'},
                 ],
+                foreignKeys: [],
             },
             position: {
                 x: 0,
@@ -40,6 +41,7 @@ const initialState = {
                     {name: 'title'},
                     {name: 'visible'},
                 ],
+                foreignKeys: [],
             },
             position: {
                 x: 500,
@@ -52,6 +54,7 @@ const initialState = {
                     {name: 'id'},
                     {name: 'name'},
                 ],
+                foreignKeys: [],
             },
             position: {
                 x: 300,
@@ -59,17 +62,17 @@ const initialState = {
             },
         },
     ],
-    links: [
-        {
-            link: {from: {table: 'comments', attr: 'post_id'}, to: {table: 'posts', attr: 'id'}},
-        },
-        {
-            link: {from: {table: 'posts', attr: 'user_id'}, to: {table: 'users', attr: 'id'}},
-        },
-        {
-            link: {from: {table: 'comments', attr: 'user_id'}, to: {table: 'users', attr: 'id'}},
-        },
-    ],
+    // links: [
+    //     {
+    //         link: {from: {table: 'comments', attr: 'post_id'}, to: {table: 'posts', attr: 'id'}},
+    //     },
+    //     {
+    //         link: {from: {table: 'posts', attr: 'user_id'}, to: {table: 'users', attr: 'id'}},
+    //     },
+    //     {
+    //         link: {from: {table: 'comments', attr: 'user_id'}, to: {table: 'users', attr: 'id'}},
+    //     },
+    // ],
     dnd: false,
     tco: false,
     selected: false,
@@ -273,26 +276,51 @@ const reducer = (state: TState = initialState, action: TAction): TState => {
     }
     else if (action.type === 'ADD_LINK') {
         const {from, to} = action
-        const filteredLinks = state.links.filter(({link}) => {
-            return !(link.from.table === from.table
-            && link.from.attr === from.attr
-            && link.to.table === to.table
-            && link.to.attr === to.attr)
-        })
+
         return {
             ...state,
-            links: filteredLinks.concat([
-                {link: {from, to}},
-            ]),
+            tables: state.tables.map((tableState) => {
+                if (tableState.table.name === from.table) {
+                    const filteredForeignKeys = tableState.table.foreignKeys.filter((key) => (
+                        !(key.from.attr === from.attr)
+                    ))
+
+                    return {
+                        ...tableState,
+                        table: {
+                            ...tableState.table,
+                            foreignKeys: filteredForeignKeys.concat([{
+                                from: {
+                                    attr: from.attr,
+                                },
+                                to,
+                            }]),
+                        },
+                    }
+                }
+                return tableState
+            }),
         }
     }
     else if (action.type === 'DELETE_LINK') {
         const {table, attr} = action
+
         return {
             ...state,
-            links: state.links.filter(({link}) => (
-                !(link.from.table === table && link.from.attr === attr)
-            )),
+            tables: state.tables.map((tableState) => {
+                if (tableState.table.name === table) {
+                    return {
+                        ...tableState,
+                        table: {
+                            ...tableState.table,
+                            foreignKeys: tableState.table.foreignKeys.filter((key) => (
+                                !(key.from.attr === attr)
+                            )),
+                        },
+                    }
+                }
+                return tableState
+            }),
         }
     }
     return state

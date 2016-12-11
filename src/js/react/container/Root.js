@@ -21,23 +21,7 @@ import * as metricsSelectors from '~/react/selectors/metrics'
 import {workareaStyle} from '~/react/styles'
 import {getAttrBounds, getTableBounds, getHeaderBounds} from '~/metrics/table'
 
-type TProps = {
-    tables: Array<TTableShape>,
-    links: Array<TLinkShape>,
-    newLink: ?TPath,
-    metrics: TWorkareaMetrics,
-    selected: TSelected,
 
-    onTableClick: (tableShape: TTableShape) => void,
-    onWorkareaClick: () => void,
-    onTableMouseDown: (tableShape: TTableShape, point: TPoint) => void,
-    onAttrClick: (tableShape: TTableShape, attr: TAttr) => void,
-    onAddLinkClick: (tableShape: TTableShape, attr: TAttr) => void,
-    onDeleteLinkClick: (tableShape: TTableShape, attr: TAttr) => void,
-    onAttrMouseDown: (tableShape: TTableShape, attr: TAttr, point: TPoint) => void,
-    onMouseMove: (point: TPoint) => void,
-    onMouseUp: (point: TPoint) => void,
-}
 
 const calculatePath = (b1: TBounds, b2: TBounds): Array<TPoint> => {
     const CONNECTION_LINE_WIDTH = 10
@@ -74,7 +58,7 @@ const calculatePath = (b1: TBounds, b2: TBounds): Array<TPoint> => {
 }
 
 const mapStateToProps = (state: TState): * => {
-    const {tables, links, dnd, tco, mousePosition} = state
+    const {tables, dnd, tco, mousePosition} = state
     const metrics = metricsSelectors.workarea(state)
 
     let newLink = null
@@ -105,13 +89,14 @@ const mapStateToProps = (state: TState): * => {
     }
 
 
-    return {
-        metrics,
-        selected: state.selected,
-        tables: state.tables.map((tableState: TTableState): TTableShape => tableState),
-        newLink,
-        links: state.links.map((linkState: TLinkState): TLinkShape => {
-            const {link} = linkState
+    const linkShapes = state.tables.map(({table}) => (
+        table.foreignKeys.map(({from,to}) => ({
+            from: {
+                ...from,
+                table: table.name,
+            },
+            to,
+        })).map((link) => {
             const {from, to} = link
 
             const tableShapeFrom = tables.filter((x) => x.table.name === from.table)[0]
@@ -158,7 +143,16 @@ const mapStateToProps = (state: TState): * => {
                 link,
                 path,
             }
-        }),
+        })
+    )).reduce((acc, links) => acc.concat(links), [])
+
+
+    return {
+        metrics,
+        selected: state.selected,
+        tables: state.tables.map((tableState: TTableState): TTableShape => tableState),
+        newLink,
+        links: linkShapes,
         dnd,
         tco,
     }
@@ -324,6 +318,24 @@ const mergeProps = (stateProps, dispatchProps): * => {
             }
         },
     }
+}
+
+type TProps = {
+    tables: Array<TTableShape>,
+    links: Array<TLinkShape>,
+    newLink: ?TPath,
+    metrics: TWorkareaMetrics,
+    selected: TSelected,
+
+    onTableClick: (tableShape: TTableShape) => void,
+    onWorkareaClick: () => void,
+    onTableMouseDown: (tableShape: TTableShape, point: TPoint) => void,
+    onAttrClick: (tableShape: TTableShape, attr: TAttr) => void,
+    onAddLinkClick: (tableShape: TTableShape, attr: TAttr) => void,
+    onDeleteLinkClick: (tableShape: TTableShape, attr: TAttr) => void,
+    onAttrMouseDown: (tableShape: TTableShape, attr: TAttr, point: TPoint) => void,
+    onMouseMove: (point: TPoint) => void,
+    onMouseUp: (point: TPoint) => void,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class extends React.Component {
