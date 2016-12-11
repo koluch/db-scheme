@@ -22,8 +22,6 @@ type TProps = {
     onClick: () => void,
 }
 
-let seq = 0
-
 class Button extends React.Component {
     props: TProps
 

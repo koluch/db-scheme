@@ -110,21 +110,23 @@ class Table extends React.Component {
         const {position: {x, y}} = tableShape
         const {metrics} = this.props
         const {width, height} = metrics.size
+        const BUTTON_MARGIN = 10
+        const BUTTON_HEIGHT = 20
         return (
             <g>
                 <Button
                     title="Delete"
                     x={x + width / 2}
-                    y={y + height + 15}
+                    y={y + height + BUTTON_HEIGHT / 2 + BUTTON_MARGIN}
                     color="red"
-                    width={60} height={20}
+                    width={60} height={BUTTON_HEIGHT}
                     onClick={this.props.onDeleteClick.bind(this, tableShape)}
                 />
                 <Button
                     title="+ Attribute"
                     x={x + width / 2}
-                    y={y + height + 40}
-                    width={80} height={20}
+                    y={y + height + BUTTON_HEIGHT + BUTTON_MARGIN + BUTTON_MARGIN + BUTTON_MARGIN }
+                    width={80} height={BUTTON_HEIGHT}
                     onClick={this.props.onAttrCreateClick.bind(this, tableShape)}
                 />
             </g>

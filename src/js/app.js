@@ -384,7 +384,7 @@ const reducer = (state: TState = initialState, action: TAction): TState => {
                         ...tableState,
                         table: {
                             ...tableState.table,
-                            attrs: tableState.table.attrs.filter(({name}) => name !== attr.name).concat([attr])
+                            attrs: tableState.table.attrs.filter(({name}) => name !== attr.name).concat([attr]),
                         },
                     }
                 }

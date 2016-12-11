@@ -42,9 +42,11 @@ class Attr extends React.Component {
             position: {x, y},
         } = this.props
 
+        const MARGIN = 20
+
         return <Button
             title={'\u2194'}
-            x={x + width + ADD_LINK_BUTTON_MARGIN + 20}
+            x={x + width + ADD_LINK_BUTTON_MARGIN + MARGIN}
             y={y + height / 2}
             width={20}
             height={20}
@@ -58,9 +60,10 @@ class Attr extends React.Component {
             position: {x, y},
         } = this.props
 
+        const MARGIN = 20
         return <Button
             title={'\u2718'}
-            x={x + width + ADD_LINK_BUTTON_MARGIN + 20}
+            x={x + width + ADD_LINK_BUTTON_MARGIN + MARGIN}
             y={y + height / 2}
             width={20}
             height={20}
@@ -74,10 +77,11 @@ class Attr extends React.Component {
             position: {x, y},
         } = this.props
 
+        const MARGIN = 50
         return <Button
             title={'\u2716'}
             color="red"
-            x={x + width + ADD_LINK_BUTTON_MARGIN + 50}
+            x={x + width + ADD_LINK_BUTTON_MARGIN + MARGIN}
             y={y + height / 2}
             width={20}
             height={20}

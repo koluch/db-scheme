@@ -4,17 +4,19 @@ var path = require('path')
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const ROOT = path.resolve(__dirname + '/..')
+const SRC_ROOT = ROOT + '/src'
+const BUILD_ROOT = ROOT + '/docs'
 
 module.exports = [
     // scripts
     {
         context: ROOT,
         entry: {
-            app: path.resolve(ROOT + '/src/js/app.js'),
+            app: path.resolve(SRC_ROOT + '/js/app.js'),
             vendor: ['react', 'react-dom'],
         },
         output: {
-            path: path.resolve(ROOT + '/build/js'),
+            path: path.resolve(BUILD_ROOT + '/js'),
             filename: '[name].bundle.js',
         },
         module: {
@@ -45,17 +47,17 @@ module.exports = [
             new webpack.optimize.AggressiveMergingPlugin()
         ],
         resolve: {
-            alias: {'~': path.resolve(ROOT + '/src/js')},
+            alias: {'~': path.resolve(SRC_ROOT + '/js')},
         },
     },
     // styles
     {
         context: path.resolve(__dirname + '/..'),
         entry: {
-            app: path.resolve(ROOT + '/src/styles/app.scss'),
+            app: path.resolve(SRC_ROOT + '/styles/app.scss'),
         },
         output: {
-            path: path.resolve(ROOT + '/build/css'),
+            path: path.resolve(BUILD_ROOT + '/css'),
             filename: '[name].bundle.css',
         },
         module: {
@@ -85,8 +87,8 @@ module.exports = [
         plugins: [
             new CopyWebpackPlugin([
                 {
-                    from: path.join(__dirname, '../src/static'),
-                    to: path.join(__dirname, '../build'),
+                    from: SRC_ROOT + '/static',
+                    to: BUILD_ROOT,
                 },
             ])
         ]

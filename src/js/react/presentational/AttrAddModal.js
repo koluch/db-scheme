@@ -32,13 +32,12 @@ class AttrAddModal extends React.Component {
         this.props.onCancel()
     }
 
-
     render() {
         return (
             <Modal>
                 <form onSubmit={this.handleSubmit}>
                     <div>
-                        <label>Name: <input ref={(el) => this.nameInputEl = el}></input></label>
+                        <label>Name: <input ref={(el) => { this.nameInputEl = el }}></input></label>
                     </div>
                     <div>
                         <button type="button" onClick={this.handleCancel}>Cancel</button>

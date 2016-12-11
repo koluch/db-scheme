@@ -25,7 +25,6 @@ import {workareaStyle} from '~/react/styles'
 import {getAttrBounds, getTableBounds, getHeaderBounds} from '~/metrics/table'
 
 
-
 const calculatePath = (b1: TBounds, b2: TBounds): Array<TPoint> => {
     const CONNECTION_LINE_WIDTH = 10
 
@@ -93,7 +92,7 @@ const mapStateToProps = (state: TState): * => {
 
 
     const linkShapes = state.tables.map(({table}) => (
-        table.foreignKeys.map(({from,to}) => ({
+        table.foreignKeys.map(({from, to}) => ({
             from: {
                 ...from,
                 table: table.name,
