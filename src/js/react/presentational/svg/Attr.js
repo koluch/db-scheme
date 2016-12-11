@@ -2,8 +2,8 @@
 import React from 'react'
 
 import type {TTableShape} from '~/types/TTableShape'
-import type {TTableStyle} from '~/types/TTableStyle'
-import type {TAttrStyle} from '~/types/TAttrStyle'
+import type {TTableStyle} from '~/types/styles/TTableStyle'
+import type {TAttrStyle} from '~/types/styles/TAttrStyle'
 import type {TPoint} from '~/types/TPoint'
 import type {TSize} from '~/types/TSize'
 import type {TAttr} from '~/types/TAttr'
@@ -38,6 +38,7 @@ class Attr extends React.Component {
     renderAddLinkButton() {
         const {
             size: {width, height},
+            style: {padding},
             position: {x, y},
         } = this.props
         return <g>
@@ -136,16 +137,22 @@ class Attr extends React.Component {
             onMouseDown={this.handleMouseDown}>
             <FixClick onClick={this.props.onClick}>
                 <text
-                    alignmentBaseline="hanging"
-                    x={x}
-                    y={y}
-                    width={width}
-                    height={height}
-                    onMouseDown={this.handleMouseDown}
+                    fontFamily={style.font.family}
+                    alignmentBaseline="middle"
+                    x={x + style.padding.left}
+                    y={y + height / 2}
                     fill={active ? 'red' : 'black'}
                     fontSize={style.font.size}>
                     {name}
                 </text>
+                <rect
+                    x={x}
+                    y={y}
+                    width={width}
+                    height={height}
+                    fill="transparent"
+                    onMouseDown={this.handleMouseDown}
+                />
             </FixClick>
             {active && !hasLink && this.renderAddLinkButton()}
             {active && hasLink && this.renderDeleteLinkButton()}

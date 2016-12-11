@@ -5,7 +5,7 @@ import type {Dispatch, Store} from 'redux'
 
 import type {TTableShape} from '~/types/TTableShape'
 import type {TLinkShape} from '~/types/TLinkShape'
-import type {TWorkareaStyle} from '~/types/TWorkareaStyle'
+import type {TWorkareaStyle} from '~/types/styles/TWorkareaStyle'
 import type {TState, TTableState, TLinkState} from '~/types/TState'
 import type {TAction} from '~/types/TAction'
 import type {TAttr} from '~/types/TAttr'
@@ -437,19 +437,21 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
         }
 
         const canvas = document.createElement('canvas')
-        canvas.setAttribute('width', 800)
-        canvas.setAttribute('height', 600)
+        canvas.setAttribute('width', '800')
+        canvas.setAttribute('height', '600')
         const ctx = canvas.getContext('2d')
-        const img = new Image()
-        img.onload = () => {
-            ctx.drawImage(img, 0, 0)
-            const dataUrl = canvas.toDataURL('image/png')
-            download('scheme.png', dataUrl)
-        }
+        if (ctx) {
+            const img = new Image()
+            img.onload = () => {
+                ctx.drawImage(img, 0, 0)
+                const dataUrl = canvas.toDataURL('image/png')
+                download('scheme.png', dataUrl)
+            }
 
-        const body = new XMLSerializer().serializeToString(document.querySelector('#for_export svg'))
-        const encoded = window.btoa(body)
-        img.src = 'data:image/svg+xml;base64,' + encoded
+            const body = new XMLSerializer().serializeToString(document.querySelector('#for_export svg'))
+            const encoded = window.btoa(body)
+            img.src = 'data:image/svg+xml;base64,' + encoded
+        }
     }
 
     render(): * {

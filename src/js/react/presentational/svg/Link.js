@@ -1,16 +1,8 @@
 // @flow
 import React from 'react'
-import {Layer, Line, Stage, Group, Text} from 'react-konva'
 
-import type {TLinkShape} from '~/types/TLinkShape'
-import type {TTableShape} from '~/types/TTableShape'
-import type {TTableStyle} from '~/types/TTableStyle'
-import type {TLinkStyle} from '~/types/TLinkStyle'
-import type {TBounds} from '~/types/TBounds'
-import type {TPoint} from '~/types/TPoint'
+import type {TLinkStyle} from '~/types/styles/TLinkStyle'
 import type {TPath} from '~/types/TPath'
-
-import {createSelector} from 'reselect'
 
 type TProps = {
     path: TPath,

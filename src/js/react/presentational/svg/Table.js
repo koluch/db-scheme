@@ -2,10 +2,9 @@
 import React from 'react'
 
 import type {TTableShape} from '~/types/TTableShape'
-import type {TTableStyle} from '~/types/TTableStyle'
+import type {TTableStyle} from '~/types/styles/TTableStyle'
 import type {TPoint} from '~/types/TPoint'
 import type {TAttr} from '~/types/TAttr'
-import type {TLinkShape} from '~/types/TLinkShape'
 import type {TTableMetrics} from '~/types/TWorkareaMetrics'
 
 import FixClick from './FixClick'
@@ -37,7 +36,7 @@ class Table extends React.Component {
     }
 
     render() {
-        const {tableShape, metrics, selected} = this.props
+        const {tableShape, style, metrics, selected} = this.props
         const {position: {x, y}} = tableShape
 
         const {width, height} = metrics.size
@@ -46,14 +45,34 @@ class Table extends React.Component {
 
         return (
             <g>
+                <defs>
+                    <filter id="active_table_filter" x="-50%" y="-50%" width="200%" height="200%">
+                        <feOffset result="offOut" in="SourceAlpha" dx="0" dy="0" />
+                        <feGaussianBlur result="blurOut" in="offOut" stdDeviation="10" />
+                        <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
+                        <feComponentTransfer>
+                            <feFuncA type="linear" slope="0.2"/>
+                        </feComponentTransfer>
+                    </filter>
+                </defs>
+
+                {isTableActive && <rect
+                    filter={'url(#active_table_filter)'}
+                    x={x}
+                    y={y}
+                    width={width}
+                    height={height}
+                    fill="black"
+                />}
+
                 <rect
-                      x={x}
-                      y={y}
-                      width={width}
-                      height={height}
-                      fill={'white'}
-                      stroke={isTableActive ? 'black' : 'gray'}
-                      strokeWidth={isTableActive ? '2' : '1'}
+                    x={x}
+                    y={y}
+                    width={width}
+                    height={height}
+                    fill={'white'}
+                    stroke={style.border.color}
+                    strokeWidth={'1'}
                 />
                 {this.renderHeader()}
                 {this.renderAttrs()}
@@ -128,18 +147,25 @@ class Table extends React.Component {
         const {size: {width, height}} = metrics.header
         const isTableActive = selected !== false && selected.type === 'TABLE'
 
+        const {padding} = style.header
+
         return <g>
             <rect
-                x={x} y={y} width={width} height={height}
-                fill="gray"
-            />
-            <text
-                alignmentBaseline="hanging"
                 x={x}
                 y={y}
                 width={width}
                 height={height}
-                fontSize={style.font.size}>
+                fill={style.header.backgroundColor}
+            />
+            <text
+                alignmentBaseline="middle"
+                fontFamily={style.font.family}
+                x={x + padding.left}
+                y={y + height / 2}
+                width={width}
+                height={height}
+                fontSize={style.header.font.size}
+                fill={style.header.font.color}>
                 {table.name}
             </text>
             <FixClick onClick={onHeaderClick.bind(this, tableShape)}>

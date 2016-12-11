@@ -2,8 +2,8 @@
 import type {TAttr} from '~/types/TAttr'
 import type {TTable} from '~/types/TTable'
 import type {TTableShape} from '~/types/TTableShape'
-import type {TTableStyle} from '~/types/TTableStyle'
-import type {TAttrStyle} from '~/types/TAttrStyle'
+import type {TTableStyle} from '~/types/styles/TTableStyle'
+import type {TAttrStyle} from '~/types/styles/TAttrStyle'
 import type {TSize} from '~/types/TSize'
 import type {TBounds} from '~/types/TBounds'
 import type {TPoint} from '~/types/TPoint'
@@ -52,16 +52,27 @@ export const getMetrics = (table: TTable, style: TTableStyle): TTableMetrics => 
     const headerTextSize = getTextSize(table.name, style.font)
     const attrTextSizes = table.attrs.map(({name}) => getTextSize(name, style.font))
 
-    const tableWidth = Math.max(headerTextSize.width, ...attrTextSizes.map(({width}) => width))
+    const headerSize = {
+        width: headerTextSize.width + style.header.padding.left + style.header.padding.right,
+        height: headerTextSize.height + style.header.padding.top + style.header.padding.bottom,
+    }
+
+    const attrSizes = attrTextSizes.map(({width, height}) => ({
+        width: width + style.attrs.padding.left + style.attrs.padding.right,
+        height: height + style.attrs.padding.top + style.attrs.padding.bottom,
+    }))
+
+    const tableWidth = Math.max(headerSize.width, ...attrSizes.map(({width}) => width))
+
     return {
         size: {
             width: tableWidth,
-            height: headerTextSize.height + attrTextSizes.map(({height}) => height).reduce((acc, x) => acc + x, 0),
+            height: headerSize.height + attrSizes.map(({height}) => height).reduce((acc, x) => acc + x, 0),
         },
         header: {
             size: {
                 width: tableWidth,
-                height: headerTextSize.height,
+                height: headerSize.height,
             },
         },
         attrs: table.attrs.map((attr, i) => {
@@ -70,7 +81,7 @@ export const getMetrics = (table: TTable, style: TTableStyle): TTableMetrics => 
                 metrics: {
                     size: {
                         width: tableWidth,
-                        height: attrTextSizes[i].height,
+                        height: attrSizes[i].height,
                     },
                 },
             }

@@ -1,17 +1,42 @@
 // @flow
-import type {TWorkareaStyle} from '~/types/TWorkareaStyle'
+import type {TWorkareaStyle} from '~/types/styles/TWorkareaStyle'
 
 const fontStyle = {
-    size: 24,
+    color: 'black',
+    size: 18,
     style: 'normal',
     weight: 'normal',
-    family: 'Arial',
+    family: 'sans-serif',
+}
+
+const headerFontStyle = {
+    ...fontStyle,
+    color: 'white',
 }
 
 const tableStyle = {
     font: fontStyle,
     attrs: {
         font: fontStyle,
+        padding: {
+            top: 3,
+            right: 5,
+            bottom: 3,
+            left: 5,
+        },
+    },
+    header: {
+        padding: {
+            top: 4,
+            right: 5,
+            bottom: 4,
+            left: 5,
+        },
+        backgroundColor: '#0053a0',
+        font: headerFontStyle,
+    },
+    border: {
+        color: '#0053a0',
     },
 }
 
