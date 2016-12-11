@@ -22,6 +22,7 @@ type TProps = {
     onAttrMouseDown: (tableShape: TTableShape, attr: TAttr, point: TPoint) => void,
     onLinkAddClick: (tableShape: TTableShape, attr: TAttr) => void,
     onAttrDeleteClick: (tableShape: TTableShape, attr: TAttr) => void,
+    onAttrCreateClick: (tableShape: TTableShape) => void,
     onLinkDeleteClick: (tableShape: TTableShape, attr: TAttr) => void,
     onAttrClick: (tableShape: TTableShape, attr: TAttr) => void,
 }
@@ -115,6 +116,7 @@ class Table extends React.Component {
                 <rect
                     x={x} y={y + height + 20} width={width} height={20}
                     fill="transparent"
+                    onClick={this.props.onAttrCreateClick.bind(this, tableShape)}
                 />
             </g>
         )

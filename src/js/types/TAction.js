@@ -1,5 +1,7 @@
 // @flow
 import type {TPoint} from './TPoint'
+import type {TAttr} from './TAttr'
+import type {TTable} from './TTable'
 
 type TActionInit = {type: "@@redux/INIT"}
 
@@ -33,6 +35,8 @@ export type TAction =
         | {type: 'START_TCO', attrs: TTcoAttrs}
         | {type: 'STOP_TCO'}
         | {type: 'ADD_LINK', from: {table: string, attr: string}, to: {table: string, attr: string}}
+        | {type: 'ADD_ATTR', table: string, attr: TAttr}
+        | {type: 'ADD_TABLE', table: TTable}
         | {type: 'DELETE_LINK', table: string, attr: string}
         | {type: 'DELETE_ATTR', table: string, attr: string}
         | {type: 'DELETE_TABLE', table: string}

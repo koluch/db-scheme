@@ -11,11 +11,14 @@ import type {TAction} from '~/types/TAction'
 import type {TAttr} from '~/types/TAttr'
 import type {TBounds} from '~/types/TBounds'
 import type {TPoint} from '~/types/TPoint'
+import type {TTable} from '~/types/TTable'
 import type {TPath} from '~/types/TPath'
 import type {TWorkareaMetrics} from '~/types/TWorkareaMetrics'
 import type {TSelected} from '~/types/TState'
 
-import Workarea from './../presentational/svg/Workarea'
+import Workarea from '~/react/presentational/svg/Workarea'
+import AttrAddModal from '~/react/presentational/AttrAddModal'
+import TableAddModal from '~/react/presentational/TableAddModal'
 import * as tableMetrics from '~/metrics/table'
 import * as metricsSelectors from '~/react/selectors/metrics'
 import {workareaStyle} from '~/react/styles'
@@ -330,6 +333,19 @@ const mergeProps = (stateProps, dispatchProps): * => {
                 })
             }
         },
+        onAttrCreate: (table: string, attr: TAttr) => {
+            dispatch({
+                type: 'ADD_ATTR',
+                table,
+                attr,
+            })
+        },
+        onTableCreate: (table: TTable) => {
+            dispatch({
+                type: 'ADD_TABLE',
+                table,
+            })
+        },
     }
 }
 
@@ -349,38 +365,132 @@ type TProps = {
     onLinkDeleteClick: (tableShape: TTableShape, attr: TAttr) => void,
     onAttrDeleteClick: (tableShape: TTableShape, attr: TAttr) => void,
     onAttrMouseDown: (tableShape: TTableShape, attr: TAttr, point: TPoint) => void,
+    onAttrCreate: (table: string, attr: TAttr) => void,
+    onTableCreate: (table: TTable) => void,
     onMouseMove: (point: TPoint) => void,
     onMouseUp: (point: TPoint) => void,
 }
 
+type TRootState = {
+    attrCreateModal: false | {table: string},
+    tableCreateModal: boolean,
+}
+
 export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class extends React.Component {
     props: TProps
+
+    state: TRootState = {
+        attrCreateModal: false,
+        tableCreateModal: false,
+    }
+
+    handleAttrCreateClick = (tableShape: TTableShape) => {
+        this.setState({
+            attrCreateModal: {
+                table: tableShape.table.name,
+            },
+        })
+    }
+
+    handleAttrCreate = (table: string, attr: TAttr) => {
+        this.setState({
+            attrCreateModal: false,
+        }, () => {
+            this.props.onAttrCreate(table, attr)
+        })
+    }
+
+    handleAttrCancel = () => {
+        this.setState({
+            attrCreateModal: false,
+        })
+    }
+
+    handleTableCreateClick = () => {
+        this.setState({
+            tableCreateModal: true,
+        })
+    }
+
+    handleTableCreate = (table: TTable) => {
+        this.setState({
+            tableCreateModal: false,
+        }, () => {
+            this.props.onTableCreate(table)
+        })
+    }
+
+    handleTableCancel = () => {
+        this.setState({
+            tableCreateModal: false,
+        })
+    }
+
+    exportToPng = () => {
+        const download = (filename: string, dataUrl: string) => {
+            const elem = window.document.createElement('a')
+            elem.href = dataUrl
+            elem.download = filename
+            document.body.appendChild(elem)
+            elem.click()
+            document.body.removeChild(elem)
+        }
+
+        const canvas = document.createElement('canvas')
+        canvas.setAttribute('width', 800)
+        canvas.setAttribute('height', 600)
+        const ctx = canvas.getContext('2d')
+        const img = new Image()
+        img.onload = () => {
+            ctx.drawImage(img, 0, 0)
+            const dataUrl = canvas.toDataURL('image/png')
+            download('scheme.png', dataUrl)
+        }
+
+        const body = new XMLSerializer().serializeToString(document.querySelector('svg'))
+        const encoded = window.btoa(body)
+        img.src = 'data:image/svg+xml;base64,' + encoded
+    }
 
     render(): * {
         const width = 800
         const height = 600
 
         return (
-            <Workarea
-                style={workareaStyle}
-                size={{width, height}}
-                tables={this.props.tables}
-                links={this.props.links}
-                selected={this.props.selected}
-                metrics={this.props.metrics}
-                onClick={this.props.onWorkareaClick}
-                onMouseMove={this.props.onMouseMove}
-                onAttrClick={this.props.onAttrClick}
-                onLinkAddClick={this.props.onLinkAddClick}
-                onLinkDeleteClick={this.props.onLinkDeleteClick}
-                onAttrDeleteClick={this.props.onAttrDeleteClick}
-                onAttrMouseDown={this.props.onAttrMouseDown}
-                onTableClick={this.props.onTableClick}
-                onTableMouseDown={this.props.onTableMouseDown}
-                onTableDeleteClick={this.props.onTableDeleteClick}
-                onMouseUp={this.props.onMouseUp}
-                newLink={this.props.newLink}
-            />
+            <div>
+                <div><button onClick={this.handleTableCreateClick}>Create table</button></div>
+                <div><button onClick={this.exportToPng}>Export to PNG</button></div>
+                <Workarea
+                    style={workareaStyle}
+                    size={{width, height}}
+                    tables={this.props.tables}
+                    links={this.props.links}
+                    selected={this.props.selected}
+                    metrics={this.props.metrics}
+                    onClick={this.props.onWorkareaClick}
+                    onMouseMove={this.props.onMouseMove}
+                    onAttrClick={this.props.onAttrClick}
+                    onLinkAddClick={this.props.onLinkAddClick}
+                    onLinkDeleteClick={this.props.onLinkDeleteClick}
+                    onAttrDeleteClick={this.props.onAttrDeleteClick}
+                    onAttrMouseDown={this.props.onAttrMouseDown}
+                    onTableClick={this.props.onTableClick}
+                    onTableMouseDown={this.props.onTableMouseDown}
+                    onTableDeleteClick={this.props.onTableDeleteClick}
+                    onMouseUp={this.props.onMouseUp}
+                    onAttrCreateClick={this.handleAttrCreateClick}
+                    newLink={this.props.newLink}
+                />
+                {this.state.attrCreateModal !== false && <AttrAddModal
+                    table={this.state.attrCreateModal.table}
+                    onSave={this.handleAttrCreate}
+                    onCancel={this.handleAttrCancel}
+                />}
+                {this.state.tableCreateModal !== false && <TableAddModal
+                    onSave={this.handleTableCreate}
+                    onCancel={this.handleTableCancel}
+                />}
+            </div>
         )
     }
 })

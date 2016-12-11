@@ -1,0 +1,9 @@
+* link deletion
+* table creation
+* table deletion
+* attribute creation
+* attribute deletion
+* styles customization
+* improve links drawing algorithm
+* code generation (e.g. for postgres)
+

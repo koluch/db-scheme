@@ -30,6 +30,7 @@ type TProps = {
     onTableDeleteClick: (tableShape: TTableShape) => void,
     onAttrMouseDown: (tableShape: TTableShape, attr: TAttr, point: TPoint) => void,
     onAttrDeleteClick: (tableShape: TTableShape, attr: TAttr) => void,
+    onAttrCreateClick: (tableShape: TTableShape) => void,
     onAttrClick: (tableShape: TTableShape, attr: TAttr) => void,
     onMouseMove: (point: TPoint) => void,
     onLinkAddClick: (tableShape: TTableShape, attr: TAttr) => void,
@@ -56,7 +57,7 @@ class Workarea extends React.Component {
 
         const {width, height} = size
 
-        return (
+    return (
             <svg
                 className="workarea"
                 viewBox={`0 0 ${width} ${height}`}
@@ -102,6 +103,7 @@ class Workarea extends React.Component {
                         onLinkDeleteClick={this.props.onLinkDeleteClick}
                         onAttrDeleteClick={this.props.onAttrDeleteClick}
                         onAttrClick={this.props.onAttrClick}
+                        onAttrCreateClick={this.props.onAttrCreateClick}
                     />
                 })}
             </svg>

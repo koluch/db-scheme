@@ -373,6 +373,36 @@ const reducer = (state: TState = initialState, action: TAction): TState => {
             })),
         }
     }
+    else if (action.type === 'ADD_ATTR') {
+        const {table, attr} = action
+
+        return {
+            ...state,
+            tables: state.tables.map((tableState) => {
+                if (tableState.table.name === table) {
+                    return {
+                        ...tableState,
+                        table: {
+                            ...tableState.table,
+                            attrs: tableState.table.attrs.filter(({name}) => name !== attr.name).concat([attr])
+                        },
+                    }
+                }
+                return tableState
+            }),
+        }
+    }
+    else if (action.type === 'ADD_TABLE') {
+        const {table} = action
+
+        return {
+            ...state,
+            tables: state.tables.filter(({table: {name}}) => name !== table.name).concat([{
+                position: {x: 0, y: 0},
+                table,
+            }]),
+        }
+    }
     return state
 }
 
