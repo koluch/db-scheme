@@ -15,6 +15,7 @@ import type {TTableMetrics} from '~/types/TWorkareaMetrics'
 type TProps = {
     width: number,
     height: number,
+    color: ?string,
     x: number,
     y: number,
     title: string,
@@ -31,6 +32,7 @@ class Button extends React.Component {
             title,
             width, height,
             x, y,
+            color,
         } = this.props
 
         const bgId = `background_${x}_${y}`
@@ -55,9 +57,7 @@ class Button extends React.Component {
                     textAnchor="middle"
                     fontSize={15}
                     fontFamily="sans-serif"
-                    width={width}
-                    height={height}
-                    stroke="#4a4a4a"
+                    fill={color ? color : '#4a4a4a'}
                 >{title}</text>
                 <rect
                     x={x - width / 2}

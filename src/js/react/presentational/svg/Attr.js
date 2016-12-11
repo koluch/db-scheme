@@ -43,7 +43,7 @@ class Attr extends React.Component {
         } = this.props
 
         return <Button
-            title="+"
+            title={'\u2194'}
             x={x + width + ADD_LINK_BUTTON_MARGIN + 20}
             y={y + height / 2}
             width={20}
@@ -59,7 +59,7 @@ class Attr extends React.Component {
         } = this.props
 
         return <Button
-            title="-"
+            title={'\u2718'}
             x={x + width + ADD_LINK_BUTTON_MARGIN + 20}
             y={y + height / 2}
             width={20}
@@ -75,7 +75,8 @@ class Attr extends React.Component {
         } = this.props
 
         return <Button
-            title="D"
+            title={'\u2716'}
+            color="red"
             x={x + width + ADD_LINK_BUTTON_MARGIN + 50}
             y={y + height / 2}
             width={20}

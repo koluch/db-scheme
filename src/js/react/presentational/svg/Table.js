@@ -116,6 +116,7 @@ class Table extends React.Component {
                     title="Delete"
                     x={x + width / 2}
                     y={y + height + 15}
+                    color="red"
                     width={60} height={20}
                     onClick={this.props.onDeleteClick.bind(this, tableShape)}
                 />
