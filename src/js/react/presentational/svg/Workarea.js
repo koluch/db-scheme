@@ -65,10 +65,6 @@ class Workarea extends React.Component {
                 onMouseMove={(e) => this.props.onMouseMove({x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY})}
                 ref={(el) => { this.workareaEl = el }}
                 onClick={(e) => { if (e.target === this.workareaEl) { this.props.onClick() } } }>
-                {newLink && <Link
-                    path={newLink}
-                    style={style.newLink}
-                />}
                 {links.map((linkShape: TLinkShape): * => {
                     const {path} = linkShape
                     const key = `link-${path.map(({x, y}) => `${x},${y}`).join(';')}`
@@ -104,6 +100,10 @@ class Workarea extends React.Component {
                         onAttrCreateClick={this.props.onAttrCreateClick}
                     />
                 })}
+                {newLink && <Link
+                    path={newLink}
+                    style={style.newLink}
+                />}
             </svg>
         )
     }
