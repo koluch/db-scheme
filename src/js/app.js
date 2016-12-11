@@ -323,6 +323,56 @@ const reducer = (state: TState = initialState, action: TAction): TState => {
             }),
         }
     }
+    else if (action.type === 'DELETE_ATTR') {
+        const {table, attr} = action
+
+        return {
+            ...state,
+            tables: state.tables.map((tableState) => {
+                if (tableState.table.name === table) {
+                    return {
+                        ...tableState,
+                        table: {
+                            ...tableState.table,
+                            attrs: tableState.table.attrs.filter(({name}) => name !== attr),
+                            foreignKeys: tableState.table.foreignKeys.filter(({from}) => (
+                                !(from.attr === attr)
+                            )),
+                        },
+                    }
+                }
+                else {
+                    return {
+                        ...tableState,
+                        table: {
+                            ...tableState.table,
+                            foreignKeys: tableState.table.foreignKeys.filter(({to}) => (
+                                !(to.table === table && to.attr === attr)
+                            )),
+                        },
+                    }
+                }
+            }),
+        }
+    }
+    else if (action.type === 'DELETE_TABLE') {
+        const {table} = action
+
+        const filteredTables = state.tables.filter((tableState) => {
+            return tableState.table.name !== table
+        })
+
+        return {
+            ...state,
+            tables: filteredTables.map((tableState) => ({
+                ...tableState,
+                table: {
+                    ...tableState.table,
+                    foreignKeys: tableState.table.foreignKeys.filter(({to}) => to.table !== table),
+                },
+            })),
+        }
+    }
     return state
 }
 

@@ -34,3 +34,5 @@ export type TAction =
         | {type: 'STOP_TCO'}
         | {type: 'ADD_LINK', from: {table: string, attr: string}, to: {table: string, attr: string}}
         | {type: 'DELETE_LINK', table: string, attr: string}
+        | {type: 'DELETE_ATTR', table: string, attr: string}
+        | {type: 'DELETE_TABLE', table: string}

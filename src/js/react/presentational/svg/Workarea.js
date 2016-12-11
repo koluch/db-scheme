@@ -27,11 +27,13 @@ type TProps = {
     size: TSize,
     onTableClick: (tableShape: TTableShape) => void,
     onTableMouseDown: (tableShape: TTableShape, point: TPoint) => void,
+    onTableDeleteClick: (tableShape: TTableShape) => void,
     onAttrMouseDown: (tableShape: TTableShape, attr: TAttr, point: TPoint) => void,
-    onMouseMove: (point: TPoint) => void,
-    onAddLinkClick: (tableShape: TTableShape, attr: TAttr) => void,
-    onDeleteLinkClick: (tableShape: TTableShape, attr: TAttr) => void,
+    onAttrDeleteClick: (tableShape: TTableShape, attr: TAttr) => void,
     onAttrClick: (tableShape: TTableShape, attr: TAttr) => void,
+    onMouseMove: (point: TPoint) => void,
+    onLinkAddClick: (tableShape: TTableShape, attr: TAttr) => void,
+    onLinkDeleteClick: (tableShape: TTableShape, attr: TAttr) => void,
     onMouseUp: (point: TPoint) => void,
     onClick: () => void,
 }
@@ -52,18 +54,6 @@ class Workarea extends React.Component {
             newLink,
             } = this.props
 
-        const {
-            onTableClick,
-            onTableMouseDown,
-            onAttrMouseDown,
-            onMouseMove,
-            onAddLinkClick,
-            onDeleteLinkClick,
-            onAttrClick,
-            onMouseUp,
-            onClick,
-            } = this.props
-
         const {width, height} = size
 
         return (
@@ -72,10 +62,10 @@ class Workarea extends React.Component {
                 viewBox={`0 0 ${width} ${height}`}
                 width={width}
                 height={height}
-                onMouseUp={(e) => onMouseUp({x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY})}
-                onMouseMove={(e) => onMouseMove({x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY})}
+                onMouseUp={(e) => this.props.onMouseUp({x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY})}
+                onMouseMove={(e) => this.props.onMouseMove({x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY})}
                 ref={(el) => { this.workareaEl = el }}
-                onClick={(e) => { if (e.target === this.workareaEl) { onClick() } } }>
+                onClick={(e) => { if (e.target === this.workareaEl) { this.props.onClick() } } }>
                 {newLink && <Link
                     path={newLink}
                     style={style.newLink}
@@ -104,12 +94,14 @@ class Workarea extends React.Component {
                         style={style.table}
                         key={tableShape.table.name}
                         tableShape={tableShape}
-                        onHeaderClick={onTableClick}
-                        onHeaderMouseDown={onTableMouseDown}
-                        onAttrMouseDown={onAttrMouseDown}
-                        onAddLinkClick={onAddLinkClick}
-                        onDeleteLinkClick={onDeleteLinkClick}
-                        onAttrClick={onAttrClick}
+                        onDeleteClick={this.props.onTableDeleteClick}
+                        onHeaderClick={this.props.onTableClick}
+                        onHeaderMouseDown={this.props.onTableMouseDown}
+                        onAttrMouseDown={this.props.onAttrMouseDown}
+                        onLinkAddClick={this.props.onLinkAddClick}
+                        onLinkDeleteClick={this.props.onLinkDeleteClick}
+                        onAttrDeleteClick={this.props.onAttrDeleteClick}
+                        onAttrClick={this.props.onAttrClick}
                     />
                 })}
             </svg>

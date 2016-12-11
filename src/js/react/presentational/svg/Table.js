@@ -16,11 +16,13 @@ type TProps = {
     style: TTableStyle,
     tableShape: TTableShape,
     selected: false | {type: 'TABLE'} | {type: 'ATTR', name: string},
+    onDeleteClick: (tableShape: TTableShape) => void,
     onHeaderClick: (tableShape: TTableShape) => void,
     onHeaderMouseDown: (tableShape: TTableShape, point: TPoint) => void,
     onAttrMouseDown: (tableShape: TTableShape, attr: TAttr, point: TPoint) => void,
-    onAddLinkClick: (tableShape: TTableShape, attr: TAttr) => void,
-    onDeleteLinkClick: (tableShape: TTableShape, attr: TAttr) => void,
+    onLinkAddClick: (tableShape: TTableShape, attr: TAttr) => void,
+    onAttrDeleteClick: (tableShape: TTableShape, attr: TAttr) => void,
+    onLinkDeleteClick: (tableShape: TTableShape, attr: TAttr) => void,
     onAttrClick: (tableShape: TTableShape, attr: TAttr) => void,
 }
 
@@ -75,16 +77,54 @@ class Table extends React.Component {
                 position={{x, y: y + size.height * i + metrics.header.size.height}}
                 onMouseDown={this.props.onAttrMouseDown.bind(this, tableShape, attr)}
                 onClick={this.props.onAttrClick.bind(this, tableShape, attr)}
-                onAddLinkClick={this.props.onAddLinkClick.bind(this, tableShape, attr)}
-                onDeleteLinkClick={this.props.onDeleteLinkClick.bind(this, tableShape, attr)}
+                onLinkAddClick={this.props.onLinkAddClick.bind(this, tableShape, attr)}
+                onLinkDeleteClick={this.props.onLinkDeleteClick.bind(this, tableShape, attr)}
+                onDeleteClick={this.props.onAttrDeleteClick.bind(this, tableShape, attr)}
             />
         })
     }
 
+    renderControls() {
+        const {tableShape} = this.props
+        const {position: {x, y}} = tableShape
+        const {metrics} = this.props
+        const {width, height} = metrics.size
+        return (
+            <g>
+                <rect
+                    x={x} y={y + height} width={width} height={20}
+                    fill="gray"
+                />
+                <text
+                    x={x} y={y + height + 15} width={width} height={20}
+                >delete</text>
+                <rect
+                    x={x} y={y + height} width={width} height={20}
+                    fill="transparent"
+                    onClick={this.props.onDeleteClick.bind(this, tableShape)}
+                />
+
+                <rect
+                    x={x} y={y + height + 20} width={width} height={20}
+                    fill="green"
+                />
+                <text
+                    x={x} y={y + height + 20 + 15} width={width} height={20}
+                    fill="black"
+                >+ attr</text>
+                <rect
+                    x={x} y={y + height + 20} width={width} height={20}
+                    fill="transparent"
+                />
+            </g>
+        )
+    }
+
     renderHeader() {
-        const {tableShape, style, metrics, onHeaderClick} = this.props
+        const {tableShape, style, metrics, onHeaderClick, selected} = this.props
         const {table, position: {x, y}} = tableShape
         const {size: {width, height}} = metrics.header
+        const isTableActive = selected !== false && selected.type === 'TABLE'
 
         return <g>
             <rect
@@ -107,6 +147,7 @@ class Table extends React.Component {
                     onMouseDown={this.handleHeaderMouseDown.bind(this, tableShape)}
                 />
             </FixClick>
+            {isTableActive && this.renderControls()}
         </g>
     }
 }

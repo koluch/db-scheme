@@ -195,7 +195,7 @@ const mapDispatchToProps = (dispatch: Dispatch<TAction>): * => {
                 startPoint: point,
             })
         },
-        onAddLinkClick: (tableShape: TTableShape, attr: TAttr) => {
+        onLinkAddClick: (tableShape: TTableShape, attr: TAttr) => {
             dispatch({
                 type: 'START_TCO',
                 attrs: {
@@ -205,10 +205,23 @@ const mapDispatchToProps = (dispatch: Dispatch<TAction>): * => {
                 },
             })
         },
-        onDeleteLinkClick: (tableShape: TTableShape, attr: TAttr) => {
+        onLinkDeleteClick: (tableShape: TTableShape, attr: TAttr) => {
             dispatch({
                 type: 'DELETE_LINK',
                 attr: attr.name,
+                table: tableShape.table.name,
+            })
+        },
+        onAttrDeleteClick: (tableShape: TTableShape, attr: TAttr) => {
+            dispatch({
+                type: 'DELETE_ATTR',
+                attr: attr.name,
+                table: tableShape.table.name,
+            })
+        },
+        onTableDeleteClick: (tableShape: TTableShape) => {
+            dispatch({
+                type: 'DELETE_TABLE',
                 table: tableShape.table.name,
             })
         },
@@ -328,11 +341,13 @@ type TProps = {
     selected: TSelected,
 
     onTableClick: (tableShape: TTableShape) => void,
+    onTableDeleteClick: (tableShape: TTableShape) => void,
     onWorkareaClick: () => void,
     onTableMouseDown: (tableShape: TTableShape, point: TPoint) => void,
     onAttrClick: (tableShape: TTableShape, attr: TAttr) => void,
-    onAddLinkClick: (tableShape: TTableShape, attr: TAttr) => void,
-    onDeleteLinkClick: (tableShape: TTableShape, attr: TAttr) => void,
+    onLinkAddClick: (tableShape: TTableShape, attr: TAttr) => void,
+    onLinkDeleteClick: (tableShape: TTableShape, attr: TAttr) => void,
+    onAttrDeleteClick: (tableShape: TTableShape, attr: TAttr) => void,
     onAttrMouseDown: (tableShape: TTableShape, attr: TAttr, point: TPoint) => void,
     onMouseMove: (point: TPoint) => void,
     onMouseUp: (point: TPoint) => void,
@@ -342,44 +357,29 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
     props: TProps
 
     render(): * {
-        const {
-            metrics,
-            tables,
-            links,
-            newLink,
-            selected,
-            onMouseMove,
-            onAttrClick,
-            onAddLinkClick,
-            onDeleteLinkClick,
-            onTableClick,
-            onAttrMouseDown,
-            onTableMouseDown,
-            onMouseUp,
-            onWorkareaClick,
-        } = this.props
-
         const width = 800
         const height = 600
 
         return (
             <Workarea
-                tables={tables}
-                links={links}
-                selected={selected}
                 style={workareaStyle}
-                metrics={metrics}
                 size={{width, height}}
-                onClick={onWorkareaClick}
-                onMouseMove={onMouseMove}
-                onAttrClick={onAttrClick}
-                onAddLinkClick={onAddLinkClick}
-                onDeleteLinkClick={onDeleteLinkClick}
-                onAttrMouseDown={onAttrMouseDown}
-                onTableClick={onTableClick}
-                onTableMouseDown={onTableMouseDown}
-                onMouseUp={onMouseUp}
-                newLink={newLink}
+                tables={this.props.tables}
+                links={this.props.links}
+                selected={this.props.selected}
+                metrics={this.props.metrics}
+                onClick={this.props.onWorkareaClick}
+                onMouseMove={this.props.onMouseMove}
+                onAttrClick={this.props.onAttrClick}
+                onLinkAddClick={this.props.onLinkAddClick}
+                onLinkDeleteClick={this.props.onLinkDeleteClick}
+                onAttrDeleteClick={this.props.onAttrDeleteClick}
+                onAttrMouseDown={this.props.onAttrMouseDown}
+                onTableClick={this.props.onTableClick}
+                onTableMouseDown={this.props.onTableMouseDown}
+                onTableDeleteClick={this.props.onTableDeleteClick}
+                onMouseUp={this.props.onMouseUp}
+                newLink={this.props.newLink}
             />
         )
     }

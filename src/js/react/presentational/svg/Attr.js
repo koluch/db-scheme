@@ -21,8 +21,9 @@ type TProps = {
     position: TPoint,
     onMouseDown: (point: TPoint) => void,
     onClick: () => void,
-    onAddLinkClick: () => void,
-    onDeleteLinkClick: () => void,
+    onLinkAddClick: () => void,
+    onLinkDeleteClick: () => void,
+    onDeleteClick: () => void,
 }
 
 const ADD_LINK_BUTTON_MARGIN = 5
@@ -57,7 +58,7 @@ class Attr extends React.Component {
                 y={y}
                 width={20}
                 height={20}
-                onClick={this.props.onAddLinkClick}
+                onClick={this.props.onLinkAddClick}
             />
         </g>
     }
@@ -85,7 +86,35 @@ class Attr extends React.Component {
                 y={y}
                 width={20}
                 height={20}
-                onClick={this.props.onDeleteLinkClick}
+                onClick={this.props.onLinkDeleteClick}
+            />
+        </g>
+    }
+
+    renderDeleteButton() {
+        const {
+            size: {width, height},
+            position: {x, y},
+        } = this.props
+        return <g>
+            <rect
+                fill="red"
+                x={x + width + 20}
+                y={y}
+                width={20}
+                height={20}
+            />
+            <text
+                x={x + width + ADD_LINK_BUTTON_MARGIN  + 20}
+                y={y + height / 2}
+            >D</text>
+            <rect
+                fill="transparent"
+                x={x + width + 20}
+                y={y}
+                width={20}
+                height={20}
+                onClick={this.props.onDeleteClick}
             />
         </g>
     }
@@ -120,6 +149,7 @@ class Attr extends React.Component {
             </FixClick>
             {active && !hasLink && this.renderAddLinkButton()}
             {active && hasLink && this.renderDeleteLinkButton()}
+            {active && this.renderDeleteButton()}
         </g>
     }
 }
