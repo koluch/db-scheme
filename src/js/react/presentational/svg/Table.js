@@ -9,6 +9,7 @@ import type {TTableMetrics} from '~/types/TWorkareaMetrics'
 
 import FixClick from './FixClick'
 import Attr from './Attr'
+import Button from './Button'
 
 type TProps = {
     metrics: TTableMetrics,
@@ -111,30 +112,18 @@ class Table extends React.Component {
         const {width, height} = metrics.size
         return (
             <g>
-                <rect
-                    x={x} y={y + height} width={width} height={20}
-                    fill="gray"
-                />
-                <text
-                    x={x} y={y + height + 15} width={width} height={20}
-                >delete</text>
-                <rect
-                    x={x} y={y + height} width={width} height={20}
-                    fill="transparent"
+                <Button
+                    title="Delete"
+                    x={x + width / 2}
+                    y={y + height + 15}
+                    width={60} height={20}
                     onClick={this.props.onDeleteClick.bind(this, tableShape)}
                 />
-
-                <rect
-                    x={x} y={y + height + 20} width={width} height={20}
-                    fill="green"
-                />
-                <text
-                    x={x} y={y + height + 20 + 15} width={width} height={20}
-                    fill="black"
-                >+ attr</text>
-                <rect
-                    x={x} y={y + height + 20} width={width} height={20}
-                    fill="transparent"
+                <Button
+                    title="+ Attribute"
+                    x={x + width / 2}
+                    y={y + height + 40}
+                    width={80} height={20}
                     onClick={this.props.onAttrCreateClick.bind(this, tableShape)}
                 />
             </g>

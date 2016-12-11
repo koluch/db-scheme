@@ -10,7 +10,7 @@ import type {TAttr} from '~/types/TAttr'
 import type {TTableMetrics} from '~/types/TWorkareaMetrics'
 
 import FixClick from './FixClick'
-
+import Button from './Button'
 
 type TProps = {
     name: string,
@@ -41,27 +41,15 @@ class Attr extends React.Component {
             style: {padding},
             position: {x, y},
         } = this.props
-        return <g>
-            <rect
-                fill="green"
-                x={x + width}
-                y={y}
-                width={20}
-                height={20}
-            />
-            <text
-                x={x + width + ADD_LINK_BUTTON_MARGIN}
-                y={y + height / 2}
-            >+</text>
-            <rect
-                fill="transparent"
-                x={x + width}
-                y={y}
-                width={20}
-                height={20}
-                onClick={this.props.onLinkAddClick}
-            />
-        </g>
+
+        return <Button
+            title="+"
+            x={x + width + ADD_LINK_BUTTON_MARGIN + 20}
+            y={y + height / 2}
+            width={20}
+            height={20}
+            onClick={this.props.onLinkAddClick}
+        />
     }
 
     renderDeleteLinkButton() {
@@ -69,27 +57,15 @@ class Attr extends React.Component {
             size: {width, height},
             position: {x, y},
         } = this.props
-        return <g>
-            <rect
-                fill="red"
-                x={x + width}
-                y={y}
-                width={20}
-                height={20}
-            />
-            <text
-                x={x + width + ADD_LINK_BUTTON_MARGIN}
-                y={y + height / 2}
-            >-</text>
-            <rect
-                fill="transparent"
-                x={x + width}
-                y={y}
-                width={20}
-                height={20}
-                onClick={this.props.onLinkDeleteClick}
-            />
-        </g>
+
+        return <Button
+            title="-"
+            x={x + width + ADD_LINK_BUTTON_MARGIN + 20}
+            y={y + height / 2}
+            width={20}
+            height={20}
+            onClick={this.props.onLinkDeleteClick}
+        />
     }
 
     renderDeleteButton() {
@@ -97,27 +73,15 @@ class Attr extends React.Component {
             size: {width, height},
             position: {x, y},
         } = this.props
-        return <g>
-            <rect
-                fill="red"
-                x={x + width + 20}
-                y={y}
-                width={20}
-                height={20}
-            />
-            <text
-                x={x + width + ADD_LINK_BUTTON_MARGIN  + 20}
-                y={y + height / 2}
-            >D</text>
-            <rect
-                fill="transparent"
-                x={x + width + 20}
-                y={y}
-                width={20}
-                height={20}
-                onClick={this.props.onDeleteClick}
-            />
-        </g>
+
+        return <Button
+            title="D"
+            x={x + width + ADD_LINK_BUTTON_MARGIN + 50}
+            y={y + height / 2}
+            width={20}
+            height={20}
+            onClick={this.props.onDeleteClick}
+        />
     }
 
     render() {
@@ -135,13 +99,38 @@ class Attr extends React.Component {
             x={x}
             y={y}
             onMouseDown={this.handleMouseDown}>
+            <defs>
+                <filter id="active_attr_filter" x="-50%" y="-50%" width="200%" height="200%">
+                    <feOffset result="offOut" in="SourceAlpha" dx="0" dy="0" />
+                    <feGaussianBlur result="blurOut" in="offOut" stdDeviation="10" />
+                    <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
+                    <feComponentTransfer>
+                        <feFuncA type="linear" slope="0.2"/>
+                    </feComponentTransfer>
+                </filter>
+            </defs>
             <FixClick onClick={this.props.onClick}>
+                {active && <rect
+                    filter="url(#active_attr_filter)"
+                    x={x + 1}
+                    y={y}
+                    width={width - 2}
+                    height={height}
+                    fill="black"
+                />}
+                {active && <rect
+                    x={x + 1}
+                    y={y}
+                    width={width - 2}
+                    height={height}
+                    fill="white"
+                />}
                 <text
                     fontFamily={style.font.family}
+                    fontWeight={active ? 'bold' : 'normal'}
                     alignmentBaseline="middle"
                     x={x + style.padding.left}
                     y={y + height / 2}
-                    fill={active ? 'red' : 'black'}
                     fontSize={style.font.size}>
                     {name}
                 </text>
