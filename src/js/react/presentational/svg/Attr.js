@@ -7,7 +7,7 @@ import type {TAttrStyle} from '~/types/styles/TAttrStyle'
 import type {TPoint} from '~/types/TPoint'
 import type {TSize} from '~/types/TSize'
 import type {TAttr} from '~/types/TAttr'
-import type {TTableMetrics} from '~/types/TWorkareaMetrics'
+import type {TTableMetrics} from '~/types/TSchemeMetrics'
 
 import FixClick from './FixClick'
 import Button from './Button'

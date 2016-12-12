@@ -5,7 +5,7 @@ import type {TTableShape} from '~/types/TTableShape'
 import type {TTableStyle} from '~/types/styles/TTableStyle'
 import type {TPoint} from '~/types/TPoint'
 import type {TAttr} from '~/types/TAttr'
-import type {TTableMetrics} from '~/types/TWorkareaMetrics'
+import type {TTableMetrics} from '~/types/TSchemeMetrics'
 
 import FixClick from './FixClick'
 import Attr from './Attr'

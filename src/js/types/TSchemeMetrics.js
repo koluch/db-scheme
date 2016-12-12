@@ -17,6 +17,6 @@ export type TTableMetrics = {
     attrs: Array<{name: string, metrics: TAttrMetrics}>,
 }
 
-export type TWorkareaMetrics = {
+export type TSchemeMetrics = {
     tables: Array<{name: string, metrics: TTableMetrics}>,
 }

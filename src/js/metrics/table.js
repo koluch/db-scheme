@@ -8,7 +8,7 @@ import type {TSize} from '~/types/TSize'
 import type {TBounds} from '~/types/TBounds'
 import type {TPoint} from '~/types/TPoint'
 
-import type {TTableMetrics} from '~/types/TWorkareaMetrics'
+import type {TTableMetrics} from '~/types/TSchemeMetrics'
 
 import * as TAttrMethods from '~/types/TAttr'
 

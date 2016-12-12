@@ -5,7 +5,7 @@ import type {Dispatch, Store} from 'redux'
 
 import type {TTableShape} from '~/types/TTableShape'
 import type {TLinkShape} from '~/types/TLinkShape'
-import type {TWorkareaStyle} from '~/types/styles/TWorkareaStyle'
+import type {TSchemeStyle} from '~/types/styles/TSchemeStyle'
 import type {TState, TTableState, TLinkState} from '~/types/TState'
 import type {TAction} from '~/types/TAction'
 import type {TAttr} from '~/types/TAttr'
@@ -13,15 +13,15 @@ import type {TBounds} from '~/types/TBounds'
 import type {TPoint} from '~/types/TPoint'
 import type {TTable} from '~/types/TTable'
 import type {TPath} from '~/types/TPath'
-import type {TWorkareaMetrics} from '~/types/TWorkareaMetrics'
+import type {TSchemeMetrics} from '~/types/TSchemeMetrics'
 import type {TSelected} from '~/types/TState'
 
-import Workarea from '~/react/presentational/svg/Workarea'
+import Scheme from '~/react/presentational/svg/Scheme'
 import AttrAddModal from '~/react/presentational/AttrAddModal'
 import TableAddModal from '~/react/presentational/TableAddModal'
 import * as tableMetrics from '~/metrics/table'
 import * as metricsSelectors from '~/react/selectors/metrics'
-import {workareaStyle} from '~/react/styles'
+import {schemeStyle} from '~/react/styles'
 import {getAttrBounds, getTableBounds, getHeaderBounds} from '~/metrics/table'
 
 
@@ -61,7 +61,7 @@ const calculatePath = (b1: TBounds, b2: TBounds): Array<TPoint> => {
 
 const mapStateToProps = (state: TState): * => {
     const {tables, dnd, tco, mousePosition} = state
-    const metrics = metricsSelectors.workarea(state)
+    const metrics = metricsSelectors.scheme(state)
 
     let newLink = null
     if (tco !== false) {
@@ -237,7 +237,7 @@ const mergeProps = (stateProps, dispatchProps): * => {
     return {
         ...stateProps,
         ...dispatchProps,
-        onWorkareaClick: () => {
+        onSchemeClick: () => {
             if (tco !== false) {
                 dispatch({
                     type: 'STOP_TCO',
@@ -352,12 +352,12 @@ type TProps = {
     tables: Array<TTableShape>,
     links: Array<TLinkShape>,
     newLink: ?TPath,
-    metrics: TWorkareaMetrics,
+    metrics: TSchemeMetrics,
     selected: TSelected,
 
     onTableClick: (tableShape: TTableShape) => void,
     onTableDeleteClick: (tableShape: TTableShape) => void,
-    onWorkareaClick: () => void,
+    onSchemeClick: () => void,
     onTableMouseDown: (tableShape: TTableShape, point: TPoint) => void,
     onAttrClick: (tableShape: TTableShape, attr: TAttr) => void,
     onLinkAddClick: (tableShape: TTableShape, attr: TAttr) => void,
@@ -462,8 +462,8 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                 <div><button onClick={this.handleTableCreateClick}>Create table</button></div>
                 <div><button onClick={this.exportToPng}>Export to PNG</button></div>
                 <div style={{display: 'none'}} id="for_export">
-                    <Workarea
-                        style={workareaStyle}
+                    <Scheme
+                        style={schemeStyle}
                         size={{width, height}}
                         tables={this.props.tables}
                         links={this.props.links}
@@ -484,14 +484,14 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                         newLink={null}
                     />
                 </div>
-                <Workarea
-                    style={workareaStyle}
+                <Scheme
+                    style={schemeStyle}
                     size={{width, height}}
                     tables={this.props.tables}
                     links={this.props.links}
                     selected={this.props.selected}
                     metrics={this.props.metrics}
-                    onClick={this.props.onWorkareaClick}
+                    onClick={this.props.onSchemeClick}
                     onMouseMove={this.props.onMouseMove}
                     onAttrClick={this.props.onAttrClick}
                     onLinkAddClick={this.props.onLinkAddClick}

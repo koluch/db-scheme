@@ -7,7 +7,7 @@ import type {TAttrStyle} from '~/types/styles/TAttrStyle'
 import type {TPoint} from '~/types/TPoint'
 import type {TSize} from '~/types/TSize'
 import type {TAttr} from '~/types/TAttr'
-import type {TTableMetrics} from '~/types/TWorkareaMetrics'
+import type {TTableMetrics} from '~/types/TSchemeMetrics'
 
 // import {getTextSize} from '~/metrics/text'
 
@@ -15,7 +15,7 @@ import type {TTableMetrics} from '~/types/TWorkareaMetrics'
 type TProps = {
     width: number,
     height: number,
-    color: ?string,
+    color?: string,
     x: number,
     y: number,
     title: string,
@@ -23,6 +23,7 @@ type TProps = {
 }
 
 class Button extends React.Component {
+
     props: TProps
 
     render() {

@@ -1,5 +1,5 @@
 // @flow
-import type {TWorkareaStyle} from '~/types/styles/TWorkareaStyle'
+import type {TSchemeStyle} from '~/types/styles/TSchemeStyle'
 
 const fontStyle = {
     color: 'black',
@@ -48,7 +48,7 @@ const newLinkStyle = {
     strokeStyle: 'dashed',
 }
 
-export const workareaStyle: TWorkareaStyle = {
+export const schemeStyle: TSchemeStyle = {
     table: tableStyle,
     link: linkStyle,
     newLink: newLinkStyle,
