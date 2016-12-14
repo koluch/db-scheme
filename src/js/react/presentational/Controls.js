@@ -6,6 +6,7 @@ import type {TPoint} from '~/types/TPoint'
 import type {TAttr} from '~/types/TAttr'
 import type {TSchemeMetrics} from '~/types/TSchemeMetrics'
 import type {TSelected} from '~/types/TState'
+import type {TSize} from '~/types/TSize'
 
 import {getAttrBounds} from '~/metrics/table'
 
@@ -60,7 +61,10 @@ class Controls extends React.Component {
         selected: TSelected,
         metrics: TSchemeMetrics,
         tables: Array<TTableShape>,
+        size: TSize,
+        isDnd: boolean,
 
+        onTableCreateClick: () => void,
         onTableDeleteClick: (tableShape: TTableShape) => void,
         onAttrDeleteClick: (tableShape: TTableShape, attr: TAttr) => void,
         onAttrCreateClick: (tableShape: TTableShape) => void,
@@ -146,6 +150,26 @@ class Controls extends React.Component {
         )
     }
 
+    renderCreateTable() {
+        const {size: {width}} = this.props
+        const MARGIN = 10
+        return (
+            <Position
+                x={width - MARGIN}
+                y={MARGIN}
+                v="start"
+                h="end"
+            >
+                <Panel orientation="h">
+                    <button
+                        className="controls__button"
+                        onClick={this.props.onTableCreateClick}
+                    >{'Create table'}</button>
+                </Panel>
+            </Position>
+        )
+    }
+
     renderSelected(selected: TSelected) {
         const {tables} = this.props
         if (selected !== false && selected.type === 'TABLE') {
@@ -170,9 +194,8 @@ class Controls extends React.Component {
         const {selected} = this.props
         return (
             <div className="controls">
-                <div>
-                    {selected !== false && this.renderSelected(selected)}
-                </div>
+                {this.renderCreateTable()}
+                {selected !== false && this.renderSelected(selected)}
             </div>
         )
     }

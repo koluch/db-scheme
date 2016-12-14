@@ -49,6 +49,7 @@ svg.scheme {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    z-index: 1;
 
     &__body {
         background: white;

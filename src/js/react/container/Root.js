@@ -5,7 +5,7 @@ import type {Dispatch} from 'redux'
 
 import type {TTableShape} from '~/types/TTableShape'
 import type {TLinkShape} from '~/types/TLinkShape'
-import type {TState, TTableState, TSelected} from '~/types/TState'
+import type {TState, TTableState, TSelected, TDndTarget} from '~/types/TState'
 import type {TAction} from '~/types/TAction'
 import type {TAttr} from '~/types/TAttr'
 import type {TBounds} from '~/types/TBounds'
@@ -348,6 +348,7 @@ type TProps = {
     newLink: ?TPath,
     metrics: TSchemeMetrics,
     selected: TSelected,
+    dnd: TDndTarget,
 
     onTableClick: (tableShape: TTableShape) => void,
     onTableDeleteClick: (tableShape: TTableShape) => void,
@@ -453,7 +454,6 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
 
         return (
             <div className="root">
-                <div><button onClick={this.handleTableCreateClick}>{'Create table'}</button></div>
                 <div><button onClick={this.handleExportToPng}>{'Export to PNG'}</button></div>
                 <div style={{display: 'none'}} id="for_export">
                     <Scheme
@@ -466,20 +466,17 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                         onClick={() => {}}
                         onMouseMove={() => {}}
                         onAttrClick={() => {}}
-                        onLinkAddClick={() => {}}
-                        onLinkDeleteClick={() => {}}
-                        onAttrDeleteClick={() => {}}
                         onAttrMouseDown={() => {}}
                         onTableClick={() => {}}
                         onTableMouseDown={() => {}}
-                        onTableDeleteClick={() => {}}
                         onMouseUp={() => {}}
-                        onAttrCreateClick={() => {}}
                         newLink={null}
                     />
                 </div>
                 <div className="root__wrapper">
                     <Controls
+                        isDnd={this.props.dnd !== false}
+                        size={{width, height}}
                         selected={this.props.selected}
                         metrics={this.props.metrics}
                         tables={this.props.tables}
@@ -489,9 +486,9 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                         onLinkDeleteClick={this.props.onLinkDeleteClick}
                         onAttrDeleteClick={this.props.onAttrDeleteClick}
                         onTableDeleteClick={this.props.onTableDeleteClick}
+                        onTableCreateClick={this.handleTableCreateClick}
                         onMouseUp={this.props.onMouseUp}
                         onAttrCreateClick={this.handleAttrCreateClick}
-
                     />
                     <Scheme
                         style={schemeStyle}
@@ -503,15 +500,10 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                         onClick={this.props.onSchemeClick}
                         onMouseMove={this.props.onMouseMove}
                         onAttrClick={this.props.onAttrClick}
-                        onLinkAddClick={this.props.onLinkAddClick}
-                        onLinkDeleteClick={this.props.onLinkDeleteClick}
-                        onAttrDeleteClick={this.props.onAttrDeleteClick}
                         onAttrMouseDown={this.props.onAttrMouseDown}
                         onTableClick={this.props.onTableClick}
                         onTableMouseDown={this.props.onTableMouseDown}
-                        onTableDeleteClick={this.props.onTableDeleteClick}
                         onMouseUp={this.props.onMouseUp}
-                        onAttrCreateClick={this.handleAttrCreateClick}
                         newLink={this.props.newLink}
                     />
                 </div>
