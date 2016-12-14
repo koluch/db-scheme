@@ -2,6 +2,10 @@
 import React from 'react'
 
 class Modal extends React.Component {
+    props: {
+        children?: *,
+    }
+
     render() {
         return (
             <div className="modal">

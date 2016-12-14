@@ -1,12 +1,11 @@
 // @flow
 import React from 'react'
 import {connect} from 'react-redux'
-import type {Dispatch, Store} from 'redux'
+import type {Dispatch} from 'redux'
 
 import type {TTableShape} from '~/types/TTableShape'
 import type {TLinkShape} from '~/types/TLinkShape'
-import type {TSchemeStyle} from '~/types/styles/TSchemeStyle'
-import type {TState, TTableState, TLinkState} from '~/types/TState'
+import type {TState, TTableState, TSelected} from '~/types/TState'
 import type {TAction} from '~/types/TAction'
 import type {TAttr} from '~/types/TAttr'
 import type {TBounds} from '~/types/TBounds'
@@ -14,20 +13,16 @@ import type {TPoint} from '~/types/TPoint'
 import type {TTable} from '~/types/TTable'
 import type {TPath} from '~/types/TPath'
 import type {TSchemeMetrics} from '~/types/TSchemeMetrics'
-import type {TSelected} from '~/types/TState'
 
 import Scheme from '~/react/presentational/svg/Scheme'
+import Controls from '~/react/presentational/Controls'
 import AttrAddModal from '~/react/presentational/AttrAddModal'
 import TableAddModal from '~/react/presentational/TableAddModal'
-import * as tableMetrics from '~/metrics/table'
+import * as tableMetricsHelper from '~/metrics/table'
 import * as metricsSelectors from '~/react/selectors/metrics'
 import {schemeStyle} from '~/react/styles'
-import {getAttrBounds, getTableBounds, getHeaderBounds} from '~/metrics/table'
-
 
 const calculatePath = (b1: TBounds, b2: TBounds): Array<TPoint> => {
-    const CONNECTION_LINE_WIDTH = 10
-
     let start = null
     let end = null
     // let end
@@ -39,7 +34,6 @@ const calculatePath = (b1: TBounds, b2: TBounds): Array<TPoint> => {
         start = {x: b1.x, y: b1.y + b1.height / 2}
         end = {x: b2.x + b2.width, y: b2.y + b2.height / 2}
     }
-
 
     //const c1 = [start[0] - CONNECTION_LINE_WIDTH, start[1]]
     //const c2 = [end[0] - CONNECTION_LINE_WIDTH, end[1]]
@@ -79,7 +73,7 @@ const mapStateToProps = (state: TState): * => {
             }
 
             const tableShapeFromMetrics = metrics.tables.filter(({name}) => name === tableShapeFrom.table.name)[0].metrics //todo: check
-            const attrFromBounds = tableMetrics.getAttrBounds(tableShapeFromMetrics, tableShapeFrom.position, attrFrom.name)
+            const attrFromBounds = tableMetricsHelper.getAttrBounds(tableShapeFromMetrics, tableShapeFrom.position, attrFrom.name)
             if (!attrFromBounds) {
                 throw new Error(`Unable to get attribue bounds for
                  attribute "${table}.${attr}": attribute doesnt exists`)
@@ -127,13 +121,13 @@ const mapStateToProps = (state: TState): * => {
             const tableShapeFromPosition = {x: tableShapeFrom.position.x, y: tableShapeFrom.position.y}
             const tableShapeToPosition = {x: tableShapeTo.position.x, y: tableShapeTo.position.y}
 
-            const attrFromBounds = tableMetrics.getAttrBounds(tableShapeFromMetrics, tableShapeFromPosition, attrFrom.name)
+            const attrFromBounds = tableMetricsHelper.getAttrBounds(tableShapeFromMetrics, tableShapeFromPosition, attrFrom.name)
             if (!attrFromBounds) {
                 throw new Error(`Unable to get attribue bounds for
                  attribute "${from.table}.${from.attr}": attribute doesnt exists`)
             }
 
-            const attrToBounds = tableMetrics.getAttrBounds(tableShapeToMetrics, tableShapeToPosition, attrTo.name)
+            const attrToBounds = tableMetricsHelper.getAttrBounds(tableShapeToMetrics, tableShapeToPosition, attrTo.name)
             if (!attrToBounds) {
                 throw new Error(`Unable to get attribue bounds for
                  attribute "${to.table}.${to.attr}": attribute doesnt exists`)
@@ -281,7 +275,7 @@ const mergeProps = (stateProps, dispatchProps): * => {
                     const tableMetrics = metrics.tables.filter(({name}) => name === table)[0].metrics //todo: check
 
                     const hoveredAttr = tableShape.table.attrs.filter(({name}) => {
-                        const attrBounds = getAttrBounds(tableMetrics, tableShape.position, name)
+                        const attrBounds = tableMetricsHelper.getAttrBounds(tableMetrics, tableShape.position, name)
                         if (attrBounds) {
                             return point.y > attrBounds.y
                                 && point.y < attrBounds.y + attrBounds.height
@@ -425,7 +419,7 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
         })
     }
 
-    exportToPng = () => {
+    handleExportToPng = () => {
         const download = (filename: string, dataUrl: string) => {
             const elem = window.document.createElement('a')
             elem.href = dataUrl
@@ -458,9 +452,9 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
         const height = 600
 
         return (
-            <div>
-                <div><button onClick={this.handleTableCreateClick}>Create table</button></div>
-                <div><button onClick={this.exportToPng}>Export to PNG</button></div>
+            <div className="root">
+                <div><button onClick={this.handleTableCreateClick}>{'Create table'}</button></div>
+                <div><button onClick={this.handleExportToPng}>{'Export to PNG'}</button></div>
                 <div style={{display: 'none'}} id="for_export">
                     <Scheme
                         style={schemeStyle}
@@ -484,36 +478,52 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                         newLink={null}
                     />
                 </div>
-                <Scheme
-                    style={schemeStyle}
-                    size={{width, height}}
-                    tables={this.props.tables}
-                    links={this.props.links}
-                    selected={this.props.selected}
-                    metrics={this.props.metrics}
-                    onClick={this.props.onSchemeClick}
-                    onMouseMove={this.props.onMouseMove}
-                    onAttrClick={this.props.onAttrClick}
-                    onLinkAddClick={this.props.onLinkAddClick}
-                    onLinkDeleteClick={this.props.onLinkDeleteClick}
-                    onAttrDeleteClick={this.props.onAttrDeleteClick}
-                    onAttrMouseDown={this.props.onAttrMouseDown}
-                    onTableClick={this.props.onTableClick}
-                    onTableMouseDown={this.props.onTableMouseDown}
-                    onTableDeleteClick={this.props.onTableDeleteClick}
-                    onMouseUp={this.props.onMouseUp}
-                    onAttrCreateClick={this.handleAttrCreateClick}
-                    newLink={this.props.newLink}
-                />
+                <div className="root__wrapper">
+                    <Controls
+                        selected={this.props.selected}
+                        metrics={this.props.metrics}
+                        tables={this.props.tables}
+                        onMouseMove={this.props.onMouseMove}
+                        onAttrClick={this.props.onAttrClick}
+                        onLinkAddClick={this.props.onLinkAddClick}
+                        onLinkDeleteClick={this.props.onLinkDeleteClick}
+                        onAttrDeleteClick={this.props.onAttrDeleteClick}
+                        onTableDeleteClick={this.props.onTableDeleteClick}
+                        onMouseUp={this.props.onMouseUp}
+                        onAttrCreateClick={this.handleAttrCreateClick}
+
+                    />
+                    <Scheme
+                        style={schemeStyle}
+                        size={{width, height}}
+                        tables={this.props.tables}
+                        links={this.props.links}
+                        selected={this.props.selected}
+                        metrics={this.props.metrics}
+                        onClick={this.props.onSchemeClick}
+                        onMouseMove={this.props.onMouseMove}
+                        onAttrClick={this.props.onAttrClick}
+                        onLinkAddClick={this.props.onLinkAddClick}
+                        onLinkDeleteClick={this.props.onLinkDeleteClick}
+                        onAttrDeleteClick={this.props.onAttrDeleteClick}
+                        onAttrMouseDown={this.props.onAttrMouseDown}
+                        onTableClick={this.props.onTableClick}
+                        onTableMouseDown={this.props.onTableMouseDown}
+                        onTableDeleteClick={this.props.onTableDeleteClick}
+                        onMouseUp={this.props.onMouseUp}
+                        onAttrCreateClick={this.handleAttrCreateClick}
+                        newLink={this.props.newLink}
+                    />
+                </div>
                 {this.state.attrCreateModal !== false && <AttrAddModal
                     table={this.state.attrCreateModal.table}
                     onSave={this.handleAttrCreate}
                     onCancel={this.handleAttrCancel}
-                />}
+                                                         />}
                 {this.state.tableCreateModal !== false && <TableAddModal
                     onSave={this.handleTableCreate}
                     onCancel={this.handleTableCancel}
-                />}
+                                                          />}
             </div>
         )
     }

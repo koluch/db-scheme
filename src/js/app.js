@@ -2,18 +2,14 @@
 import ReactDOM from 'react-dom'
 import React from 'react'
 import {Provider} from 'react-redux'
-import {applyMiddleware, createStore} from 'redux'
-import createLogger from 'redux-logger'
+import {createStore} from 'redux'
 
-import type {TState, TTableState, TLinkState} from '~/types/TState'
+import type {TState, TTableState} from '~/types/TState'
 import type {TAction} from '~/types/TAction'
 import type {TPoint} from '~/types/TPoint'
 import type {TBounds} from '~/types/TBounds'
-import type {TTable} from '~/types/TTable'
 
 import Root from '~/react/container/Root'
-import * as metricsSelectors from '~/react/selectors/metrics'
-import {getAttrBounds, getTableBounds, getHeaderBounds} from '~/metrics/table'
 
 const initialState = {
     tables: [
@@ -79,32 +75,8 @@ const initialState = {
     mousePosition: {x: 0, y: 0},
 }
 
-//todo: move to helper
-const isInBounds = (point: TPoint, bounds: TBounds): boolean => {
-    return point.x >= bounds.x
-        && point.y >= bounds.y
-        && point.x <= bounds.x + bounds.width
-        && point.y <= bounds.y + bounds.height
-}
-
-type TClickTarget = {
-    type: 'TABLE',
-    table: string,
-} | {
-    type: 'TABLE_HEADER',
-    table: string,
-} | {
-    type: 'ATTR',
-    table: string,
-    attr: string,
-} | {
-    type: 'NONE',
-}
-
-
 const reducer = (state: TState = initialState, action: TAction): TState => {
     if (action.type === 'MOVE_TABLE') {
-        const {dnd} = state
         const {table, position} = action
         return {
             ...state,
@@ -131,7 +103,6 @@ const reducer = (state: TState = initialState, action: TAction): TState => {
         }
     }
     else if (action.type === 'SWITCH_ATTRS') {
-        const {dnd} = state
         const {table, attr1, attr2} = action
         return {
             ...state,
@@ -223,8 +194,7 @@ const reducer = (state: TState = initialState, action: TAction): TState => {
         }
     }
     else if (action.type === 'STOP_DND') {
-        const {dnd, tables} = state
-        const {point} = action
+        const {dnd} = state
         if (dnd !== false) {
             return {
                 ...state,
@@ -324,7 +294,12 @@ const reducer = (state: TState = initialState, action: TAction): TState => {
         }
     }
     else if (action.type === 'DELETE_ATTR') {
+        const {selected} = state
         const {table, attr} = action
+
+        // todo: bad, rewrite
+        const newSelected = (selected !== false && selected.type === 'ATTR' && selected.table === table
+            && selected.table === table && selected.attr === attr) ? false : selected
 
         return {
             ...state,
@@ -353,14 +328,20 @@ const reducer = (state: TState = initialState, action: TAction): TState => {
                     }
                 }
             }),
+            selected: newSelected,
         }
     }
     else if (action.type === 'DELETE_TABLE') {
+        const {selected} = state
         const {table} = action
 
         const filteredTables = state.tables.filter((tableState) => {
             return tableState.table.name !== table
         })
+
+        const newSelected = (selected !== false && selected.type === 'TABLE' && selected.table === table)
+            ? false
+            : selected
 
         return {
             ...state,
@@ -371,6 +352,7 @@ const reducer = (state: TState = initialState, action: TAction): TState => {
                     foreignKeys: tableState.table.foreignKeys.filter(({to}) => to.table !== table),
                 },
             })),
+            selected: newSelected,
         }
     }
     else if (action.type === 'ADD_ATTR') {
@@ -406,6 +388,8 @@ const reducer = (state: TState = initialState, action: TAction): TState => {
     return state
 }
 
+//import {applyMiddleware} from 'redux'
+//import createLogger from 'redux-logger'
 //const logger = createLogger()
 //const store = createStore(
 //    reducer,

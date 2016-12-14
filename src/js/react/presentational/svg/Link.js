@@ -22,20 +22,22 @@ class Link extends React.Component {
         const markerEndId = `marker-end.${seq += 1}`
         const markerStartId = `marker-start.${seq += 1}`
         return (
-            <g>
+            <g className="svg-link">
                 <defs>
                     <marker id={markerStartId} viewBox="0 0 10 10" refX="0" refY="2"
-                            markerUnits="userSpaceOnUse"
-                            markerWidth="10" markerHeight="10"
-                            orient="auto">
+                        markerUnits="userSpaceOnUse"
+                        markerWidth="10" markerHeight="10"
+                        orient="auto"
+                    >
                         <circle cx="3" cy="3" r="3" fill="black"/>
                     </marker>
                     <marker id={markerEndId}
-                            markerWidth="13"
-                            markerHeight="13"
-                            refX="10"
-                            refY="6"
-                            orient="auto">
+                        markerWidth="13"
+                        markerHeight="13"
+                        refX="10"
+                        refY="6"
+                        orient="auto"
+                    >
                         <path d="M2,2 L2,11 L10,6 L2,2" fill="black"/>
                     </marker>
                 </defs>
@@ -48,8 +50,7 @@ class Link extends React.Component {
                         markerStart: `url(#${markerStartId})`,
                         markerEnd: `url(#${markerEndId})`,
                     }}
-                    >
-                </polyline>
+                />
             </g>
         )
     }

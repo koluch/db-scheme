@@ -14,7 +14,6 @@ import type {TSelected} from '~/types/TState'
 import Table from './Table'
 import Link from './Link'
 
-
 type TProps = {
     selected: TSelected,
     metrics: TSchemeMetrics,
@@ -25,14 +24,9 @@ type TProps = {
     size: TSize,
     onTableClick: (tableShape: TTableShape) => void,
     onTableMouseDown: (tableShape: TTableShape, point: TPoint) => void,
-    onTableDeleteClick: (tableShape: TTableShape) => void,
     onAttrMouseDown: (tableShape: TTableShape, attr: TAttr, point: TPoint) => void,
-    onAttrDeleteClick: (tableShape: TTableShape, attr: TAttr) => void,
-    onAttrCreateClick: (tableShape: TTableShape) => void,
     onAttrClick: (tableShape: TTableShape, attr: TAttr) => void,
     onMouseMove: (point: TPoint) => void,
-    onLinkAddClick: (tableShape: TTableShape, attr: TAttr) => void,
-    onLinkDeleteClick: (tableShape: TTableShape, attr: TAttr) => void,
     onMouseUp: (point: TPoint) => void,
     onClick: () => void,
 }
@@ -64,46 +58,42 @@ class Scheme extends React.Component {
                 onMouseUp={(e) => this.props.onMouseUp({x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY})}
                 onMouseMove={(e) => this.props.onMouseMove({x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY})}
                 ref={(el) => { this.schemeEl = el }}
-                onClick={(e) => { if (e.target === this.schemeEl) { this.props.onClick() } } }>
+                onClick={(e) => { if (e.target === this.schemeEl) { this.props.onClick() } }}
+            >
                 {links.map((linkShape: TLinkShape): * => {
                     const {path} = linkShape
                     const key = `link-${path.map(({x, y}) => `${x},${y}`).join(';')}`
-                    return <Link
+                    return (<Link
                         key={key}
                         path={linkShape.path}
                         style={style.link}
-                    />
+                            />)
                 })}
                 {tables.map((tableShape: TTableShape) => {
                     const tableMetrics = metrics.tables.filter(({name}) => name === tableShape.table.name)[0].metrics //todo: check
-                    let tableSelected = false
+                    let selectedValue = false
                     if (selected !== false && selected.type === 'TABLE' && selected.table === tableShape.table.name) {
-                        tableSelected = {type: 'TABLE'}
+                        selectedValue = {type: 'TABLE'}
                     }
                     else if (selected !== false && selected.type === 'ATTR' && selected.table === tableShape.table.name) {
-                        tableSelected = {type: 'ATTR', name: selected.attr}
+                        selectedValue = {type: 'ATTR', name: selected.attr}
                     }
-                    return <Table
-                        selected={tableSelected}
+                    return (<Table
+                        selected={selectedValue}
                         metrics={tableMetrics}
                         style={style.table}
                         key={tableShape.table.name}
                         tableShape={tableShape}
-                        onDeleteClick={this.props.onTableDeleteClick}
                         onHeaderClick={this.props.onTableClick}
                         onHeaderMouseDown={this.props.onTableMouseDown}
                         onAttrMouseDown={this.props.onAttrMouseDown}
-                        onLinkAddClick={this.props.onLinkAddClick}
-                        onLinkDeleteClick={this.props.onLinkDeleteClick}
-                        onAttrDeleteClick={this.props.onAttrDeleteClick}
                         onAttrClick={this.props.onAttrClick}
-                        onAttrCreateClick={this.props.onAttrCreateClick}
-                    />
+                            />)
                 })}
                 {newLink && <Link
                     path={newLink}
                     style={style.newLink}
-                />}
+                            />}
             </svg>
         )
     }

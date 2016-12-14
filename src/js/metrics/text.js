@@ -1,5 +1,4 @@
 // @flow
-
 import type {TFontStyle} from '~/types/styles/TFontStyle'
 
 type TMeasureResult = {

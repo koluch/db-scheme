@@ -12,11 +12,12 @@ type TState = {
     start: ?TPoint,
 }
 
+const ALOWED_MOUSE_SHIFT = 3
 
 class FixClick extends React.Component {
-    props: TProps
-
     state: TState = {start: null}
+
+    props: TProps
 
     handleMouseDown = (e: *) => {
         this.setState({
@@ -24,7 +25,7 @@ class FixClick extends React.Component {
         })
     }
 
-    handleMouseMove = () => {
+    handleMouseLeave = () => {
         if (this.state.start !== null) {
             this.setState({
                 start: null,
@@ -36,7 +37,7 @@ class FixClick extends React.Component {
         const point = {x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY}
         const {start} = this.state
         if (start) {
-            if (point.x === start.x && point.y === start.y) {
+            if (Math.abs(point.x - start.x) < ALOWED_MOUSE_SHIFT && Math.abs(point.y - start.y) < ALOWED_MOUSE_SHIFT) {
                 this.props.onClick()
             }
         }
@@ -47,7 +48,7 @@ class FixClick extends React.Component {
             <g
                 onMouseDown={this.handleMouseDown}
                 onMouseUp={this.handleMouseUp}
-                onMouseMove={this.handleMouseMove}
+                onMouseLeave={this.handleMouseLeave}
             >
                 {this.props.children}
             </g>

@@ -1,5 +1,4 @@
 .scheme {
-    margin: 20px;
     position: relative;
     width: 800px;
     height: 600px;
@@ -32,6 +31,13 @@ svg.scheme {
 }
 
 
+.root {
+    &__wrapper {
+        position: relative;
+        margin: 20px;
+    }
+}
+
 .modal {
     position: fixed;
     top: 0;
@@ -61,4 +67,70 @@ svg.scheme {
     z-index: 999999999;
     box-shadow: 0px 0px 12px #bd0000;
     border-radius: 5px;
+}
+
+.controls {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+
+    &__position {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__container {
+        display: flex;
+        align-items: center;
+
+        &.h-start {
+            &.v-center {transform: translateY(-50%);}
+            &.v-end {transform: translateY(-100%);}
+        }
+        &.h-center {
+            transform: translateX(-50%);
+            &.v-center {transform: translateX(-50%) translateY(-50%);}
+            &.v-end {transform: translateX(-50%) translateY(-100%);}
+        }
+        &.h-end {
+            transform: translateX(-100%);
+            &.v-center {transform: translateX(-100%) translateY(-50%);}
+            &.v-end {transform: translateX(-100%) translateY(-100%);}
+        }
+
+    }
+
+    &__panel {
+        display: flex;
+
+        &.orientation-v {
+            flex-direction: column;
+        }
+    }
+
+    &__button {
+        outline: none;
+        border-radius: 3px;
+        border: 1px solid #d6d6d6;
+        background: linear-gradient(to bottom, #FFF, #dedede);
+        white-space: nowrap;
+        margin: 1px;
+
+        &:hover {
+            border-color: #bdbdbd;
+        }
+
+        &:active {
+            background: linear-gradient(to bottom, #f9f9f9, #d2d2d2);
+            border-color: #d6d6d6;
+        }
+
+    }
+}
+
+// todo: move to inline style?
+.svg-link {
+    pointer-events: none;
 }
