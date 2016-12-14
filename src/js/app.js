@@ -206,15 +206,21 @@ const reducer = (state: TState = initialState, action: TAction): TState => {
     else if (action.type === 'SELECT') {
         if (action.target === 'TABLE') {
             const {table} = action
+            const selectedTable = state.tables.filter(({table: {name}}) => name === table)
+            const restTables = state.tables.filter(({table: {name}}) => name !== table)
             return {
                 ...state,
+                tables: selectedTable.concat(restTables),
                 selected: {type: 'TABLE', table},
             }
         }
         else if (action.target === 'ATTR') {
             const {table, attr} = action
+            const selectedTable = state.tables.filter(({table: {name}}) => name === table)
+            const restTables = state.tables.filter(({table: {name}}) => name !== table)
             return {
                 ...state,
+                tables: selectedTable.concat(restTables),
                 selected: {type: 'ATTR', table, attr},
             }
         }

@@ -36,6 +36,35 @@ class Scheme extends React.Component {
 
     schemeEl: *
 
+    renderTableShape(tableShape: TTableShape) {
+        const {selected, metrics, style} = this.props
+        const tableMetrics = metrics.tables.filter(({name}) => name === tableShape.table.name)[0].metrics //todo: check
+        let selectedValue = false
+        if (selected !== false && selected.type === 'TABLE' && selected.table === tableShape.table.name) {
+            selectedValue = {type: 'TABLE'}
+        }
+        else if (selected !== false && selected.type === 'ATTR' && selected.table === tableShape.table.name) {
+            selectedValue = {type: 'ATTR', name: selected.attr}
+        }
+        return (
+            <Table
+                key={tableShape.table.name}
+                selected={selectedValue}
+                metrics={tableMetrics}
+                style={style.table}
+                tableShape={tableShape}
+                onHeaderClick={this.props.onTableClick}
+                onHeaderMouseDown={this.props.onTableMouseDown}
+                onAttrMouseDown={this.props.onAttrMouseDown}
+                onAttrClick={this.props.onAttrClick}
+            />
+        )
+    }
+
+    renderTableShapes() {
+        return this.props.tables.slice(0).reverse().map((tableShape) => this.renderTableShape(tableShape))
+    }
+
     render() {
         const {
             tables,
@@ -69,27 +98,7 @@ class Scheme extends React.Component {
                         style={style.link}
                             />)
                 })}
-                {tables.map((tableShape: TTableShape) => {
-                    const tableMetrics = metrics.tables.filter(({name}) => name === tableShape.table.name)[0].metrics //todo: check
-                    let selectedValue = false
-                    if (selected !== false && selected.type === 'TABLE' && selected.table === tableShape.table.name) {
-                        selectedValue = {type: 'TABLE'}
-                    }
-                    else if (selected !== false && selected.type === 'ATTR' && selected.table === tableShape.table.name) {
-                        selectedValue = {type: 'ATTR', name: selected.attr}
-                    }
-                    return (<Table
-                        selected={selectedValue}
-                        metrics={tableMetrics}
-                        style={style.table}
-                        key={tableShape.table.name}
-                        tableShape={tableShape}
-                        onHeaderClick={this.props.onTableClick}
-                        onHeaderMouseDown={this.props.onTableMouseDown}
-                        onAttrMouseDown={this.props.onAttrMouseDown}
-                        onAttrClick={this.props.onAttrClick}
-                            />)
-                })}
+                {this.renderTableShapes()}
                 {newLink && <Link
                     path={newLink}
                     style={style.newLink}
