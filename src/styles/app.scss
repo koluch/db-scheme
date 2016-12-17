@@ -1,8 +1,25 @@
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+#react {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
 .scheme {
     position: relative;
-    width: 800px;
-    height: 600px;
-    background: #fcfff2;
     border: 1px solid #aaaaaa;
 }
 
@@ -21,6 +38,26 @@
     }
 }
 
+.root {
+    flex: 1;
+    display: flex;
+
+    &__scheme-container {
+        flex: 1;
+        position: relative;
+
+        &-absolute {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #f9f9f9;
+            overflow: hidden;
+        }
+    }
+}
+
 svg.scheme {
     -webkit-user-select: none;
     cursor: default;
@@ -30,13 +67,6 @@ svg.scheme {
     }
 }
 
-
-.root {
-    &__wrapper {
-        position: relative;
-        margin: 20px;
-    }
-}
 
 .modal {
     position: fixed;
@@ -134,4 +164,20 @@ svg.scheme {
 // todo: move to inline style?
 .svg-link {
     pointer-events: none;
+}
+
+.tool-panel {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #363636;
+
+    &__title {
+        background: #363636;
+        color: white;
+        padding: 1px 3px;
+    }
+
+    &__body {
+        padding: 10px;
+    }
 }

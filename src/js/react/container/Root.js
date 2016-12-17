@@ -2,6 +2,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import type {Dispatch} from 'redux'
+import cn from 'bem-cn'
 
 import type {TTableShape} from '~/types/TTableShape'
 import type {TLinkShape} from '~/types/TLinkShape'
@@ -10,6 +11,7 @@ import type {TState} from '~/types/TState'
 import type {TAction} from '~/types/TAction'
 import type {TAttr} from '~/types/TAttr'
 import type {TBounds} from '~/types/TBounds'
+import type {TSize} from '~/types/TSize'
 import type {TPoint} from '~/types/TPoint'
 import type {TTable} from '~/types/TTable'
 import type {TPath} from '~/types/TPath'
@@ -24,6 +26,7 @@ import Scheme from '~/react/presentational/svg/Scheme'
 import Controls from '~/react/presentational/Controls'
 import AttrAddModal from '~/react/presentational/AttrAddModal'
 import TableAddModal from '~/react/presentational/TableAddModal'
+import ToolPanel from '~/react/presentational/ToolPanel'
 import History from '~/react/presentational/History'
 
 const calculatePath = (b1: TBounds, b2: TBounds): Array<TPoint> => {
@@ -374,6 +377,7 @@ type TProps = {
 
 type TRootState = {
     attrCreateModal: false | {table: string},
+    size: TSize,
     tableCreateModal: boolean,
 }
 
@@ -383,6 +387,25 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
     state: TRootState = {
         attrCreateModal: false,
         tableCreateModal: false,
+        size: {width: 800, height: 600},
+    }
+
+    absoluteContainerEl: *
+    resizeListener: *
+
+    componentDidMount() {
+        const handler = () => {
+            const {width, height} = this.absoluteContainerEl.getBoundingClientRect()
+            this.setState({
+                size: {width, height},
+            })
+        }
+        this.resizeListener = window.addEventListener('resize', handler)
+        handler()
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.resizeListener)
     }
 
     handleAttrCreateClick = (tableShape: TTableShape) => {
@@ -438,8 +461,8 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
         }
 
         const canvas = document.createElement('canvas')
-        canvas.setAttribute('width', '800')
-        canvas.setAttribute('height', '600')
+        canvas.setAttribute('width', this.state.size.width)
+        canvas.setAttribute('height', this.state.size.height)
         const ctx = canvas.getContext('2d')
         if (ctx) {
             const img = new Image()
@@ -456,12 +479,12 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
     }
 
     render(): * {
-        const width = 800
-        const height = 600
+        const bem = cn('root')
+
+        const {width, height} = this.state.size
 
         return (
-            <div className="root">
-                <div><button onClick={this.handleExportToPng}>{'Export to PNG'}</button></div>
+            <div className={bem()}>
                 <div style={{display: 'none'}} id="for_export">
                     <Scheme
                         style={schemeStyle}
@@ -480,39 +503,41 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                         newLink={null}
                     />
                 </div>
-                <div className="root__wrapper">
-                    <Controls
-                        isDnd={this.props.dnd !== false}
-                        size={{width, height}}
-                        selected={this.props.selected}
-                        metrics={this.props.metrics}
-                        tables={this.props.tables}
-                        onMouseMove={this.props.onMouseMove}
-                        onAttrClick={this.props.onAttrClick}
-                        onLinkAddClick={this.props.onLinkAddClick}
-                        onLinkDeleteClick={this.props.onLinkDeleteClick}
-                        onAttrDeleteClick={this.props.onAttrDeleteClick}
-                        onTableDeleteClick={this.props.onTableDeleteClick}
-                        onTableCreateClick={this.handleTableCreateClick}
-                        onMouseUp={this.props.onMouseUp}
-                        onAttrCreateClick={this.handleAttrCreateClick}
-                    />
-                    <Scheme
-                        style={schemeStyle}
-                        size={{width, height}}
-                        tables={this.props.tables}
-                        links={this.props.links}
-                        selected={this.props.selected}
-                        metrics={this.props.metrics}
-                        onClick={this.props.onSchemeClick}
-                        onMouseMove={this.props.onMouseMove}
-                        onAttrClick={this.props.onAttrClick}
-                        onAttrMouseDown={this.props.onAttrMouseDown}
-                        onTableClick={this.props.onTableClick}
-                        onTableMouseDown={this.props.onTableMouseDown}
-                        onMouseUp={this.props.onMouseUp}
-                        newLink={this.props.newLink}
-                    />
+                <div className={bem('scheme-container')}>
+                    <div className={bem('scheme-container-absolute')} ref={(el) => { this.absoluteContainerEl = el }}>
+                        <Controls
+                            isDnd={this.props.dnd !== false}
+                            size={{width, height}}
+                            selected={this.props.selected}
+                            metrics={this.props.metrics}
+                            tables={this.props.tables}
+                            onMouseMove={this.props.onMouseMove}
+                            onAttrClick={this.props.onAttrClick}
+                            onLinkAddClick={this.props.onLinkAddClick}
+                            onLinkDeleteClick={this.props.onLinkDeleteClick}
+                            onAttrDeleteClick={this.props.onAttrDeleteClick}
+                            onTableDeleteClick={this.props.onTableDeleteClick}
+                            onTableCreateClick={this.handleTableCreateClick}
+                            onMouseUp={this.props.onMouseUp}
+                            onAttrCreateClick={this.handleAttrCreateClick}
+                        />
+                        <Scheme
+                            style={schemeStyle}
+                            size={{width, height}}
+                            tables={this.props.tables}
+                            links={this.props.links}
+                            selected={this.props.selected}
+                            metrics={this.props.metrics}
+                            onClick={this.props.onSchemeClick}
+                            onMouseMove={this.props.onMouseMove}
+                            onAttrClick={this.props.onAttrClick}
+                            onAttrMouseDown={this.props.onAttrMouseDown}
+                            onTableClick={this.props.onTableClick}
+                            onTableMouseDown={this.props.onTableMouseDown}
+                            onMouseUp={this.props.onMouseUp}
+                            newLink={this.props.newLink}
+                        />
+                    </div>
                 </div>
                 {this.state.attrCreateModal !== false && <AttrAddModal
                     table={this.state.attrCreateModal.table}
@@ -523,7 +548,14 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                     onSave={this.handleTableCreate}
                     onCancel={this.handleTableCancel}
                                                           />}
-                <History records={this.props.historyRecords}/>
+                <div className={bem('tools')}>
+                    <ToolPanel title={'Export'}>
+                        <div><button onClick={this.handleExportToPng}>{'Export to PNG'}</button></div>
+                    </ToolPanel>
+                    <ToolPanel title={'History'}>
+                        <History records={this.props.historyRecords}/>
+                    </ToolPanel>
+                </div>
             </div>
         )
     }
