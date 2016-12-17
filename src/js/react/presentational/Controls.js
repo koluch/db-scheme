@@ -5,7 +5,7 @@ import type {TTableShape} from '~/types/TTableShape'
 import type {TPoint} from '~/types/TPoint'
 import type {TAttr} from '~/types/TAttr'
 import type {TSchemeMetrics} from '~/types/TSchemeMetrics'
-import type {TSelected} from '~/types/TState'
+import type {TSelected} from '~/types/TSchemeState'
 import type {TSize} from '~/types/TSize'
 
 import {getAttrBounds} from '~/metrics/table'

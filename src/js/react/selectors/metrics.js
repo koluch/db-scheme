@@ -1,12 +1,12 @@
 // @flow
-import type {TState, TTableState} from '~/types/TState'
+import type {TSchemeState, TTableState} from '~/types/TSchemeState'
 import type {TSchemeMetrics, TTableMetrics} from '~/types/TSchemeMetrics'
 
 import {createSelector} from 'reselect'
 import {schemeStyle} from '~/react/styles'
 import {getMetrics} from '~/metrics/table'
 
-const tablesSelector = (state: TState): Array<TTableState> => state.tables
+const tablesSelector = (state: TSchemeState): Array<TTableState> => state.tables
 
 const tablesMetricsSelector = createSelector(tablesSelector, (tableStates: Array<TTableState>): Array<{name: string, metrics: TTableMetrics}> => {
     return tableStates.map(({table}) => {
@@ -17,7 +17,7 @@ const tablesMetricsSelector = createSelector(tablesSelector, (tableStates: Array
     })
 })
 
-export const scheme: (state: TState) => TSchemeMetrics = createSelector(tablesMetricsSelector, (tablesBounds) => {
+export const scheme: (state: TSchemeState) => TSchemeMetrics = createSelector(tablesMetricsSelector, (tablesBounds) => {
     return {
         tables: tablesBounds,
     }

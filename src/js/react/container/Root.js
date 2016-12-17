@@ -5,7 +5,8 @@ import type {Dispatch} from 'redux'
 
 import type {TTableShape} from '~/types/TTableShape'
 import type {TLinkShape} from '~/types/TLinkShape'
-import type {TState, TTableState, TSelected, TDndTarget} from '~/types/TState'
+import type {TSchemeState, TTableState, TSelected, TDndTarget} from '~/types/TSchemeState'
+import type {TState} from '~/types/TState'
 import type {TAction} from '~/types/TAction'
 import type {TAttr} from '~/types/TAttr'
 import type {TBounds} from '~/types/TBounds'
@@ -13,14 +14,17 @@ import type {TPoint} from '~/types/TPoint'
 import type {TTable} from '~/types/TTable'
 import type {TPath} from '~/types/TPath'
 import type {TSchemeMetrics} from '~/types/TSchemeMetrics'
+import type {THistoryStateRecord} from '~/types/THistoryState'
+
+import * as tableMetricsHelper from '~/metrics/table'
+import * as metricsSelectors from '~/react/selectors/metrics'
+import {schemeStyle} from '~/react/styles'
 
 import Scheme from '~/react/presentational/svg/Scheme'
 import Controls from '~/react/presentational/Controls'
 import AttrAddModal from '~/react/presentational/AttrAddModal'
 import TableAddModal from '~/react/presentational/TableAddModal'
-import * as tableMetricsHelper from '~/metrics/table'
-import * as metricsSelectors from '~/react/selectors/metrics'
-import {schemeStyle} from '~/react/styles'
+import History from '~/react/presentational/History'
 
 const calculatePath = (b1: TBounds, b2: TBounds): Array<TPoint> => {
     let start = null
@@ -54,8 +58,9 @@ const calculatePath = (b1: TBounds, b2: TBounds): Array<TPoint> => {
 }
 
 const mapStateToProps = (state: TState): * => {
-    const {tables, dnd, tco, mousePosition} = state
-    const metrics = metricsSelectors.scheme(state)
+    const {scheme: schemeState, history} = state
+    const {tables, dnd, tco, mousePosition} = schemeState
+    const metrics = metricsSelectors.scheme(schemeState)
 
     let newLink = null
     if (tco !== false) {
@@ -85,7 +90,7 @@ const mapStateToProps = (state: TState): * => {
     }
 
 
-    const linkShapes = state.tables.map(({table}) => (
+    const linkShapes = schemeState.tables.map(({table}) => (
         table.foreignKeys.map(({from, to}) => ({
             from: {
                 ...from,
@@ -145,10 +150,11 @@ const mapStateToProps = (state: TState): * => {
 
     return {
         metrics,
-        selected: state.selected,
-        tables: state.tables.map((tableState: TTableState): TTableShape => tableState),
+        selected: schemeState.selected,
+        tables: schemeState.tables.map((tableState: TTableState): TTableShape => tableState),
         newLink,
         links: linkShapes,
+        historyRecords: history.records,
         dnd,
         tco,
     }
@@ -349,6 +355,7 @@ type TProps = {
     metrics: TSchemeMetrics,
     selected: TSelected,
     dnd: TDndTarget,
+    historyRecords: Array<THistoryStateRecord>,
 
     onTableClick: (tableShape: TTableShape) => void,
     onTableDeleteClick: (tableShape: TTableShape) => void,
@@ -516,6 +523,7 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                     onSave={this.handleTableCreate}
                     onCancel={this.handleTableCancel}
                                                           />}
+                <History records={this.props.historyRecords}/>
             </div>
         )
     }
