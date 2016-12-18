@@ -52,17 +52,6 @@ export const initialState = {
             },
         },
     ],
-    // links: [
-    //     {
-    //         link: {from: {table: 'comments', attr: 'post_id'}, to: {table: 'posts', attr: 'id'}},
-    //     },
-    //     {
-    //         link: {from: {table: 'posts', attr: 'user_id'}, to: {table: 'users', attr: 'id'}},
-    //     },
-    //     {
-    //         link: {from: {table: 'comments', attr: 'user_id'}, to: {table: 'users', attr: 'id'}},
-    //     },
-    // ],
     dnd: false,
     tco: false,
     selected: false,

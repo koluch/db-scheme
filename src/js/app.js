@@ -12,7 +12,7 @@ import type {TMergeStrategy} from '~/reducers/history'
 import type {TAction} from '~/types/TAction'
 import type {THistoryStateRecord} from '~/types/THistoryState'
 
-const mergeStrategy: TMergeStrategy = (action: TAction, lastRecord: ?THistoryStateRecord): * => {
+const mergeStrategy: TMergeStrategy = (action: TAction, lastRecord: THistoryStateRecord): * => {
     // Don't record some actions at all
     switch (action.type) {
         case 'START_DND':
@@ -25,53 +25,53 @@ const mergeStrategy: TMergeStrategy = (action: TAction, lastRecord: ?THistorySta
         default:
     }
 
-    if (lastRecord) {
-        const lastAction = lastRecord.action
-        // If last action type doesn't equals to current action - always add it
-        if (lastAction.type !== action.type) {
-            return 'ADD'
-        }
-        else {
-            // Depending on action type and it's attrs, add or replace record
-            if (action.type === 'SELECT' && lastAction.type === 'SELECT') {
-                if (action.target === 'TABLE' && lastAction.target === 'SELECT') {
-                    return action.table === lastAction.table ? 'REPLACE' : 'ADD'
-                }
-                else if (action.target === 'ATTR' && lastAction.target === 'ATTR') {
-                    return action.table === lastAction.table && action.attr === lastAction.attr ? 'REPLACE' : 'ADD'
-                }
+    const lastAction = lastRecord.action
+    // If last action type doesn't equals to current action - always add it
+    if (lastAction.type !== action.type) {
+        return 'ADD'
+    }
+    else {
+        // Depending on action type and it's attrs, add or replace record
+        if (action.type === 'SELECT' && lastAction.type === 'SELECT') {
+            if (action.target !== lastAction.target) {
+                return 'ADD'
             }
-            if (action.type === 'MOVE_TABLE' && lastAction.type === 'MOVE_TABLE') {
+            else if (action.target === 'TABLE' && lastAction.target === 'TABLE') {
                 return action.table === lastAction.table ? 'REPLACE' : 'ADD'
             }
-            if (action.type === 'SWITCH_ATTRS' && lastAction.type === 'SWITCH_ATTRS') {
-                return (action.table === lastAction.table && action.attr1 === lastAction.attr1) ? 'REPLACE' : 'ADD'
+            else if (action.target === 'ATTR' && lastAction.target === 'ATTR') {
+                return action.table === lastAction.table && action.attr === lastAction.attr ? 'REPLACE' : 'ADD'
             }
-            if (action.type === 'CANCEL_SELECT' && lastAction.type === 'CANCEL_SELECT') {
-                return 'ADD'
-            }
-            if (action.type === 'ADD_LINK' && lastAction.type === 'ADD_LINK') {
-                return 'ADD'
-            }
-            if (action.type === 'ADD_ATTR' && lastAction.type === 'ADD_ATTR') {
-                return 'ADD'
-            }
-            if (action.type === 'ADD_TABLE' && lastAction.type === 'ADD_TABLE') {
-                return 'ADD'
-            }
-            if (action.type === 'DELETE_LINK' && lastAction.type === 'DELETE_LINK') {
-                return 'ADD'
-            }
-            if (action.type === 'DELETE_ATTR' && lastAction.type === 'DELETE_ATTR') {
-                return 'ADD'
-            }
-            if (action.type === 'DELETE_TABLE' && lastAction.type === 'DELETE_TABLE') {
-                return 'ADD'
-            }
-            return 'SKIP'
         }
+        if (action.type === 'MOVE_TABLE' && lastAction.type === 'MOVE_TABLE') {
+            return action.table === lastAction.table ? 'REPLACE' : 'ADD'
+        }
+        if (action.type === 'SWITCH_ATTRS' && lastAction.type === 'SWITCH_ATTRS') {
+            return (action.table === lastAction.table && action.attr1 === lastAction.attr1) ? 'REPLACE' : 'ADD'
+        }
+        if (action.type === 'CANCEL_SELECT' && lastAction.type === 'CANCEL_SELECT') {
+            return 'REPLACE'
+        }
+        if (action.type === 'ADD_LINK' && lastAction.type === 'ADD_LINK') {
+            return 'ADD'
+        }
+        if (action.type === 'ADD_ATTR' && lastAction.type === 'ADD_ATTR') {
+            return 'ADD'
+        }
+        if (action.type === 'ADD_TABLE' && lastAction.type === 'ADD_TABLE') {
+            return 'ADD'
+        }
+        if (action.type === 'DELETE_LINK' && lastAction.type === 'DELETE_LINK') {
+            return 'ADD'
+        }
+        if (action.type === 'DELETE_ATTR' && lastAction.type === 'DELETE_ATTR') {
+            return 'ADD'
+        }
+        if (action.type === 'DELETE_TABLE' && lastAction.type === 'DELETE_TABLE') {
+            return 'ADD'
+        }
+        return 'SKIP'
     }
-    return 'ADD'
 }
 
 const reducer = wrapSchemeReducer(schemeReducer, mergeStrategy)

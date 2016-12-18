@@ -10,5 +10,6 @@ export type THistoryStateRecord = {
 
 export type THistoryState = {
     seq: number,
+    active: number,
     records: Array<THistoryStateRecord>,
 }

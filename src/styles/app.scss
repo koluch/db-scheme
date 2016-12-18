@@ -1,3 +1,8 @@
+* {
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
 html, body {
     margin: 0;
     padding: 0;
@@ -20,7 +25,6 @@ body {
 
 .scheme {
     position: relative;
-    border: 1px solid #aaaaaa;
 }
 
 .table {
@@ -55,6 +59,12 @@ body {
             background: #f9f9f9;
             overflow: hidden;
         }
+    }
+
+    &__tools {
+        min-width: 300px;
+        display: flex;
+        flex-direction: column;
     }
 }
 
@@ -171,6 +181,10 @@ svg.scheme {
     flex-direction: column;
     border: 1px solid #363636;
 
+    &:last-child {
+        flex: 1;
+    }
+
     &__title {
         background: #363636;
         color: white;
@@ -178,6 +192,46 @@ svg.scheme {
     }
 
     &__body {
-        padding: 10px;
+        flex: 1;
+    }
+}
+
+.scroll {
+    position: relative;
+    width: 100%;
+    height: 100%;
+
+    &__body {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        overflow: auto;
+    }
+}
+
+.history {
+    display: flex;
+    flex-direction: column;
+
+    &__record {
+        user-select: none;
+        cursor: default;
+        &_inactive {
+            opacity: 0.5;
+        }
+        padding: 5px;
+        border-bottom: 1px solid black;
+
+        &-title {
+            font-weight: bold;
+        }
+        &-desc {
+            font-size: 12px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
     }
 }

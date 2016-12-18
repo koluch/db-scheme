@@ -9,7 +9,10 @@ import {initialState as schemeInitialState} from './scheme'
 
 const historyInitialState = {
     seq: 0,
-    records: [],
+    active: 0,
+    records: [
+        {id: 0, action: {type: '@@redux/INIT'}, state: schemeInitialState},
+    ],
 }
 
 const initialState = {
@@ -23,48 +26,88 @@ export type TMergeAction = 'SKIP'
                          | 'ADD'
                          | 'REPLACE'
 
-export type TMergeStrategy = (action: TAction, lastRecord: ?THistoryStateRecord) => TMergeAction
+export type TMergeStrategy = (action: TAction, lastRecord: THistoryStateRecord) => TMergeAction
 
 export const wrapSchemeReducer = (schemeReducer: TSchemeReducer, mergeStrategy: TMergeStrategy): TReducer => {
     return (state: TState = initialState, action: TAction): TState => {
         const {scheme, history} = state
-        const newSchemeState = schemeReducer(scheme, action)
-        const lastRecord = history.records.length > 0 ? history.records[history.records.length - 1] : null
-        const newId = history.seq + 1
-
-        const mergeAction = mergeStrategy(action, lastRecord)
-        if (mergeAction === 'ADD' || (mergeAction === 'REPLACE' && !lastRecord)) {
-            return {
-                scheme: newSchemeState,
-                history: {
-                    seq: newId,
-                    records: [...history.records, {
-                        id: newId,
-                        action,
-                        state: scheme,
-                    }],
-                },
-            }
-        }
-        else if (mergeAction === 'REPLACE') {
-            if (lastRecord) {
-                const filteredRecords = history.records.filter(({id}) => id !== lastRecord.id)
+        if (action.type === 'ACTIVATE_HISTORY_RECORD') {
+            const record2 = action.record // todo: flowtype bug
+            const record = history.records.filter(({id}) => id === record2)[0]
+            if (record) {
+                // restore state, reseting TCO and DND
                 return {
-                    scheme: newSchemeState,
-                    history: {
-                        seq: newId,
-                        records: [...filteredRecords, {
-                            id: newId,
-                            action,
-                            state: scheme,
-                        }],
+                    scheme: {...record.state,
+                        tco: false,
+                        dnd: false,
+                    },
+                    history: {...history,
+                        active: record.id,
                     },
                 }
             }
+            return {
+                scheme,
+                history,
+            }
         }
-        return {
-            scheme: newSchemeState,
-            history,
+        else {
+            const newSchemeState = schemeReducer(scheme, action)
+            const lastRecord = history.records.filter(({id}) => id === history.active)[0]
+            if (!lastRecord) {
+                throw new Error(`Active record (${history.active}) not found, invalid state`)
+            }
+            const newId = history.seq + 1
+
+            const mergeAction = mergeStrategy(action, lastRecord)
+
+            if (mergeAction !== 'SKIP') {
+                const activeRecords = []
+                for (let i = 0; i < history.records.length; ++i) {
+                    const next = history.records[i]
+                    activeRecords.push(next)
+                    if (next.id === history.active) {
+                        break
+                    }
+                }
+
+                if (mergeAction === 'ADD') {
+                    return {
+                        scheme: newSchemeState,
+                        history: {
+                            seq: newId,
+                            active: newId,
+                            records: [...activeRecords, {
+                                id: newId,
+                                action,
+                                state: newSchemeState,
+                            }],
+                        },
+                    }
+                }
+                else if (mergeAction === 'REPLACE') {
+                    if (lastRecord) {
+                        const filteredRecords = activeRecords.filter(({id}) => id !== lastRecord.id)
+                        return {
+                            scheme: newSchemeState,
+                            history: {
+                                seq: newId,
+                                active: newId,
+                                records: [...filteredRecords, {
+                                    id: newId,
+                                    action,
+                                    state: scheme,
+                                }],
+                            },
+                        }
+                    }
+                }
+            }
+
+            return {
+                scheme: newSchemeState,
+                history,
+            }
         }
     }
 }

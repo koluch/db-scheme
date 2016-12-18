@@ -40,3 +40,4 @@ export type TAction =
         | {type: 'DELETE_LINK', table: string, attr: string}
         | {type: 'DELETE_ATTR', table: string, attr: string}
         | {type: 'DELETE_TABLE', table: string}
+        | {type: 'ACTIVATE_HISTORY_RECORD', record: number}

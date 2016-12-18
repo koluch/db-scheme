@@ -27,6 +27,7 @@ import Controls from '~/react/presentational/Controls'
 import AttrAddModal from '~/react/presentational/AttrAddModal'
 import TableAddModal from '~/react/presentational/TableAddModal'
 import ToolPanel from '~/react/presentational/ToolPanel'
+import Scroll from '~/react/presentational/Scroll'
 import History from '~/react/presentational/History'
 
 const calculatePath = (b1: TBounds, b2: TBounds): Array<TPoint> => {
@@ -158,6 +159,7 @@ const mapStateToProps = (state: TState): * => {
         newLink,
         links: linkShapes,
         historyRecords: history.records,
+        historyActiveRecord: history.active,
         dnd,
         tco,
     }
@@ -348,6 +350,12 @@ const mergeProps = (stateProps, dispatchProps): * => {
                 table,
             })
         },
+        onHistoryRecordActivate: (record: THistoryStateRecord) => {
+            dispatch({
+                type: 'ACTIVATE_HISTORY_RECORD',
+                record: record.id,
+            })
+        },
     }
 }
 
@@ -359,6 +367,7 @@ type TProps = {
     selected: TSelected,
     dnd: TDndTarget,
     historyRecords: Array<THistoryStateRecord>,
+    historyActiveRecord: number,
 
     onTableClick: (tableShape: TTableShape) => void,
     onTableDeleteClick: (tableShape: TTableShape) => void,
@@ -373,6 +382,7 @@ type TProps = {
     onTableCreate: (table: TTable) => void,
     onMouseMove: (point: TPoint) => void,
     onMouseUp: (point: TPoint) => void,
+    onHistoryRecordActivate: (record: THistoryStateRecord) => void,
 }
 
 type TRootState = {
@@ -461,8 +471,8 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
         }
 
         const canvas = document.createElement('canvas')
-        canvas.setAttribute('width', this.state.size.width)
-        canvas.setAttribute('height', this.state.size.height)
+        canvas.setAttribute('width', `${this.state.size.width}`)
+        canvas.setAttribute('height', `${this.state.size.height}`)
         const ctx = canvas.getContext('2d')
         if (ctx) {
             const img = new Image()
@@ -550,10 +560,18 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                                                           />}
                 <div className={bem('tools')}>
                     <ToolPanel title={'Export'}>
-                        <div><button onClick={this.handleExportToPng}>{'Export to PNG'}</button></div>
+                        <div style={{padding: '20px'}}>
+                            <button onClick={this.handleExportToPng}>{'Export to PNG'}</button>
+                        </div>
                     </ToolPanel>
                     <ToolPanel title={'History'}>
-                        <History records={this.props.historyRecords}/>
+                        <Scroll>
+                            <History
+                                records={this.props.historyRecords}
+                                active={this.props.historyActiveRecord}
+                                onRecordClick={this.props.onHistoryRecordActivate}
+                            />
+                        </Scroll>
                     </ToolPanel>
                 </div>
             </div>
