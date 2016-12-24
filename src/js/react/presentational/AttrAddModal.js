@@ -5,7 +5,6 @@ import type {TAttr} from '~/types/TAttr'
 
 import Modal from './Modal'
 
-
 type TProps = {
     table: string,
     onCancel: () => void,

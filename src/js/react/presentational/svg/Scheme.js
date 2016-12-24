@@ -67,12 +67,9 @@ class Scheme extends React.Component {
 
     render() {
         const {
-            tables,
             links,
             style,
             size,
-            metrics,
-            selected,
             newLink,
             } = this.props
 

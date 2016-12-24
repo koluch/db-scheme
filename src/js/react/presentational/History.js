@@ -14,11 +14,11 @@ class History extends React.Component {
     }
 
 
-    renderRecordInfo(record: THistoryStateRecord, active: boolean, title: string, desc: ?string) {
+    renderRecordInfo(record: THistoryStateRecord, future: boolean, active: boolean, title: string, desc: ?string) {
         return (
             <div
                 key={record.id}
-                className={bem('record', {'inactive': !active})}
+                className={bem('record', {future, active})}
                 onClick={this.props.onRecordClick.bind(this, record)}
             >
                 <div className={bem('record-title')}>{title}</div>
@@ -27,10 +27,10 @@ class History extends React.Component {
         )
     }
 
-    renderRecord(record: THistoryStateRecord, active: boolean) {
+    renderRecord(record: THistoryStateRecord, future: boolean, active: boolean) {
         const {id, action} = record
 
-        const renderInfo = this.renderRecordInfo.bind(this, record, active)
+        const renderInfo = this.renderRecordInfo.bind(this, record, future, active)
 
         if (action.type === 'MOVE_TABLE') {
             return renderInfo('Move table', `${action.table}`)
@@ -67,6 +67,9 @@ class History extends React.Component {
                 `${action.from.table}.${action.from.attr} → ${action.to.table}.${action.to.attr}`
             )
         }
+        else if (action.type === 'DELETE_LINK') {
+            return renderInfo('Delete link', `${action.table}.${action.attr}`)
+        }
         else if (action.type === '@@redux/INIT') {
             return renderInfo('Scheme created', null)
         }
@@ -83,7 +86,7 @@ class History extends React.Component {
 
         return (
             <div className="history">
-                {records.map((record, i) => this.renderRecord(record, !(i < activeIndex)))}
+                {records.map((record, i) => this.renderRecord(record, i < activeIndex, i === activeIndex))}
             </div>
         )
     }

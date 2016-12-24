@@ -29,6 +29,7 @@ import TableAddModal from '~/react/presentational/TableAddModal'
 import ToolPanel from '~/react/presentational/ToolPanel'
 import Scroll from '~/react/presentational/Scroll'
 import History from '~/react/presentational/History'
+import Button from '~/react/presentational/Button'
 
 const calculatePath = (b1: TBounds, b2: TBounds): Array<TPoint> => {
     let start = null
@@ -560,8 +561,8 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                                                           />}
                 <div className={bem('tools')}>
                     <ToolPanel title={'Export'}>
-                        <div style={{padding: '20px'}}>
-                            <button onClick={this.handleExportToPng}>{'Export to PNG'}</button>
+                        <div style={{padding: '20px', display: 'flex'}}>
+                            <Button onClick={this.handleExportToPng}>{'Export to PNG'}</Button>
                         </div>
                     </ToolPanel>
                     <ToolPanel title={'History'}>
