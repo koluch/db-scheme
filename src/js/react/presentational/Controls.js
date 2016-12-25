@@ -1,5 +1,6 @@
 // @flow
 import React from 'react'
+import cn from 'bem-cn'
 
 import type {TTableShape} from '~/types/TTableShape'
 import type {TPoint} from '~/types/TPoint'
@@ -14,6 +15,8 @@ import IconTrash from '~/react/presentational/icons/IconTrash'
 import IconKey from '~/react/presentational/icons/IconKey'
 import IconPlus from '~/react/presentational/icons/IconPlus'
 import IconTable from '~/react/presentational/icons/IconTable'
+
+const bem = cn('controls')
 
 type TPositionProps = {
     x: number,
@@ -34,10 +37,10 @@ const Position = (props: TPositionProps) => {
 
     return (
         <div
-            className="controls__position"
+            className={bem('position')}
             style={{left: `${x}px`, top: `${y}px`}}
         >
-            <div className={`controls__container v-${v} h-${h}`}>
+            <div className={bem('container', {[`v-${v}`]: true, [`h-${h}`]: true})}>
                 {children}
             </div>
         </div>
@@ -53,12 +56,13 @@ const Panel = (props: TPanelProps) => {
     const {children, orientation} = props
 
     return (
-        <div className={`controls__panel orientation-${orientation}`}>
+        <div className={bem('panel', {[`orientation-${orientation}`]: true})}>
             {children}
         </div>
     )
 }
 
+const SELECTED_BORDER_MARGIN = 2
 
 class Controls extends React.Component {
 
@@ -118,6 +122,27 @@ class Controls extends React.Component {
         )
     }
 
+    renderSelectedTableBorder(tableShape: TTableShape) {
+        const {position: {x, y}} = tableShape
+        const {metrics} = this.props
+
+        const tableMetrics = metrics.tables.filter((record) => record.name === tableShape.table.name)[0].metrics
+        if (!tableMetrics) {
+            throw new Error(`Table "${tableShape.table.name}" doesn't have metrics`)
+        }
+
+        const {width, height} = tableMetrics.size
+        const style = {
+            top: y - SELECTED_BORDER_MARGIN,
+            left: x - SELECTED_BORDER_MARGIN,
+            width: width + (SELECTED_BORDER_MARGIN * 2),
+            height: height + (SELECTED_BORDER_MARGIN * 2),
+        }
+        return (
+            <div className={bem('border')} style={style}/>
+        )
+    }
+
     renderSelectedAttributeControls(tableShape: TTableShape, attr: TAttr) {
         const {position} = tableShape
         const {metrics} = this.props
@@ -165,6 +190,32 @@ class Controls extends React.Component {
         )
     }
 
+    renderSelectedAttributeBorder(tableShape: TTableShape, attr: TAttr) {
+        const {position} = tableShape
+        const {metrics} = this.props
+
+        const tableMetrics = metrics.tables.filter((record) => record.name === tableShape.table.name)[0].metrics
+        if (!tableMetrics) {
+            throw new Error(`Table "${tableShape.table.name}" doesn't have metrics`)
+        }
+
+        const bounds = getAttrBounds(tableMetrics, position, attr.name)
+        if (!bounds) {
+            throw new Error(`Metrics calculation failed for attribute "${tableShape.table.name}.${attr.name}"`)
+        }
+
+        const {width, height, x, y} = bounds
+        const style = {
+            top: y - SELECTED_BORDER_MARGIN,
+            left: x - SELECTED_BORDER_MARGIN,
+            width: width + (SELECTED_BORDER_MARGIN * 2),
+            height: height + (SELECTED_BORDER_MARGIN * 2),
+        }
+        return (
+            <div className={bem('border')} style={style}/>
+        )
+    }
+
     renderCreateTable() {
         const {size: {width}} = this.props
         const MARGIN = 10
@@ -195,14 +246,24 @@ class Controls extends React.Component {
             if (!selectedTable) {
                 throw new Error(`Selected table doesn't exists "${table}"`)
             }
-            return this.renderSelectedTableControls(selectedTable)
+            return (
+                <div>
+                    {this.renderSelectedTableBorder(selectedTable)}
+                    {this.renderSelectedTableControls(selectedTable)}
+                </div>
+            )
         }
         else if (selected !== false && selected.type === 'ATTR') {
             const {table, attr} = selected
             const selectedTable = tables.filter((tableShape) => table === tableShape.table.name)[0] //todo: check
             const selectedAttr = selectedTable.table.attrs.filter(({name}) => name === attr)[0]
 
-            return this.renderSelectedAttributeControls(selectedTable, selectedAttr)
+            return (
+                <div>
+                    {this.renderSelectedAttributeBorder(selectedTable, selectedAttr)}
+                    {this.renderSelectedAttributeControls(selectedTable, selectedAttr)}
+                </div>
+            )
         }
         return null
     }
@@ -210,7 +271,7 @@ class Controls extends React.Component {
     render() {
         const {selected} = this.props
         return (
-            <div className="controls">
+            <div className={bem()}>
                 {this.renderCreateTable()}
                 {selected !== false && this.renderSelected(selected)}
             </div>

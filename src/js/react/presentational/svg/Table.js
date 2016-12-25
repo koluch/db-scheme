@@ -99,19 +99,7 @@ class Table extends React.Component {
 
         return (
             <g>
-                <defs>
-                    <filter id="active_table_filter" x="-50%" y="-50%" width="200%" height="200%">
-                        <feOffset result="offOut" in="SourceAlpha" dx="0" dy="0"/>
-                        <feGaussianBlur result="blurOut" in="offOut" stdDeviation="10"/>
-                        <feBlend in="SourceGraphic" in2="blurOut" mode="normal"/>
-                        <feComponentTransfer>
-                            <feFuncA type="linear" slope="0.2"/>
-                        </feComponentTransfer>
-                    </filter>
-                </defs>
-
                 {isTableActive && <rect
-                    filter={'url(#active_table_filter)'}
                     x={x}
                     y={y}
                     width={width}

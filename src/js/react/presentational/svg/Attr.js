@@ -39,25 +39,8 @@ class Attr extends React.Component {
             y={y}
             onMouseDown={this.handleMouseDown}
                 >
-            <defs>
-                <filter
-                    id="active_attr_filter"
-                    x="-50%"
-                    y="-50%"
-                    width="200%"
-                    height="200%"
-                >
-                    <feOffset result="offOut" in="SourceAlpha" dx="0" dy="0"/>
-                    <feGaussianBlur result="blurOut" in="offOut" stdDeviation="10"/>
-                    <feBlend in="SourceGraphic" in2="blurOut" mode="normal"/>
-                    <feComponentTransfer>
-                        <feFuncA type="linear" slope="0.2"/>
-                    </feComponentTransfer>
-                </filter>
-            </defs>
             <FixClick onClick={this.props.onClick}>
                 {active && <rect
-                    filter="url(#active_attr_filter)"
                     x={x + 1}
                     y={y}
                     width={width - 2}
@@ -73,7 +56,6 @@ class Attr extends React.Component {
                            />}
                 <text
                     fontFamily={style.font.family}
-                    fontWeight={active ? 'bold' : 'normal'}
                     alignmentBaseline="middle"
                     x={x + style.padding.left}
                     y={y + height / 2}
