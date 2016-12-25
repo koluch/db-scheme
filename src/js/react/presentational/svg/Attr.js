@@ -21,7 +21,7 @@ class Attr extends React.Component {
     props: TProps
 
     handleMouseDown = (e: *): * => {
-        this.props.onMouseDown({x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY})
+        this.props.onMouseDown({x: e.clientX, y: e.clientY})
     }
 
     render() {

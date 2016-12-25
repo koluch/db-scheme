@@ -21,7 +21,7 @@ class FixClick extends React.Component {
 
     handleMouseDown = (e: *) => {
         this.setState({
-            start: {x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY},
+            start: {x: e.clientX, y: e.clientY},
         })
     }
 
@@ -34,7 +34,7 @@ class FixClick extends React.Component {
     }
 
     handleMouseUp = (e: *) => {
-        const point = {x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY}
+        const point = {x: e.clientX, y: e.clientY}
         const {start} = this.state
         if (start) {
             if (Math.abs(point.x - start.x) < ALOWED_MOUSE_SHIFT && Math.abs(point.y - start.y) < ALOWED_MOUSE_SHIFT) {

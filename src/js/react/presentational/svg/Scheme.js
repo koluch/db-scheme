@@ -81,8 +81,8 @@ class Scheme extends React.Component {
                 viewBox={`0 0 ${width} ${height}`}
                 width={width}
                 height={height}
-                onMouseUp={(e) => this.props.onMouseUp({x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY})}
-                onMouseMove={(e) => this.props.onMouseMove({x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY})}
+                onMouseUp={(e) => this.props.onMouseUp({x: e.clientX, y: e.clientY})}
+                onMouseMove={(e) => this.props.onMouseMove({x: e.clientX, y: e.clientY})}
                 ref={(el) => { this.schemeEl = el }}
                 onClick={(e) => { if (e.target === this.schemeEl) { this.props.onClick() } }}
             >

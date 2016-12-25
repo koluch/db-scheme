@@ -26,7 +26,7 @@ class Table extends React.Component {
     props: TProps
 
     handleHeaderMouseDown(tableShape: TTableShape, e: *): * {
-        const point = {x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY}
+        const point = {x: e.clientX, y: e.clientY}
         this.props.onHeaderMouseDown.call(this, tableShape, point)
     }
 
