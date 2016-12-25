@@ -143,22 +143,53 @@ svg.scheme {
 .button {
     display: flex;
     outline: none;
-    border-radius: 3px;
-    border: 1px solid #d6d6d6;
-    background: linear-gradient(to bottom, #FFF, #dedede);
     white-space: nowrap;
     margin: 1px;
-    padding: 3px 5px;
     align-items: center;
     cursor: pointer;
-
-    &:hover {
-        border-color: #bdbdbd;
-    }
+    background: linear-gradient(to top, #6cb32c, #abe46b);
+    border-radius: 5px;
+    background: #ffd400;
+    padding: 10px;
+    color: rgba(0, 0, 0, 0.74);
+    font-weight: bold;
+    border: 1px solid #eac300;
 
     &:active {
-        background: linear-gradient(to bottom, #f9f9f9, #d2d2d2);
-        border-color: #d6d6d6;
+        background: #eec300;
+    }
+
+    .icon {
+        fill: black;
+        width: 20px;
+        height: 20px;
+    }
+
+    &_small {
+        padding: 4px;
+        .icon {
+            width: 16px;
+            height: 16px;
+        }
+    }
+
+    &_create {
+        .icon {
+            fill: green;
+        }
+    }
+
+    &_warning {
+        background: red;
+        border: 1px solid #d10000;
+        color: white;
+        &:active {
+            background: #d90000;
+        }
+
+        .icon {
+            fill: white;
+        }
     }
 }
 
@@ -224,52 +255,5 @@ svg.scheme {
             overflow: hidden;
             text-overflow: ellipsis;
         }
-    }
-}
-
-.some {
-    border: none;
-    background: linear-gradient(to top, #6cb32c, #abe46b);
-    border-radius: 5px;
-    background: #ffd400;
-    padding: 10px;
-    color: rgba(0, 0, 0, 0.74);
-    font-weight: bold;
-}
-
-.icon {
-    width: 20px;
-    height: 20px;
-    flex-basis: 20px;
-    display: inline-block;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: contain;
-
-    &.small {
-        flex-basis: 15px;
-        width: 15px;
-        height: 15px;
-    }
-
-    &.trash {
-        background-image: svg('trash', "[fill]: red");
-    }
-    &.table {
-        background-image: svg('table');
-        &.add {
-            background-image: svg('table', "[fill]: #229900");
-        }
-    }
-    &.key {
-        &.green {
-            background-image: svg('key', "[fill]: green");
-        }
-        &.red {
-            background-image: svg('key', "[fill]: red");
-        }
-    }
-    &.plus {
-        background-image: svg('plus', "[fill]: green");
     }
 }

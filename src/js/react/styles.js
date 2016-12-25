@@ -32,11 +32,11 @@ const tableStyle = {
             bottom: 4,
             left: 5,
         },
-        backgroundColor: '#0053a0',
+        backgroundColor: '#363636',
         font: headerFontStyle,
     },
     border: {
-        color: '#0053a0',
+        color: '#363636',
     },
 }
 

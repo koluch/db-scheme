@@ -10,6 +10,10 @@ import type {TSize} from '~/types/TSize'
 
 import {getAttrBounds} from '~/metrics/table'
 import Button from '~/react/presentational/Button'
+import IconTrash from '~/react/presentational/icons/IconTrash'
+import IconKey from '~/react/presentational/icons/IconKey'
+import IconPlus from '~/react/presentational/icons/IconPlus'
+import IconTable from '~/react/presentational/icons/IconTable'
 
 type TPositionProps = {
     x: number,
@@ -97,10 +101,18 @@ class Controls extends React.Component {
                 <Panel orientation="h">
                     <Button
                         onClick={this.props.onAttrCreateClick.bind(this, tableShape)}
-                    ><i className="icon small plus"/></Button>
+                        size="small"
+                        variant="create"
+                    >
+                        <IconPlus/>
+                    </Button>
                     <Button
                         onClick={this.props.onTableDeleteClick.bind(this, tableShape)}
-                    ><i className="icon small trash"/></Button>
+                        size="small"
+                        variant="warning"
+                    >
+                        <IconTrash/>
+                    </Button>
                 </Panel>
             </Position>
         )
@@ -132,20 +144,21 @@ class Controls extends React.Component {
                 h="start"
             >
                 <Panel orientation="h">
-                    {!hasLink && <Button
-                        onClick={this.props.onLinkAddClick.bind(this, tableShape, attr)}
-                                 >
-                        <i className="icon small key green"/>
-                    </Button>}
-                    {hasLink && <Button
-                        onClick={this.props.onLinkDeleteClick.bind(this, tableShape, attr)}
-                                >
-                        <i className="icon small key red"/>
-                    </Button>}
                     <Button
+                        onClick={hasLink
+                         ? this.props.onLinkDeleteClick.bind(this, tableShape, attr)
+                         : this.props.onLinkAddClick.bind(this, tableShape, attr)}
+                        size="small"
+                        variant={hasLink ? 'warning' : 'create'}
+                    >
+                        <IconKey/>
+                    </Button>
+                    <Button
+                        size="small"
+                        variant="warning"
                         onClick={this.props.onAttrDeleteClick.bind(this, tableShape, attr)}
                     >
-                        <i className="icon small trash"/>
+                        <IconTrash/>
                     </Button>
                 </Panel>
             </Position>
@@ -165,8 +178,9 @@ class Controls extends React.Component {
                 <Panel orientation="h">
                     <Button
                         onClick={this.props.onTableCreateClick}
+                        variant="create"
                     >
-                        <i className="icon add table"/>
+                        <IconTable/>
                     </Button>
                 </Panel>
             </Position>
