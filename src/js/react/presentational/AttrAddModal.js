@@ -14,29 +14,53 @@ type TProps = {
 
 class AttrAddModal extends React.Component {
 
-    props: TProps
+    constructor(props: TProps) {
+        super(props)
+        this.state = {
+            name: '',
+        }
+    }
 
-    nameInputEl: *
+    state: {
+        name: string,
+    }
+
+    props: TProps
 
     handleSubmit = (e: *) => {
         if (e) {
             e.preventDefault()
         }
-        this.props.onSave(
-            this.props.table,
-            {
-                name: this.nameInputEl.value,
-            }
-        )
+        if (!this.isSubmitDisabled()) {
+            const {name} = this.state
+            this.props.onSave(
+                this.props.table,
+                {
+                    name,
+                }
+            )
+        }
     }
 
     handleCancel = (e: *) => {
         this.props.onCancel()
     }
 
+    handleChangeName = (e: *) => {
+        this.setState({
+            name: e.target.value,
+        })
+    }
+
+    isSubmitDisabled() {
+        return this.state.name === ''
+    }
+
     render() {
+        const {name} = this.state
+
         const buttons = [
-            {title: 'Create', onClick: this.handleSubmit, variant: 'create'},
+            {title: 'Create', onClick: this.handleSubmit, variant: 'create', disabled: this.isSubmitDisabled()},
             {title: 'Cancel', onClick: this.handleCancel},
         ]
 
@@ -44,7 +68,10 @@ class AttrAddModal extends React.Component {
             <Modal title="Create attribute" buttons={buttons}>
                 <form onSubmit={this.handleSubmit}>
                     <ModalRow>
-                        <label>{'Name: '}<input ref={(el) => { this.nameInputEl = el }}/></label>
+                        <label>
+                            {'Name: '}
+                            <input value={name} onChange={this.handleChangeName}/>
+                        </label>
                     </ModalRow>
                 </form>
             </Modal>

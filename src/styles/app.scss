@@ -179,8 +179,14 @@ svg.scheme {
     color: rgba(0, 0, 0, 0.74);
     font-weight: bold;
     border: 1px solid #eac300;
+    user-select: none;
 
-    &:active {
+    &_disabled {
+        opacity: 0.5;
+        cursor: default;
+    }
+
+    &:active:not(&_disabled) {
         background: #eec300;
     }
 
@@ -209,13 +215,12 @@ svg.scheme {
         background: red;
         border: 1px solid #d10000;
         color: white;
-        &:active {
-            background: #d90000;
-        }
-
         .icon {
             fill: white;
         }
+    }
+    &_warning:active:not(&_disabled) {
+        background: #d90000;
     }
 }
 

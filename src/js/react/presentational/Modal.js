@@ -38,6 +38,7 @@ type TButtonDesc = {
     title: string,
     onClick: () => void,
     variant?: 'warning' | 'create',
+    disabled?: boolean,
 }
 
 export default class Modal extends React.Component {
@@ -56,8 +57,15 @@ export default class Modal extends React.Component {
                         {this.props.children}
                     </div>
                     <div className={bem('bottom')}>
-                        {this.props.buttons.map(({title, onClick, variant}) => (
-                            <Button key={title} onClick={onClick} variant={variant}>{title}</Button>
+                        {this.props.buttons.map(({title, onClick, variant, disabled}) => (
+                            <Button
+                                key={title}
+                                disabled={disabled}
+                                onClick={onClick}
+                                variant={variant}
+                            >
+                                {title}
+                            </Button>
                         ))}
                     </div>
                 </div>

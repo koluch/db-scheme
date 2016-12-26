@@ -5,20 +5,27 @@ import cn from 'bem-cn'
 const bem = cn('button')
 
 class Button extends React.Component {
+    static defaultProps = {
+        disabled: false,
+    }
+
     props: {
         onClick: (e: *) => void,
         children?: *,
         size?: 'small',
-        variant?: 'warning' | 'create',
+        variant?: 'usual' | 'warning' | 'create',
+        disabled: boolean,
     }
 
     render() {
+        const {disabled, variant, size} = this.props
         const mods = {}
-        if (this.props.variant) {
-            mods[this.props.variant] = true
+        mods.disabled = disabled
+        if (variant) {
+            mods[variant] = true
         }
-        if (this.props.size) {
-            mods[this.props.size] = true
+        if (size) {
+            mods[size] = true
         }
         return (
             <div className={bem(mods)} onClick={this.props.onClick}>
