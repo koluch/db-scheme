@@ -6,7 +6,7 @@ const bem = cn('button')
 
 class Button extends React.Component {
     props: {
-        onClick: () => void,
+        onClick: (e: *) => void,
         children?: *,
         size?: 'small',
         variant?: 'warning' | 'create',

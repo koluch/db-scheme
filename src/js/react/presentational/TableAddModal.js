@@ -2,8 +2,7 @@
 import React from 'react'
 
 import type {TTable} from '~/types/TTable'
-
-import Modal from './Modal'
+import Modal, {ModalRow} from './Modal'
 
 type TProps = {
     onCancel: () => void,
@@ -17,7 +16,9 @@ class AttrAddModal extends React.Component {
     nameInputEl: *
 
     handleSubmit = (e: *) => {
-        e.preventDefault()
+        if (e) {
+            e.preventDefault()
+        }
         this.props.onSave(
             {
                 name: this.nameInputEl.value,
@@ -32,16 +33,17 @@ class AttrAddModal extends React.Component {
     }
 
     render() {
+        const buttons = [
+            {title: 'Create', onClick: this.handleSubmit, variant: 'create'},
+            {title: 'Cancel', onClick: this.handleCancel},
+        ]
+
         return (
-            <Modal>
+            <Modal title="Create table" buttons={buttons}>
                 <form onSubmit={this.handleSubmit}>
-                    <div>
+                    <ModalRow>
                         <label>{'Name: '}<input ref={(el) => { this.nameInputEl = el }}/></label>
-                    </div>
-                    <div>
-                        <button type="button" onClick={this.handleCancel}>{'Cancel'}</button>
-                        <button type="submit">{'Create'}</button>
-                    </div>
+                    </ModalRow>
                 </form>
             </Modal>
         )
