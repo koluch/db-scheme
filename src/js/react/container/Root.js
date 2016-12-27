@@ -24,8 +24,8 @@ import {schemeStyle} from '~/react/styles'
 
 import Scheme from '~/react/presentational/svg/Scheme'
 import Controls from '~/react/presentational/Controls'
-import AttrAddModal from '~/react/presentational/AttrAddModal'
-import TableAddModal from '~/react/presentational/TableAddModal'
+import AttrPropsModal from '~/react/presentational/AttrPropsModal'
+import TablePropsModal from '~/react/presentational/TablePropsModal'
 import ToolPanel from '~/react/presentational/ToolPanel'
 import Scroll from '~/react/presentational/Scroll'
 import History from '~/react/presentational/History'
@@ -351,6 +351,21 @@ const mergeProps = (stateProps, dispatchProps): * => {
                 table,
             })
         },
+        onTableEdit: (oldTable: TTable, newTable: TTable) => {
+            dispatch({
+                type: 'UPDATE_TABLE',
+                oldTable,
+                newTable,
+            })
+        },
+        onAttrEdit: (table: string, oldAttr: TAttr, newAttr: TAttr) => {
+            dispatch({
+                type: 'UPDATE_ATTR',
+                table,
+                oldAttr,
+                newAttr,
+            })
+        },
         onHistoryRecordActivate: (record: THistoryStateRecord) => {
             dispatch({
                 type: 'ACTIVATE_HISTORY_RECORD',
@@ -380,7 +395,9 @@ type TProps = {
     onAttrDeleteClick: (tableShape: TTableShape, attr: TAttr) => void,
     onAttrMouseDown: (tableShape: TTableShape, attr: TAttr, point: TPoint) => void,
     onAttrCreate: (table: string, attr: TAttr) => void,
+    onAttrEdit: (table: string, oldAttr: TAttr, newAttr: TAttr) => void,
     onTableCreate: (table: TTable) => void,
+    onTableEdit: (oldTable: TTable, newTable: TTable) => void,
     onMouseMove: (point: TPoint) => void,
     onMouseUp: (point: TPoint) => void,
     onHistoryRecordActivate: (record: THistoryStateRecord) => void,
@@ -388,8 +405,10 @@ type TProps = {
 
 type TRootState = {
     attrCreateModal: false | {table: string},
+    attrEditModal: false | {table: string, attr: TAttr},
     size: TSize,
     tableCreateModal: boolean,
+    tableEditModal: false | {table: TTable},
 }
 
 export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class extends React.Component {
@@ -398,6 +417,8 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
     state: TRootState = {
         attrCreateModal: false,
         tableCreateModal: false,
+        tableEditModal: false,
+        attrEditModal: false,
         size: {width: 800, height: 600},
     }
 
@@ -435,9 +456,36 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
         })
     }
 
-    handleAttrCancel = () => {
+    handleAttrCreateCancel = () => {
         this.setState({
             attrCreateModal: false,
+        })
+    }
+
+    handleAttrEditClick = (tableShape: TTableShape, attr: TAttr) => {
+        this.setState({
+            attrEditModal: {
+                table: tableShape.table.name,
+                attr,
+            },
+        })
+    }
+
+    handleAttrEdit = (table: string, newAttr: TAttr) => {
+        if (this.state.attrEditModal !== false) {
+            const {table, attr: oldAttr} = this.state.attrEditModal
+            this.setState({
+                attrEditModal: false,
+            }, () => {
+                this.props.onAttrEdit(table, oldAttr, newAttr)
+            })
+        }
+    }
+
+
+    handleAttrEditCancel = () => {
+        this.setState({
+            attrEditModal: false,
         })
     }
 
@@ -455,7 +503,30 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
         })
     }
 
-    handleTableCancel = () => {
+    handleTableEditClick = (tableShape: TTableShape) => {
+        this.setState({
+            tableEditModal: {table: tableShape.table},
+        })
+    }
+
+    handleTableEdit = (newTable: TTable) => {
+        if (this.state.tableEditModal !== false) {
+            const {table: oldTable} = this.state.tableEditModal
+            this.setState({
+                tableEditModal: false,
+            }, () => {
+                this.props.onTableEdit(oldTable, newTable)
+            })
+        }
+    }
+
+    handleTableEditCancel = () => {
+        this.setState({
+            tableEditModal: false,
+        })
+    }
+
+    handleTableCreateCancel = () => {
         this.setState({
             tableCreateModal: false,
         })
@@ -527,7 +598,9 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                             onLinkAddClick={this.props.onLinkAddClick}
                             onLinkDeleteClick={this.props.onLinkDeleteClick}
                             onAttrDeleteClick={this.props.onAttrDeleteClick}
+                            onAttrEditClick={this.handleAttrEditClick}
                             onTableDeleteClick={this.props.onTableDeleteClick}
+                            onTableEditClick={this.handleTableEditClick}
                             onTableCreateClick={this.handleTableCreateClick}
                             onMouseUp={this.props.onMouseUp}
                             onAttrCreateClick={this.handleAttrCreateClick}
@@ -550,15 +623,26 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                         />
                     </div>
                 </div>
-                {this.state.attrCreateModal !== false && <AttrAddModal
+                {this.state.attrCreateModal !== false && <AttrPropsModal
                     table={this.state.attrCreateModal.table}
                     onSave={this.handleAttrCreate}
-                    onCancel={this.handleAttrCancel}
+                    onCancel={this.handleAttrCreateCancel}
                                                          />}
-                {this.state.tableCreateModal !== false && <TableAddModal
+                {this.state.attrEditModal !== false && <AttrPropsModal
+                    table={this.state.attrEditModal.table}
+                    name={this.state.attrEditModal.attr.name}
+                    onSave={this.handleAttrEdit}
+                    onCancel={this.handleAttrEditCancel}
+                                                       />}
+                {this.state.tableCreateModal !== false && <TablePropsModal
                     onSave={this.handleTableCreate}
-                    onCancel={this.handleTableCancel}
+                    onCancel={this.handleTableCreateCancel}
                                                           />}
+                {this.state.tableEditModal !== false && <TablePropsModal
+                    name={this.state.tableEditModal.table.name}
+                    onSave={this.handleTableEdit}
+                    onCancel={this.handleTableEditCancel}
+                                                        />}
                 <div className={bem('tools')}>
                     <ToolPanel title={'Export'}>
                         <div style={{padding: '20px', display: 'flex'}}>

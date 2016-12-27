@@ -96,7 +96,7 @@ export const wrapSchemeReducer = (schemeReducer: TSchemeReducer, mergeStrategy: 
                                 records: [...filteredRecords, {
                                     id: newId,
                                     action,
-                                    state: scheme,
+                                    state: newSchemeState,
                                 }],
                             },
                         }

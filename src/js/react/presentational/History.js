@@ -52,6 +52,12 @@ class History extends React.Component {
         else if (action.type === 'ADD_TABLE') {
             return renderInfo('Create table', `${action.table.name}`)
         }
+        else if (action.type === 'UPDATE_TABLE') {
+            return renderInfo('Edit table', `${action.oldTable.name} → ${action.newTable.name}`)
+        }
+        else if (action.type === 'UPDATE_ATTR') {
+            return renderInfo('Edit attr', `${action.table}.${action.oldAttr.name} → ${action.table}.${action.newAttr.name}`)
+        }
         else if (action.type === 'DELETE_TABLE') {
             return renderInfo(`Delete table ${action.table}`, null)
         }

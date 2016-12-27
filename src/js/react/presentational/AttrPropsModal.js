@@ -1,25 +1,37 @@
 // @flow
 import React from 'react'
 
-import type {TTable} from '~/types/TTable'
-import Modal, {ModalRow} from './Modal'
+import type {TAttr} from '~/types/TAttr'
+import Button from '~/react/presentational/Button'
+
+import Modal, {ModalRow, ModalBottom} from './Modal'
 
 type TProps = {
+    table: string,
+    name?: string,
     onCancel: () => void,
-    onSave: (table: TTable) => void,
+    onSave: (table: string, attr: TAttr) => void,
 }
 
-class AttrAddModal extends React.Component {
+class AttrPropsModal extends React.Component {
 
     constructor(props: TProps) {
         super(props)
+        const {name} = props
         this.state = {
-            name: '',
+            name: name ? name : '',
         }
     }
 
     state: {
         name: string,
+    }
+
+    componentWillReceiveProps(newProps: TProps) {
+        const {name} = newProps
+        this.setState({
+            name,
+        })
     }
 
     props: TProps
@@ -31,10 +43,9 @@ class AttrAddModal extends React.Component {
         if (!this.isSubmitDisabled()) {
             const {name} = this.state
             this.props.onSave(
+                this.props.table,
                 {
                     name,
-                    attrs: [],
-                    foreignKeys: [],
                 }
             )
         }
@@ -58,12 +69,12 @@ class AttrAddModal extends React.Component {
         const {name} = this.state
 
         const buttons = [
-            {title: 'Create', onClick: this.handleSubmit, variant: 'create', disabled: this.isSubmitDisabled()},
+            {title: 'Save', onClick: this.handleSubmit, variant: 'create', disabled: this.isSubmitDisabled()},
             {title: 'Cancel', onClick: this.handleCancel},
         ]
 
         return (
-            <Modal title="Create table" buttons={buttons}>
+            <Modal title="Create attribute" buttons={buttons}>
                 <form onSubmit={this.handleSubmit}>
                     <ModalRow>
                         <label>
@@ -77,4 +88,4 @@ class AttrAddModal extends React.Component {
     }
 }
 
-export default AttrAddModal
+export default AttrPropsModal

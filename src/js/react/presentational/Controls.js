@@ -15,6 +15,7 @@ import IconTrash from '~/react/presentational/icons/IconTrash'
 import IconKey from '~/react/presentational/icons/IconKey'
 import IconPlus from '~/react/presentational/icons/IconPlus'
 import IconTable from '~/react/presentational/icons/IconTable'
+import IconPencil from '~/react/presentational/icons/IconPencil'
 
 const bem = cn('controls')
 
@@ -75,7 +76,9 @@ class Controls extends React.Component {
 
         onTableCreateClick: () => void,
         onTableDeleteClick: (tableShape: TTableShape) => void,
+        onTableEditClick: (tableShape: TTableShape) => void,
         onAttrDeleteClick: (tableShape: TTableShape, attr: TAttr) => void,
+        onAttrEditClick: (tableShape: TTableShape, attr: TAttr) => void,
         onAttrCreateClick: (tableShape: TTableShape) => void,
         onAttrClick: (tableShape: TTableShape, attr: TAttr) => void,
         onMouseMove: (point: TPoint) => void,
@@ -109,6 +112,12 @@ class Controls extends React.Component {
                         variant="create"
                     >
                         <IconPlus/>
+                    </Button>
+                    <Button
+                        onClick={this.props.onTableEditClick.bind(this, tableShape)}
+                        size="small"
+                    >
+                        <IconPencil/>
                     </Button>
                     <Button
                         onClick={this.props.onTableDeleteClick.bind(this, tableShape)}
@@ -177,6 +186,12 @@ class Controls extends React.Component {
                         variant={hasLink ? 'warning' : 'create'}
                     >
                         <IconKey/>
+                    </Button>
+                    <Button
+                        onClick={this.props.onAttrEditClick.bind(this, tableShape, attr)}
+                        size="small"
+                    >
+                        <IconPencil/>
                     </Button>
                     <Button
                         size="small"

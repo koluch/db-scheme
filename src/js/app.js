@@ -31,7 +31,7 @@ const mergeStrategy: TMergeStrategy = (action: TAction, lastRecord: THistoryStat
         return 'ADD'
     }
     else {
-        // Depending on action type and it's attrs, add or replace record
+        // Depending on action type and it's attrs, add or replace record //todo: flow unable to understand, that action.type === lastAction.type
         if (action.type === 'SELECT' && lastAction.type === 'SELECT') {
             if (action.target !== lastAction.target) {
                 return 'ADD'
@@ -52,22 +52,28 @@ const mergeStrategy: TMergeStrategy = (action: TAction, lastRecord: THistoryStat
         if (action.type === 'CANCEL_SELECT' && lastAction.type === 'CANCEL_SELECT') {
             return 'REPLACE'
         }
-        if (action.type === 'ADD_LINK' && lastAction.type === 'ADD_LINK') {
-            return 'ADD'
-        }
         if (action.type === 'ADD_ATTR' && lastAction.type === 'ADD_ATTR') {
             return 'ADD'
         }
-        if (action.type === 'ADD_TABLE' && lastAction.type === 'ADD_TABLE') {
-            return 'ADD'
-        }
-        if (action.type === 'DELETE_LINK' && lastAction.type === 'DELETE_LINK') {
+        if (action.type === 'UPDATE_ATTR' && lastAction.type === 'UPDATE_ATTR') {
             return 'ADD'
         }
         if (action.type === 'DELETE_ATTR' && lastAction.type === 'DELETE_ATTR') {
             return 'ADD'
         }
+        if (action.type === 'ADD_TABLE' && lastAction.type === 'ADD_TABLE') {
+            return 'ADD'
+        }
+        if (action.type === 'UPDATE_TABLE' && lastAction.type === 'UPDATE_TABLE') {
+            return 'ADD'
+        }
         if (action.type === 'DELETE_TABLE' && lastAction.type === 'DELETE_TABLE') {
+            return 'ADD'
+        }
+        if (action.type === 'ADD_LINK' && lastAction.type === 'ADD_LINK') {
+            return 'ADD'
+        }
+        if (action.type === 'DELETE_LINK' && lastAction.type === 'DELETE_LINK') {
             return 'ADD'
         }
         return 'SKIP'

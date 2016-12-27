@@ -365,6 +365,69 @@ const reducer: TSchemeReducer = (state: TSchemeState = initialState, action: TAc
             }),
         }
     }
+    else if (action.type === 'UPDATE_ATTR') {
+        const {table, oldAttr, newAttr} = action
+
+        let newSelected = state.selected
+        if (newSelected !== false && newSelected.type === 'ATTR'
+            && newSelected.table === table && newSelected.attr === oldAttr.name) {
+            newSelected = {
+                type: 'ATTR',
+                table,
+                attr: newAttr.name,
+            }
+        }
+
+        const newState = {
+            ...state,
+            tables: state.tables.map((tableState: TTableState) => {
+                if (tableState.table.name === table) {
+                    return {
+                        ...tableState,
+                        table: {
+                            ...tableState.table,
+                            attrs: tableState.table.attrs.map((attr) => {
+                                if (attr.name === oldAttr.name) {
+                                    return {...oldAttr,
+                                        name: newAttr.name,
+                                    }
+                                }
+                                return attr
+                            }),
+                            foreignKeys: tableState.table.foreignKeys.map((key) => {
+                                if (key.from.attr === oldAttr.name) {
+                                    return {...key,
+                                        from: {...key.to,
+                                            attr: newAttr.name,
+                                        },
+                                    }
+                                }
+                                return key
+                            }),
+                        },
+                    }
+                }
+                else {
+                    return {...tableState,
+                        table: {...tableState.table,
+                            foreignKeys: tableState.table.foreignKeys.map((key) => {
+                                if (key.to.table === table && key.to.attr === oldAttr.name) {
+                                    return {...key,
+                                        to: {...key.to,
+                                            attr: newAttr.name,
+                                        },
+                                    }
+                                }
+                                return key
+                            }),
+                        },
+                    }
+                }
+            }),
+            selected: newSelected,
+        }
+        return newState
+    }
     else if (action.type === 'ADD_TABLE') {
         const {table} = action
 
@@ -374,6 +437,56 @@ const reducer: TSchemeReducer = (state: TSchemeState = initialState, action: TAc
                 position: {x: 0, y: 0},
                 table,
             }]),
+        }
+    }
+    else if (action.type === 'UPDATE_TABLE') {
+        const {oldTable, newTable} = action
+
+        let newSelected = state.selected
+        if (newSelected !== false && newSelected.type === 'TABLE' && newSelected.table === oldTable.name) {
+            newSelected = {
+                type: 'TABLE',
+                table: newTable.name,
+            }
+        }
+        else if (newSelected !== false && newSelected.type === 'ATTR' && newSelected.table === oldTable.name) {
+            newSelected = {
+                type: 'ATTR',
+                attr: newSelected.attr,
+                table: newTable.name,
+            }
+        }
+
+        return {
+            ...state,
+            tables: state.tables.map((tableState: TTableState) => {
+                if (tableState.table.name === oldTable.name) {
+                    return {
+                        ...tableState,
+                        table: {
+                            ...tableState.table,
+                            name: newTable.name,
+                        },
+                    }
+                }
+                else {
+                    return {...tableState,
+                        table: {...tableState.table,
+                            foreignKeys: tableState.table.foreignKeys.map((key) => {
+                                if (key.to.table === oldTable.name) {
+                                    return {...key,
+                                        to: {...key.to,
+                                            table: newTable.name,
+                                        },
+                                    }
+                                }
+                                return key
+                            }),
+                        },
+                    }
+                }
+            }),
+            selected: newSelected,
         }
     }
     return state
