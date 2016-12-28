@@ -9,11 +9,13 @@ import Modal, {ModalRow, ModalBottom} from './Modal'
 type TProps = {
     table: string,
     name?: string,
+    edit: boolean,
     onCancel: () => void,
     onSave: (table: string, attr: TAttr) => void,
 }
 
 class AttrPropsModal extends React.Component {
+    static defaultProps = {edit: false}
 
     constructor(props: TProps) {
         super(props)
@@ -66,15 +68,16 @@ class AttrPropsModal extends React.Component {
     }
 
     render() {
+        const {edit} = this.props
         const {name} = this.state
 
         const buttons = [
-            {title: 'Save', onClick: this.handleSubmit, variant: 'create', disabled: this.isSubmitDisabled()},
+            {title: edit ? 'Save' : 'Create', onClick: this.handleSubmit, variant: 'create', disabled: this.isSubmitDisabled()},
             {title: 'Cancel', onClick: this.handleCancel},
         ]
 
         return (
-            <Modal title="Create attribute" buttons={buttons}>
+            <Modal title={`${edit ? 'Edit' : 'Create'} attribute`} buttons={buttons}>
                 <form onSubmit={this.handleSubmit}>
                     <ModalRow>
                         <label>

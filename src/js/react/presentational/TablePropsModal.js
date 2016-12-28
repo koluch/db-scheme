@@ -5,12 +5,14 @@ import type {TTable} from '~/types/TTable'
 import Modal, {ModalRow} from './Modal'
 
 type TProps = {
+    edit: boolean,
     name?: string,
     onCancel: () => void,
     onSave: (table: TTable) => void,
 }
 
 class TablePropsModal extends React.Component {
+    static defaultProps = {edit: false}
 
     constructor(props: TProps) {
         super(props)
@@ -64,15 +66,16 @@ class TablePropsModal extends React.Component {
     }
 
     render() {
+        const {edit} = this.props
         const {name} = this.state
 
         const buttons = [
-            {title: 'Save', onClick: this.handleSubmit, variant: 'create', disabled: this.isSubmitDisabled()},
+            {title: edit ? 'Save' : 'Create', onClick: this.handleSubmit, variant: 'create', disabled: this.isSubmitDisabled()},
             {title: 'Cancel', onClick: this.handleCancel},
         ]
 
         return (
-            <Modal title="Create table" buttons={buttons}>
+            <Modal title={`${edit ? 'Edit' : 'Create'} table`} buttons={buttons}>
                 <form onSubmit={this.handleSubmit}>
                     <ModalRow>
                         <label>

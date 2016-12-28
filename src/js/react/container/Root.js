@@ -629,6 +629,7 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                     onCancel={this.handleAttrCreateCancel}
                                                          />}
                 {this.state.attrEditModal !== false && <AttrPropsModal
+                    edit
                     table={this.state.attrEditModal.table}
                     name={this.state.attrEditModal.attr.name}
                     onSave={this.handleAttrEdit}
@@ -639,6 +640,7 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                     onCancel={this.handleTableCreateCancel}
                                                           />}
                 {this.state.tableEditModal !== false && <TablePropsModal
+                    edit
                     name={this.state.tableEditModal.table.name}
                     onSave={this.handleTableEdit}
                     onCancel={this.handleTableEditCancel}
