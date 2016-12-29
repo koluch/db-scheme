@@ -4,12 +4,14 @@ import cn from 'bem-cn'
 
 import type {TTableShape} from '~/types/TTableShape'
 import type {TPoint} from '~/types/TPoint'
+import type {TTable} from '~/types/TTable'
 import type {TAttr} from '~/types/TAttr'
 import type {TSchemeMetrics} from '~/types/TSchemeMetrics'
-import type {TSelected} from '~/types/TSchemeState'
+import type {TSelected, TTco} from '~/types/TSchemeState'
 import type {TSize} from '~/types/TSize'
 
 import {getAttrBounds} from '~/metrics/table'
+import {isAttrProperForeignKeyTarget} from '~/react/helpers/tco'
 import Button from '~/react/presentational/Button'
 import IconTrash from '~/react/presentational/icons/IconTrash'
 import IconKey from '~/react/presentational/icons/IconKey'
@@ -69,6 +71,7 @@ class Controls extends React.Component {
 
     props: {
         selected: TSelected,
+        tco: TTco,
         metrics: TSchemeMetrics,
         tables: Array<TTableShape>,
         size: TSize,
@@ -283,12 +286,67 @@ class Controls extends React.Component {
         return null
     }
 
+
+    renderHighlightAttr(tableShape: TTableShape, attr: TAttr) {
+        const {position} = tableShape
+        const {metrics} = this.props
+
+        const tableMetrics = metrics.tables.filter((record) => record.name === tableShape.table.name)[0].metrics
+        if (!tableMetrics) {
+            throw new Error(`Table "${tableShape.table.name}" doesn't have metrics`)
+        }
+
+        const bounds = getAttrBounds(tableMetrics, position, attr.name)
+        if (!bounds) {
+            throw new Error(`Metrics calculation failed for attribute "${tableShape.table.name}.${attr.name}"`)
+        }
+
+        const {width, height, x, y} = bounds
+        const style = {
+            top: y - SELECTED_BORDER_MARGIN,
+            left: x - SELECTED_BORDER_MARGIN,
+            width: width + (SELECTED_BORDER_MARGIN * 2),
+            height: height + (SELECTED_BORDER_MARGIN * 2),
+        }
+        return (
+            <div key={`${tableShape.table.name}.${attr.name}`} className={bem('attr-highlight')} style={style}/>
+        )
+    }
+
+    renderHighlightAddLinkAttrs(table: string, attr: string) {
+        const {tables} = this.props
+
+        const fromTable = tables.filter(({table: {name}}) => name === table)[0].table //todo: check
+        const fromAttr = fromTable.attrs.filter(({name}) => name === attr)[0] //todo: check
+
+        const pairs = tables
+            .map((tableShape) => tableShape.table.attrs.map((attr) => ({attr, tableShape})))
+            .reduce((acc, x) => acc.concat(x), [])
+            .filter(({tableShape, attr}) => isAttrProperForeignKeyTarget(fromTable, fromAttr, tableShape.table, attr))
+        return (
+            <div>
+                {pairs.map(({tableShape, attr}) => (
+                    this.renderHighlightAttr(tableShape, attr)
+                ))}
+            </div>
+        )
+    }
+
+    renderTcoHighlight(tco: TTco) {
+        return (
+            <div>
+                {tco !== false && tco.type === 'ADD_LINK' && this.renderHighlightAddLinkAttrs(tco.table, tco.attr)}
+            </div>
+        )
+    }
+
     render() {
-        const {selected} = this.props
+        const {selected, tco} = this.props
         return (
             <div className={bem()}>
                 {this.renderCreateTable()}
                 {selected !== false && this.renderSelected(selected)}
+                {tco !== false && this.renderTcoHighlight(tco)}
             </div>
         )
     }

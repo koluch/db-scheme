@@ -6,7 +6,7 @@ import cn from 'bem-cn'
 
 import type {TTableShape} from '~/types/TTableShape'
 import type {TLinkShape} from '~/types/TLinkShape'
-import type {TSchemeState, TTableState, TSelected, TDndTarget} from '~/types/TSchemeState'
+import type {TSchemeState, TTableState, TSelected, TDndTarget, TTco} from '~/types/TSchemeState'
 import type {TState} from '~/types/TState'
 import type {TAction} from '~/types/TAction'
 import type {TAttr} from '~/types/TAttr'
@@ -21,6 +21,8 @@ import type {THistoryStateRecord} from '~/types/THistoryState'
 import * as tableMetricsHelper from '~/metrics/table'
 import * as metricsSelectors from '~/react/selectors/metrics'
 import {schemeStyle} from '~/react/styles'
+
+import {isAttrProperForeignKeyTarget} from '~/react/helpers/tco'
 
 import Scheme from '~/react/presentational/svg/Scheme'
 import Controls from '~/react/presentational/Controls'
@@ -315,18 +317,22 @@ const mergeProps = (stateProps, dispatchProps): * => {
         onAttrClick: (tableShape: TTableShape, attr: TAttr) => {
             if (tco !== false) {
                 if (tco.type === 'ADD_LINK') {
-                    dispatch({type: 'STOP_TCO'})
-                    dispatch({
-                        type: 'ADD_LINK',
-                        from: {
-                            table: tco.table,
-                            attr: tco.attr,
-                        },
-                        to: {
-                            table: tableShape.table.name,
-                            attr: attr.name,
-                        },
-                    })
+                    const tableFrom = tables.filter((tableShape) => tableShape.table.name === tco.table)[0].table //todo: check
+                    const attrFrom = tableFrom.attrs.filter(({name}) => name === tco.attr)[0]
+                    if (isAttrProperForeignKeyTarget(tableFrom, attrFrom, tableShape.table, attr)) {
+                        dispatch({type: 'STOP_TCO'})
+                        dispatch({
+                            type: 'ADD_LINK',
+                            from: {
+                                table: tco.table,
+                                attr: tco.attr,
+                            },
+                            to: {
+                                table: tableShape.table.name,
+                                attr: attr.name,
+                            },
+                        })
+                    }
                 }
             }
             else {
@@ -382,6 +388,7 @@ type TProps = {
     metrics: TSchemeMetrics,
     selected: TSelected,
     dnd: TDndTarget,
+    tco: TTco,
     historyRecords: Array<THistoryStateRecord>,
     historyActiveRecord: number,
 
@@ -589,6 +596,7 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                     <div className={bem('scheme-container-absolute')} ref={(el) => { this.absoluteContainerEl = el }}>
                         <Controls
                             isDnd={this.props.dnd !== false}
+                            tco={this.props.tco}
                             size={{width, height}}
                             selected={this.props.selected}
                             metrics={this.props.metrics}
