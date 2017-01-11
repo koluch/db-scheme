@@ -56,7 +56,7 @@ class Attr extends React.Component {
                            />}
                 <text
                     fontFamily={style.font.family}
-                    alignmentBaseline="middle"
+                    dominantBaseline="middle"
                     x={x + style.padding.left}
                     y={y + height / 2}
                     fontSize={style.font.size}

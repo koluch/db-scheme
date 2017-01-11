@@ -68,7 +68,7 @@ class Table extends React.Component {
                 fill={style.header.backgroundColor}
             />
             <text
-                alignmentBaseline="middle"
+                dominantBaseline="middle"
                 fontFamily={style.font.family}
                 x={x + padding.left}
                 y={y + height / 2}
