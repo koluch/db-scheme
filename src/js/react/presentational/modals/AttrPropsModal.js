@@ -2,7 +2,6 @@
 import React from 'react'
 
 import type {TAttr} from '~/types/TAttr'
-import Button from '~/react/presentational/Button'
 
 import Modal, {ModalRow, ModalBottom} from './Modal'
 

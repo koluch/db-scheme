@@ -26,8 +26,10 @@ import {isAttrProperForeignKeyTarget} from '~/react/helpers/tco'
 
 import Scheme from '~/react/presentational/svg/Scheme'
 import Controls from '~/react/presentational/Controls'
-import AttrPropsModal from '~/react/presentational/AttrPropsModal'
-import TablePropsModal from '~/react/presentational/TablePropsModal'
+import AttrPropsModal from '~/react/presentational/modals/AttrPropsModal'
+import TablePropsModal from '~/react/presentational/modals/TablePropsModal'
+import JsonExportModal from '~/react/presentational/modals/JsonExportModal'
+import JsonImportModal from '~/react/presentational/modals/JsonImportModal'
 import ToolPanel from '~/react/presentational/ToolPanel'
 import Scroll from '~/react/presentational/Scroll'
 import History from '~/react/presentational/History'
@@ -156,6 +158,7 @@ const mapStateToProps = (state: TState): * => {
 
 
     return {
+        fullSchemeState: schemeState,
         metrics,
         selected: schemeState.selected,
         tables: schemeState.tables.map((tableState: TTableState): TTableShape => tableState),
@@ -382,6 +385,7 @@ const mergeProps = (stateProps, dispatchProps): * => {
 }
 
 type TProps = {
+    fullSchemeState: TSchemeState,
     tables: Array<TTableShape>,
     links: Array<TLinkShape>,
     newLink: ?TPath,
@@ -416,6 +420,8 @@ type TRootState = {
     size: TSize,
     tableCreateModal: boolean,
     tableEditModal: false | {table: TTable},
+    jsonExportModal: false | {json: string},
+    jsonImportModal: boolean,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class extends React.Component {
@@ -425,6 +431,8 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
         attrCreateModal: false,
         tableCreateModal: false,
         tableEditModal: false,
+        jsonExportModal: false,
+        jsonImportModal: false,
         attrEditModal: false,
         size: {width: 800, height: 600},
     }
@@ -539,7 +547,7 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
         })
     }
 
-    handleExportToPng = () => {
+    handleExportToPngButton = () => {
         const download = (filename: string, dataUrl: string) => {
             const elem = window.document.createElement('a')
             elem.href = dataUrl
@@ -565,6 +573,27 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
             const encoded = window.btoa(body)
             img.src = 'data:image/svg+xml;base64,' + encoded
         }
+    }
+
+    handleExportToJsonButton = () => {
+        const {fullSchemeState} = this.props
+        const data = {
+            version: null,
+            scheme: fullSchemeState,
+        }
+        this.setState({
+            jsonExportModal: {json: JSON.stringify(data)},
+        })
+    }
+
+    handleImportFromJsonButton = () => {
+        this.setState({
+            jsonImportModal: true,
+        })
+    }
+
+    handleImportJson = (schemeState: TSchemeState) => {
+        console.log("imported", schemeState)
     }
 
     render(): * {
@@ -653,10 +682,19 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                     onSave={this.handleTableEdit}
                     onCancel={this.handleTableEditCancel}
                                                         />}
+
                 <div className={bem('tools')}>
                     <ToolPanel title={'Export'}>
+                        <div style={{margin: '20px', display: 'flex'}}>
+                            <Button onClick={this.handleExportToPngButton}>{'Export to PNG'}</Button>
+                        </div>
+                        <div style={{margin: '20px', display: 'flex'}}>
+                            <Button onClick={this.handleExportToJsonButton}>{'Export to JSON'}</Button>
+                        </div>
+                    </ToolPanel>
+                    <ToolPanel title={'Import'}>
                         <div style={{padding: '20px', display: 'flex'}}>
-                            <Button onClick={this.handleExportToPng}>{'Export to PNG'}</Button>
+                            <Button onClick={this.handleImportFromJsonButton}>{'Import from JSON'}</Button>
                         </div>
                     </ToolPanel>
                     <ToolPanel title={'History'}>
@@ -668,6 +706,15 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                             />
                         </Scroll>
                     </ToolPanel>
+
+                    {this.state.jsonExportModal !== false && <JsonExportModal
+                        json={this.state.jsonExportModal.json}
+                        onCancel={() => this.setState({jsonExportModal: false})}
+                                                             />}
+                    {this.state.jsonImportModal !== false && <JsonImportModal
+                        onSave={this.handleImportJson}
+                        onCancel={() => this.setState({jsonImportModal: false})}
+                                                             />}
                 </div>
             </div>
         )

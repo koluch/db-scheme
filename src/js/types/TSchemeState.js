@@ -51,7 +51,6 @@ export type TSelected = false | {
 
 export type TSchemeState = {
     tables: Array<TTableState>,
-    // links: Array<TLinkState>,
     selected: TSelected,
     mousePosition: TPoint,
     dnd: TDndTarget,
