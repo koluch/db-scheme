@@ -1,10 +1,7 @@
 // @flow
 import React from 'react'
 
-import type {TAttr} from '~/types/TAttr'
-import Button from '~/react/presentational/Button'
-
-import Modal, {ModalRow, ModalBottom} from './Modal'
+import Modal, {ModalRow} from './Modal'
 
 type TProps = {
     json: string,
@@ -30,9 +27,9 @@ class JsonExportModal extends React.Component {
         return (
             <Modal title={'Export JSON'} buttons={buttons}>
                 <ModalRow>
-                    <label>
-                        {'JSON: '}
-                        <textarea value={json} rows="10" cols="50" readOnly></textarea>
+                    <label style={{display: 'flex', flexDirection: 'column'}}>
+                        <div>{'JSON: '}</div>
+                        <textarea value={json} rows="10" cols="50" readOnly/>
                     </label>
                 </ModalRow>
             </Modal>

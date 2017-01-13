@@ -13,21 +13,7 @@ export class ModalRow extends React.Component {
 
     render() {
         return (
-            <div className={bem('row')}>
-                {this.props.children}
-            </div>
-        )
-    }
-}
-
-export class ModalBottom extends React.Component {
-    props: {
-        children?: *,
-    }
-
-    render() {
-        return (
-            <div className={bem('bottom')}>
+            <div className={bem('row')} style={this.props}>
                 {this.props.children}
             </div>
         )
@@ -46,11 +32,12 @@ export default class Modal extends React.Component {
         title: string,
         buttons: Array<TButtonDesc>,
         children?: *,
+        style?: *,
     }
 
     render() {
         return (
-            <div className={bem()}>
+            <div className={bem()} style={this.props.style}>
                 <div className={bem('content')}>
                     <div className={bem('title')}>{this.props.title}</div>
                     <div className={bem('body')}>

@@ -76,6 +76,9 @@ class History extends React.Component {
         else if (action.type === 'DELETE_LINK') {
             return renderInfo('Delete link', `${action.table}.${action.attr}`)
         }
+        else if (action.type === 'IMPORT_SCHEME_STATE') {
+            return renderInfo('Import scheme', null)
+        }
         else if (action.type === '@@redux/INIT') {
             return renderInfo('Scheme created', null)
         }

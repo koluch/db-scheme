@@ -489,6 +489,9 @@ const reducer: TSchemeReducer = (state: TSchemeState = initialState, action: TAc
             selected: newSelected,
         }
     }
+    else if (action.type === 'IMPORT_SCHEME_STATE') {
+        return action.schemeState
+    }
     return state
 }
 

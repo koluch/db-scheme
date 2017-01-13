@@ -2,6 +2,7 @@
 import type {TPoint} from './TPoint'
 import type {TAttr} from './TAttr'
 import type {TTable} from './TTable'
+import type {TSchemeState} from './TSchemeState'
 
 type TActionInit = {type: "@@redux/INIT"}
 
@@ -43,3 +44,4 @@ export type TAction =
         | {type: 'DELETE_ATTR', table: string, attr: string}
         | {type: 'DELETE_TABLE', table: string}
         | {type: 'ACTIVATE_HISTORY_RECORD', record: number}
+        | {type: 'IMPORT_SCHEME_STATE', schemeState: TSchemeState}

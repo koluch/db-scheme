@@ -3,7 +3,7 @@ import React from 'react'
 
 import type {TAttr} from '~/types/TAttr'
 
-import Modal, {ModalRow, ModalBottom} from './Modal'
+import Modal, {ModalRow} from './Modal'
 
 type TProps = {
     table: string,

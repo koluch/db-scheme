@@ -238,6 +238,12 @@ const mapDispatchToProps = (dispatch: Dispatch<TAction>): * => {
                 table: tableShape.table.name,
             })
         },
+        onImportSchemeState: (schemeState: TSchemeState) => {
+            dispatch({
+                type: 'IMPORT_SCHEME_STATE',
+                schemeState,
+            })
+        },
     }
 }
 
@@ -412,6 +418,7 @@ type TProps = {
     onMouseMove: (point: TPoint) => void,
     onMouseUp: (point: TPoint) => void,
     onHistoryRecordActivate: (record: THistoryStateRecord) => void,
+    onImportSchemeState: (schemeState: TSchemeState) => void,
 }
 
 type TRootState = {
@@ -596,7 +603,10 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
     }
 
     handleImportJson = (schemeState: TSchemeState) => {
-        console.log("imported", schemeState)
+        this.setState({
+            jsonImportModal: false,
+        })
+        this.props.onImportSchemeState(schemeState)
     }
 
     render(): * {

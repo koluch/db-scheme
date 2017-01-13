@@ -6,7 +6,7 @@ import {TSSchemeState} from '~/schemes/TSSchemeState'
 import Modal, {ModalRow} from './Modal'
 
 import {validate} from 'validated/json5'
-import {object, string, number, maybe, enumeration, oneOf, boolean, constant, arrayOf} from 'validated/schema'
+import {object, number, maybe} from 'validated/schema'
 
 type TSerializedData = {
     version: ?number,
@@ -18,7 +18,7 @@ const TSSerializedData = object({
     scheme: TSSchemeState,
 })
 
-const parseSchemeState: (json: string) => ?TSchemeState = (json: string) => {
+const parseSchemeState: (json: string) => TSchemeState | string = (json: string) => {
     try {
         const data: TSerializedData = validate(TSSerializedData, json)
         const {scheme} = data // todo: implement multiple versions support
@@ -26,8 +26,7 @@ const parseSchemeState: (json: string) => ?TSchemeState = (json: string) => {
         return scheme
     }
     catch (e) {
-        console.error(e)
-        return null
+        return e.message
     }
 }
 
@@ -43,11 +42,13 @@ class JsonExportModal extends React.Component {
         super(props)
         this.state = {
             json: '',
+            error: null,
         }
     }
 
     state: {
         json: string,
+        error: ?string,
     }
 
     props: TProps
@@ -59,12 +60,14 @@ class JsonExportModal extends React.Component {
     }
 
     handleSave = () => {
-        const schemeState = parseSchemeState(this.state.json)
-        if (schemeState) {
-            this.props.onSave(schemeState)
+        const schemeStateResult = parseSchemeState(this.state.json)
+        if (typeof schemeStateResult === 'string') {
+            this.setState({
+                error: schemeStateResult,
+            })
         }
         else {
-            //todo: show error
+            this.props.onSave(schemeStateResult)
         }
     }
 
@@ -78,19 +81,33 @@ class JsonExportModal extends React.Component {
             {title: 'Cancel', onClick: this.handleCancel},
         ]
 
+        const {json, error} = this.state
+
         return (
             <Modal title={'Import JSON'} buttons={buttons}>
-                <ModalRow>
-                    <label>
-                        {'JSON: '}
-                        <textarea
-                            rows="10"
-                            cols="50"
-                            value={this.state.json}
-                            onChange={this.handleChangeJson}
-                        />
-                    </label>
-                </ModalRow>
+                <div style={{width: '600px'}}>
+                    <ModalRow>
+                        <label style={{display: 'flex', flex: 1, flexDirection: 'column'}}>
+                            <div>{'JSON: '}</div>
+                            <textarea
+                                rows="10"
+                                cols="50"
+                                value={json}
+                                onChange={this.handleChangeJson}
+                                style={{flex: 1}}
+                            />
+                        </label>
+                    </ModalRow>
+                    <ModalRow>
+                        {error !== null && <p style={{
+                            color: 'red',
+                            fontSize: '12px',
+                            fontWeight: 'bold',
+                        }}>
+                            {error}
+                        </p>}
+                    </ModalRow>
+                </div>
             </Modal>
         )
     }
