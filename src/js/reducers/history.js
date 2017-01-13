@@ -28,6 +28,14 @@ export type TMergeAction = 'SKIP'
 
 export type TMergeStrategy = (action: TAction, lastRecord: THistoryStateRecord) => TMergeAction
 
+
+const HISTORY_LIMIT = 25
+const cutHistory = (records: Array<THistoryStateRecord>) => {
+    return records.length > HISTORY_LIMIT
+        ? [...records.slice(records.length - HISTORY_LIMIT)]
+        : records
+}
+
 export const wrapSchemeReducer = (schemeReducer: TSchemeReducer, mergeStrategy: TMergeStrategy): TReducer => {
     return (state: TState = initialState, action: TAction): TState => {
         const {scheme, history} = state
@@ -77,11 +85,11 @@ export const wrapSchemeReducer = (schemeReducer: TSchemeReducer, mergeStrategy: 
                         history: {
                             seq: newId,
                             active: newId,
-                            records: [...activeRecords, {
+                            records: cutHistory([...activeRecords, {
                                 id: newId,
                                 action,
                                 state: newSchemeState,
-                            }],
+                            }]),
                         },
                     }
                 }
@@ -93,11 +101,11 @@ export const wrapSchemeReducer = (schemeReducer: TSchemeReducer, mergeStrategy: 
                             history: {
                                 seq: newId,
                                 active: newId,
-                                records: [...filteredRecords, {
+                                records: cutHistory([...filteredRecords, {
                                     id: newId,
                                     action,
                                     state: newSchemeState,
-                                }],
+                                }]),
                             },
                         }
                     }
