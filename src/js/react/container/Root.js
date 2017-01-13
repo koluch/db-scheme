@@ -569,9 +569,12 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                 download('scheme.png', dataUrl)
             }
 
-            const body = new XMLSerializer().serializeToString(document.querySelector('#for_export svg'))
-            const encoded = window.btoa(body)
-            img.src = 'data:image/svg+xml;base64,' + encoded
+            const svgNode = document.querySelector('#for_export svg')
+            if (svgNode) {
+                const body = new XMLSerializer().serializeToString(svgNode)
+                const encoded = window.btoa(body)
+                img.src = 'data:image/svg+xml;base64,' + encoded
+            }
         }
     }
 

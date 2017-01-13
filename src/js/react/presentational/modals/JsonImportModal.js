@@ -2,13 +2,25 @@
 import React from 'react'
 
 import type {TSchemeState} from '~/types/TSchemeState'
-
+import {TSSchemeState} from '~/schemes/TSSchemeState'
 import Modal, {ModalRow} from './Modal'
 
+import {validate} from 'validated/json5'
+import {object, string, number, maybe, enumeration, oneOf, boolean, constant, arrayOf} from 'validated/schema'
+
+type TSerializedData = {
+    version: ?number,
+    scheme: TSchemeState,
+}
+
+const TSSerializedData = object({
+    version: maybe(number),
+    scheme: TSSchemeState,
+})
 
 const parseSchemeState: (json: string) => ?TSchemeState = (json: string) => {
     try {
-        const data = JSON.parse(json) // todo: handle parse errors
+        const data: TSerializedData = validate(TSSerializedData, json)
         const {scheme} = data // todo: implement multiple versions support
         //todo: validate scheme!
         return scheme
@@ -18,7 +30,6 @@ const parseSchemeState: (json: string) => ?TSchemeState = (json: string) => {
         return null
     }
 }
-
 
 type TProps = {
     onSave: (schemeState: TSchemeState) => void,
