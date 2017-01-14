@@ -188,7 +188,6 @@
     "space-before-blocks": "error",
     "space-in-parens": "error",
     "space-infix-ops": "error",
-    "wrap-regex": "error",
     "constructor-super": "error",
     "generator-star-spacing": "error",
     "no-class-assign": "error",
@@ -208,6 +207,7 @@
     "max-depth": "warn",
     "max-len": ["warn", 120],
 
+    "wrap-regex": "off",
     "complexity": "off",
     "no-process-env": "off",
     "max-statements": "off",
