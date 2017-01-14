@@ -79,6 +79,9 @@ const mergeStrategy: TMergeStrategy = (action: TAction, lastRecord: THistoryStat
         if (action.type === 'IMPORT_SCHEME_STATE' && lastAction.type === 'IMPORT_SCHEME_STATE') {
             return (JSON.stringify(action.schemeState) === JSON.stringify(lastAction.schemeState)) ? 'SKIP' : 'ADD'
         }
+        if (action.type === 'CHANGE_SCHEME_SIZE' && lastAction.type === 'CHANGE_SCHEME_SIZE') {
+            return 'REPLACE'
+        }
         return 'SKIP'
     }
 }

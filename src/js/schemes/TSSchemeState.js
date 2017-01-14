@@ -79,11 +79,17 @@ export const TSTco = oneOf(
     })
 )
 
+export const TSSize = object({
+    width: number,
+    height: number,
+})
+
 export const TSSchemeState = object({
     tables: arrayOf(TSTableState),
     selected: TSSelected,
     mousePosition: TSPoint,
     dnd: TSDndTarget,
     tco: TSTco,
+    size: TSSize,
 })
 

@@ -1,5 +1,6 @@
 // @flow
 import type {TPoint} from './TPoint'
+import type {TSize} from './TSize'
 import type {TAttr} from './TAttr'
 import type {TTable} from './TTable'
 import type {TSchemeState} from './TSchemeState'
@@ -45,3 +46,4 @@ export type TAction =
         | {type: 'DELETE_TABLE', table: string}
         | {type: 'ACTIVATE_HISTORY_RECORD', record: number}
         | {type: 'IMPORT_SCHEME_STATE', schemeState: TSchemeState}
+        | {type: 'CHANGE_SCHEME_SIZE', size: TSize}

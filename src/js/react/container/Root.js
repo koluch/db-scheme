@@ -34,6 +34,7 @@ import ToolPanel from '~/react/presentational/ToolPanel'
 import Scroll from '~/react/presentational/Scroll'
 import History from '~/react/presentational/History'
 import Button from '~/react/presentational/Button'
+import NumberInput from '~/react/presentational/inputs/NumberInput'
 
 const calculatePath = (b1: TBounds, b2: TBounds): Array<TPoint> => {
     let start = null
@@ -68,7 +69,7 @@ const calculatePath = (b1: TBounds, b2: TBounds): Array<TPoint> => {
 
 const mapStateToProps = (state: TState): * => {
     const {scheme: schemeState, history} = state
-    const {tables, dnd, tco, mousePosition} = schemeState
+    const {tables, dnd, tco, mousePosition, size} = schemeState
     const metrics = metricsSelectors.scheme(schemeState)
 
     let newLink = null
@@ -168,6 +169,7 @@ const mapStateToProps = (state: TState): * => {
         historyActiveRecord: history.active,
         dnd,
         tco,
+        size,
     }
 }
 
@@ -242,6 +244,12 @@ const mapDispatchToProps = (dispatch: Dispatch<TAction>): * => {
             dispatch({
                 type: 'IMPORT_SCHEME_STATE',
                 schemeState,
+            })
+        },
+        onChangeSchemeSize: (size: TSize) => {
+            dispatch({
+                type: 'CHANGE_SCHEME_SIZE',
+                size,
             })
         },
     }
@@ -419,12 +427,13 @@ type TProps = {
     onMouseUp: (point: TPoint) => void,
     onHistoryRecordActivate: (record: THistoryStateRecord) => void,
     onImportSchemeState: (schemeState: TSchemeState) => void,
+    onChangeSchemeSize: (size: TSize) => void,
+    size: TSize,
 }
 
 type TRootState = {
     attrCreateModal: false | {table: string},
     attrEditModal: false | {table: string, attr: TAttr},
-    size: TSize,
     tableCreateModal: boolean,
     tableEditModal: false | {table: TTable},
     jsonExportModal: false | {json: string},
@@ -441,26 +450,9 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
         jsonExportModal: false,
         jsonImportModal: false,
         attrEditModal: false,
-        size: {width: 800, height: 600},
     }
 
     absoluteContainerEl: *
-    resizeListener: *
-
-    componentDidMount() {
-        const handler = () => {
-            const {width, height} = this.absoluteContainerEl.getBoundingClientRect()
-            this.setState({
-                size: {width, height},
-            })
-        }
-        this.resizeListener = window.addEventListener('resize', handler)
-        handler()
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.resizeListener)
-    }
 
     handleAttrCreateClick = (tableShape: TTableShape) => {
         this.setState({
@@ -565,8 +557,8 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
         }
 
         const canvas = document.createElement('canvas')
-        canvas.setAttribute('width', `${this.state.size.width}`)
-        canvas.setAttribute('height', `${this.state.size.height}`)
+        canvas.setAttribute('width', `${this.props.size.width}`)
+        canvas.setAttribute('height', `${this.props.size.height}`)
         const ctx = canvas.getContext('2d')
         if (ctx) {
             const img = new Image()
@@ -612,7 +604,7 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
     render(): * {
         const bem = cn('root')
 
-        const {width, height} = this.state.size
+        const {width, height} = this.props.size
 
         return (
             <div className={bem()}>
@@ -708,6 +700,24 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                     <ToolPanel title={'Import'}>
                         <div style={{padding: '20px', display: 'flex'}}>
                             <Button onClick={this.handleImportFromJsonButton}>{'Import from JSON'}</Button>
+                        </div>
+                    </ToolPanel>
+                    <ToolPanel title={'Settings'}>
+                        <div style={{padding: '20px', display: 'flex'}}>
+                            <label>
+                                <div>{'Size:'}</div>
+                                <NumberInput
+                                    size="5"
+                                    value={this.props.size.width}
+                                    onChange={(value) => { this.props.onChangeSchemeSize({...this.props.size, width: value}) }}
+                                />
+                                {' x '}
+                                <NumberInput
+                                    size="5"
+                                    value={this.props.size.height}
+                                    onChange={(value) => { this.props.onChangeSchemeSize({...this.props.size, height: value}) }}
+                                />
+                            </label>
                         </div>
                     </ToolPanel>
                     <ToolPanel title={'History'}>

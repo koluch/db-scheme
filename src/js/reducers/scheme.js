@@ -56,6 +56,7 @@ export const initialState = {
     tco: false,
     selected: false,
     mousePosition: {x: 0, y: 0},
+    size: {width: 800, height: 600},
 }
 
 export type TSchemeReducer = (state: TSchemeState, action: TAction) => TSchemeState
@@ -491,6 +492,12 @@ const reducer: TSchemeReducer = (state: TSchemeState = initialState, action: TAc
     }
     else if (action.type === 'IMPORT_SCHEME_STATE') {
         return action.schemeState
+    }
+    else if (action.type === 'CHANGE_SCHEME_SIZE') {
+        return {
+            ...state,
+            size: action.size,
+        }
     }
     return state
 }

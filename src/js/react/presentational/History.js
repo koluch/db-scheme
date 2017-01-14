@@ -13,7 +13,6 @@ class History extends React.Component {
         onRecordClick: (record: THistoryStateRecord) => void,
     }
 
-
     renderRecordInfo(record: THistoryStateRecord, future: boolean, active: boolean, title: string, desc: ?string) {
         return (
             <div
@@ -78,6 +77,9 @@ class History extends React.Component {
         }
         else if (action.type === 'IMPORT_SCHEME_STATE') {
             return renderInfo('Import scheme', null)
+        }
+        else if (action.type === 'CHANGE_SCHEME_SIZE') {
+            return renderInfo('Change scheme size', `${action.size.width}x${action.size.height}`)
         }
         else if (action.type === '@@redux/INIT') {
             return renderInfo('Scheme created', null)
