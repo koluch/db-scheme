@@ -1,9 +1,6 @@
-* link deletion
-* table creation
-* table deletion
-* attribute creation
-* attribute deletion
 * styles customization
-* improve links drawing algorithm
+* primary key setting and visualization
+* data types support
 * code generation (e.g. for postgres)
+
 
