@@ -2,5 +2,5 @@
 * primary key setting and visualization
 * data types support
 * code generation (e.g. for postgres)
-
-
+* make toolbar; move "create table" button on it
+* add multiple selection, multiple operations
