@@ -782,15 +782,13 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                 <div className={bem('tools')}>
                     <ToolPanel title={'Export'}>
                         <div style={{margin: '20px', display: 'flex'}}>
-                            <Button onClick={this.handleExportToPngButton}>{'Export to PNG'}</Button>
-                        </div>
-                        <div style={{margin: '20px', display: 'flex'}}>
-                            <Button onClick={this.handleExportToJsonButton}>{'Export to JSON'}</Button>
+                            <Button onClick={this.handleExportToPngButton}>{'PNG'}</Button>
+                            <Button onClick={this.handleExportToJsonButton}>{'JSON'}</Button>
                         </div>
                     </ToolPanel>
                     <ToolPanel title={'Import'}>
                         <div style={{padding: '20px', display: 'flex'}}>
-                            <Button onClick={this.handleImportFromJsonButton}>{'Import from JSON'}</Button>
+                            <Button onClick={this.handleImportFromJsonButton}>{'JSON'}</Button>
                         </div>
                     </ToolPanel>
                     <ToolPanel title={'Settings'}>
