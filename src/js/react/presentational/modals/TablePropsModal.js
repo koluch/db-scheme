@@ -26,14 +26,21 @@ class TablePropsModal extends React.Component {
         name: string,
     }
 
+    componentDidMount() {
+        this.nameEl.focus()
+    }
+
     componentWillReceiveProps(newProps: TProps) {
         const {name} = newProps
         this.setState({
             name,
         })
+        this.nameEl.focus()
     }
 
     props: TProps
+
+    nameEl: *
 
     handleSubmit = (e: *) => {
         if (e) {
@@ -80,7 +87,11 @@ class TablePropsModal extends React.Component {
                     <ModalRow>
                         <label>
                             {'Name: '}
-                            <input value={name} onChange={this.handleChangeName}/>
+                            <input
+                                ref={(el) => { this.nameEl = el }}
+                                value={name}
+                                onChange={this.handleChangeName}
+                            />
                         </label>
                     </ModalRow>
                 </form>

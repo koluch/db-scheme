@@ -28,14 +28,21 @@ class AttrPropsModal extends React.Component {
         name: string,
     }
 
+    componentDidMount() {
+        this.nameEl.focus()
+    }
+
     componentWillReceiveProps(newProps: TProps) {
         const {name} = newProps
         this.setState({
             name,
         })
+        this.nameEl.focus()
     }
 
     props: TProps
+
+    nameEl: *
 
     handleSubmit = (e: *) => {
         if (e) {
@@ -76,12 +83,18 @@ class AttrPropsModal extends React.Component {
         ]
 
         return (
-            <Modal title={`${edit ? 'Edit' : 'Create'} attribute`} buttons={buttons}>
+            <Modal
+                title={`${edit ? 'Edit' : 'Create'} attribute`}
+                buttons={buttons}
+            >
                 <form onSubmit={this.handleSubmit}>
                     <ModalRow>
                         <label>
                             {'Name: '}
-                            <input value={name} onChange={this.handleChangeName}/>
+                            <input
+                                ref={(el) => { this.nameEl = el }}
+                                value={name}
+                                onChange={this.handleChangeName}/>
                         </label>
                     </ModalRow>
                 </form>
