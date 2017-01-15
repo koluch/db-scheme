@@ -106,11 +106,18 @@ const calcPathLength = (path: TPath): number => {
 }
 
 const calculatePath = (b1: TBounds, b2: TBounds): Array<TPoint> => {
+    if (b1.x === b2.x && b1.y === b2.y && b1.width === b2.width && b1.height === b2.height) {
+        return []
+    }
+
+    // Link connection should be placed in some distance from attribute bounds
     const MARGIN = 15
 
+    // Build attribute bounds, considering margins
     const b1m = {x: b1.x - MARGIN, y: b1.y, width: b1.width + (MARGIN * 2), height: b1.height}
     const b2m = {x: b2.x - MARGIN, y: b2.y, width: b2.width + (MARGIN * 2), height: b2.height}
 
+    // Build left/right connection points, considering or not margins
     const b1left = {x: b1.x, y: b1.y + b1.height / 2}
     const b1right = {x: b1.x + b1.width, y: b1.y + b1.height / 2}
     const b2left = {x: b2.x, y: b2.y + b2.height / 2}
@@ -121,35 +128,33 @@ const calculatePath = (b1: TBounds, b2: TBounds): Array<TPoint> => {
     const b2leftm = {x: b2m.x, y: b2m.y + b2m.height / 2}
     const b2rightm = {x: b2m.x + b2m.width, y: b2m.y + b2m.height / 2}
 
-
-    const buildVariant = (p1, p2, direct: boolean, p1add, p2add) => {
-        return calcConnections(p1, p2, direct)
-            .filter((path) => !(isPathCrossBound(path, b1m) || isPathCrossBound(path, b2m)))
-            .map((path: TPath) => [p1add, ...path, p2add])
-    }
-
+    // Calculate pathes, adding to each finishing points
     const pathes: Array<TPath> = [
-        ...(buildVariant(b1leftm, b2rightm, false, b1left, b2right)),
-        ...(buildVariant(b1rightm, b2leftm, false, b1right, b2left)),
-        ...(buildVariant(b1leftm, b2leftm, true, b1left, b2left)),
-        ...(buildVariant(b1rightm, b2rightm, true, b1right, b2right)),
+        ...(calcConnections(b1leftm, b2rightm, false).map((path: TPath) => [b1left, ...path, b2right])),
+        ...(calcConnections(b1rightm, b2leftm, false).map((path: TPath) => [b1right, ...path, b2left])),
+        ...(calcConnections(b1leftm, b2leftm, true).map((path: TPath) => [b1left, ...path, b2left])),
+        ...(calcConnections(b1rightm, b2rightm, true).map((path: TPath) => [b1right, ...path, b2right])),
     ]
 
-    if (pathes.length === 0) {
-        console.error(`No appropriate connection pathes ware found. Something wrong with path calculation algorithm. b1: ${JSON.stringify(b1)}, b2: ${JSON.stringify(b2)}`)
+    // Take only pathes which are not cross extended bounds
+    const filteredPathes = pathes
+        .filter((path) => (
+            // check if path is crossing some bound (cutting first and last point, becouse they do cross bounds)
+            !isPathCrossBound(path.slice(1, path.length - 1), b1m)
+            && !isPathCrossBound(path.slice(1, path.length - 1), b2m)
+        ))
+
+    // It should be at least appropriate path, as a fallback just take the first path
+    if (filteredPathes.length === 0) {
+        console.error(`No appropriate connection pathes were found. Something wrong with path calculation algorithm. b1: ${JSON.stringify(b1)}, b2: ${JSON.stringify(b2)}`)
         return pathes[0]
     }
 
-    const pathLengths = pathes.map((path) => ({path, length: calcPathLength(path)}))
-    const bestPath: TPath = pathLengths
-        .reduce((minPath, nextPath) => {
-            if (nextPath.length < minPath.length) {
-                return nextPath
-            }
-            else {
-                return minPath
-            }
-        }, pathLengths[0]).path
+    const bestPath: TPath = filteredPathes
+        // Calculate length for each path
+        .map((path) => ({path, length: calcPathLength(path)}))
+        // Take shorted path
+        .reduce((minPath, nextPath) => nextPath.length < minPath.length ? nextPath : minPath).path
 
     return bestPath
 }
