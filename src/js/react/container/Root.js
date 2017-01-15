@@ -36,35 +36,122 @@ import History from '~/react/presentational/History'
 import Button from '~/react/presentational/Button'
 import NumberInput from '~/react/presentational/inputs/NumberInput'
 
-const calculatePath = (b1: TBounds, b2: TBounds): Array<TPoint> => {
-    let start = null
-    let end = null
-    // let end
-    if (b1.x < b2.x) {
-        start = {x: b1.x + b1.width, y: b1.y + b1.height / 2}
-        end = {x: b2.x, y: b2.y + b2.height / 2}
+
+const calcConnections = (p1: TPoint, p2: TPoint, direct: boolean): Array<TPath> => {
+    if (direct) {
+        return [
+            [p1, {x: p1.x, y: p2.y}, p2],
+            [p1, {x: p2.x, y: p1.y}, p2],
+        ]
     }
     else {
-        start = {x: b1.x, y: b1.y + b1.height / 2}
-        end = {x: b2.x + b2.width, y: b2.y + b2.height / 2}
+        return [[
+            p1,
+            {x: p1.x + (p2.x - p1.x) / 2, y: p1.y},
+            {x: p1.x + (p2.x - p1.x) / 2, y: p2.y},
+            p2,
+        ]]
+    }
+}
+
+const isPointInBounds = (p: TPoint, b: TBounds): boolean => {
+    return p.x > b.x
+        && p.x < b.x + b.width
+        && p.y > b.y
+        && p.y < b.y + b.height
+}
+
+const isPathCrossBound = (path: TPath, b: TBounds): boolean => {
+    for (let i = 0; i < path.length - 1; ++i) {
+        const p1 = path[i]
+        const p2 = path[i + 1]
+
+        if (isPointInBounds(p1, b)) {
+            return true
+        }
+        if (isPointInBounds(p2, b)) {
+            return true
+        }
+
+        if (p1.y >= b.y && p1.y <= b.y + b.height
+            && p2.y >= b.y && p2.y <= b.y + b.height) {
+            if (p1.x < b.x && p2.x > b.x + b.width) {
+                return true
+            }
+        }
+        if (p1.x >= b.x && p1.x <= b.x + b.width
+            && p2.x >= b.x && p2.x <= b.x + b.width) {
+            if (p1.y < b.y && p2.y > b.y + b.height) {
+                return true
+            }
+        }
+    }
+    return false
+}
+
+const calcPathLength = (path: TPath): number => {
+    let len = 0
+    for (let i = 0; i < path.length - 1; ++i) {
+        const p1 = path[i]
+        const p2 = path[i + 1]
+
+        if (p1.x === p2.x) {
+            len += p1.y > p2.y ? p1.y - p2.y : p2.y - p1.y
+        }
+        else {
+            len += p1.x > p2.x ? p1.x - p2.x : p2.x - p1.x
+        }
+    }
+    return len
+}
+
+const calculatePath = (b1: TBounds, b2: TBounds): Array<TPoint> => {
+    const MARGIN = 15
+
+    const b1m = {x: b1.x - MARGIN, y: b1.y, width: b1.width + (MARGIN * 2), height: b1.height}
+    const b2m = {x: b2.x - MARGIN, y: b2.y, width: b2.width + (MARGIN * 2), height: b2.height}
+
+    const b1left = {x: b1.x, y: b1.y + b1.height / 2}
+    const b1right = {x: b1.x + b1.width, y: b1.y + b1.height / 2}
+    const b2left = {x: b2.x, y: b2.y + b2.height / 2}
+    const b2right = {x: b2.x + b2.width, y: b2.y + b2.height / 2}
+
+    const b1leftm = {x: b1m.x, y: b1m.y + b1m.height / 2}
+    const b1rightm = {x: b1m.x + b1m.width, y: b1m.y + b1m.height / 2}
+    const b2leftm = {x: b2m.x, y: b2m.y + b2m.height / 2}
+    const b2rightm = {x: b2m.x + b2m.width, y: b2m.y + b2m.height / 2}
+
+
+    const buildVariant = (p1, p2, direct: boolean, p1add, p2add) => {
+        return calcConnections(p1, p2, direct)
+            .filter((path) => !(isPathCrossBound(path, b1m) || isPathCrossBound(path, b2m)))
+            .map((path: TPath) => [p1add, ...path, p2add])
     }
 
-    //const c1 = [start[0] - CONNECTION_LINE_WIDTH, start[1]]
-    //const c2 = [end[0] - CONNECTION_LINE_WIDTH, end[1]]
-    const c1 = start
-    const c2 = end
-
-    const middle1 = {x: c1.x + (c2.x - c1.x) / 2, y: c1.y}
-    const middle2 = {x: middle1.x, y: c2.y}
-
-    return [
-        start,
-        //c1,
-        middle1,
-        middle2,
-        //c2,
-        end,
+    const pathes: Array<TPath> = [
+        ...(buildVariant(b1leftm, b2rightm, false, b1left, b2right)),
+        ...(buildVariant(b1rightm, b2leftm, false, b1right, b2left)),
+        ...(buildVariant(b1leftm, b2leftm, true, b1left, b2left)),
+        ...(buildVariant(b1rightm, b2rightm, true, b1right, b2right)),
     ]
+
+    if (pathes.length === 0) {
+        console.error(`No appropriate connection pathes ware found. Something wrong with path calculation algorithm. b1: ${JSON.stringify(b1)}, b2: ${JSON.stringify(b2)}`)
+        return pathes[0]
+    }
+
+    const pathLengths = pathes.map((path) => ({path, length: calcPathLength(path)}))
+    const bestPath: TPath = pathLengths
+        .reduce((minPath, nextPath) => {
+            if (nextPath.length < minPath.length) {
+                return nextPath
+            }
+            else {
+                return minPath
+            }
+        }, pathLengths[0]).path
+
+    return bestPath
 }
 
 const mapStateToProps = (state: TState): * => {
