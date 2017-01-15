@@ -24,12 +24,12 @@ class Link extends React.Component {
         return (
             <g className="svg-link">
                 <defs>
-                    <marker id={markerStartId} viewBox="0 0 10 10" refX="0" refY="2"
+                    <marker id={markerStartId} viewBox="0 0 10 10" refX="5" refY="5"
                         markerUnits="userSpaceOnUse"
                         markerWidth="10" markerHeight="10"
                         orient="auto"
                     >
-                        <circle cx="3" cy="3" r="3" fill="black"/>
+                        <path d="M5,0 L10,5 L5,10 L0,5 L5,0" fill="black"/>
                     </marker>
                     <marker id={markerEndId}
                         markerWidth="13"
