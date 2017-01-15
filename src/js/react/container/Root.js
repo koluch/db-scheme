@@ -137,17 +137,16 @@ const calculatePath = (b1: TBounds, b2: TBounds): Array<TPoint> => {
     ]
 
     // Take only pathes which are not cross extended bounds
-    const filteredPathes = pathes
+    let filteredPathes = pathes
         .filter((path) => (
             // check if path is crossing some bound (cutting first and last point, becouse they do cross bounds)
             !isPathCrossBound(path.slice(1, path.length - 1), b1m)
             && !isPathCrossBound(path.slice(1, path.length - 1), b2m)
         ))
 
-    // It should be at least appropriate path, as a fallback just take the first path
+    // Sometimes, there are not appropriate pathes (bounds can overlap, for example)
     if (filteredPathes.length === 0) {
-        console.error(`No appropriate connection pathes were found. Something wrong with path calculation algorithm. b1: ${JSON.stringify(b1)}, b2: ${JSON.stringify(b2)}`)
-        return pathes[0]
+        filteredPathes = pathes
     }
 
     const bestPath: TPath = filteredPathes
