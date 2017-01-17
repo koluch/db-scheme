@@ -1,13 +1,14 @@
 // @flow
 import type {TSchemeState, TTableState} from '~/types/TSchemeState'
+import type {TSchemeStyle} from '~/types/styles/TSchemeStyle'
 import type {TTable} from '~/types/TTable'
 import type {TSchemeMetrics, TTableMetrics} from '~/types/TSchemeMetrics'
 
 import {createSelector, createSelectorCreator, defaultMemoize} from 'reselect'
-import {schemeStyle} from '~/react/styles'
 import {getMetrics} from '~/metrics/table'
 
 const tablesSelector = (state: TSchemeState): Array<TTable> => state.tables.map(({table}) => table)
+const styleSelector = (state: TSchemeState): TSchemeStyle => state.style
 
 const tableListsEquals = (ar1, ar2) => {
     if (ar1.length === ar2.length) {
@@ -27,7 +28,7 @@ const createDeepEqualSelector = createSelectorCreator(
 )
 
 
-const tablesMetricsSelector = createDeepEqualSelector(tablesSelector, (tables: Array<TTable>): Array<{name: string, metrics: TTableMetrics}> => {
+const tablesMetricsSelector = createDeepEqualSelector(tablesSelector, styleSelector, (tables: Array<TTable>, schemeStyle: TSchemeStyle): Array<{name: string, metrics: TTableMetrics}> => {
     return tables.map((table) => {
         return {
             name: table.name,

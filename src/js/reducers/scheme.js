@@ -1,9 +1,53 @@
 // @flow
-
 import type {TSchemeState, TTableState} from '~/types/TSchemeState'
 import type {TAction} from '~/types/TAction'
-import type {TPoint} from '~/types/TPoint'
-import type {TBounds} from '~/types/TBounds'
+
+const fontStyle = {
+    color: 'black',
+    size: 18,
+    style: 'normal',
+    weight: 'normal',
+    family: 'sans-serif',
+}
+
+const headerFontStyle = {
+    ...fontStyle,
+    color: 'white',
+}
+
+const tableStyle = {
+    font: fontStyle,
+    attrs: {
+        font: fontStyle,
+        padding: {
+            top: 3,
+            right: 5,
+            bottom: 3,
+            left: 5,
+        },
+    },
+    header: {
+        padding: {
+            top: 4,
+            right: 5,
+            bottom: 4,
+            left: 5,
+        },
+        backgroundColor: '#363636',
+        font: headerFontStyle,
+    },
+    border: {
+        color: '#363636',
+    },
+}
+
+const linkStyle = {
+    strokeStyle: 'solid',
+}
+
+const newLinkStyle = {
+    strokeStyle: 'dashed',
+}
 
 export const initialState = {
     tables: [
@@ -57,6 +101,11 @@ export const initialState = {
     selected: false,
     mousePosition: {x: 0, y: 0},
     size: {width: 800, height: 600},
+    style: {
+        table: tableStyle,
+        link: linkStyle,
+        newLink: newLinkStyle,
+    },
 }
 
 export type TSchemeReducer = (state: TSchemeState, action: TAction) => TSchemeState

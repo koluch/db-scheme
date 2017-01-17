@@ -3,6 +3,7 @@ import type {TTable} from './TTable'
 import type {TLink} from './TLink'
 import type {TPoint} from './TPoint'
 import type {TSize} from './TSize'
+import type {TSchemeStyle} from './styles/TSchemeStyle'
 
 export type TDndTargetType = 'TABLE'
 export type TDndTarget = false | {
@@ -56,5 +57,6 @@ export type TSchemeState = {
     mousePosition: TPoint,
     dnd: TDndTarget,
     tco: TTco, // two-click operation
+    style: TSchemeStyle,
     size: TSize,
 }

@@ -17,10 +17,10 @@ import type {TTable} from '~/types/TTable'
 import type {TPath} from '~/types/TPath'
 import type {TSchemeMetrics} from '~/types/TSchemeMetrics'
 import type {THistoryStateRecord} from '~/types/THistoryState'
+import type {TSchemeStyle} from '~/types/styles/TSchemeStyle'
 
 import * as tableMetricsHelper from '~/metrics/table'
 import * as metricsSelectors from '~/react/selectors/metrics'
-import {schemeStyle} from '~/react/styles'
 
 import {isAttrProperForeignKeyTarget} from '~/react/helpers/tco'
 
@@ -160,7 +160,7 @@ const calculatePath = (b1: TBounds, b2: TBounds): Array<TPoint> => {
 
 const mapStateToProps = (state: TState): * => {
     const {scheme: schemeState, history} = state
-    const {tables, dnd, tco, mousePosition, size} = schemeState
+    const {tables, dnd, tco, mousePosition, size, style} = schemeState
     const metrics = metricsSelectors.scheme(schemeState)
 
     let newLink = null
@@ -261,6 +261,7 @@ const mapStateToProps = (state: TState): * => {
         dnd,
         tco,
         size,
+        style,
     }
 }
 
@@ -500,6 +501,7 @@ type TProps = {
     tco: TTco,
     historyRecords: Array<THistoryStateRecord>,
     historyActiveRecord: number,
+    style: TSchemeStyle,
 
     onTableClick: (tableShape: TTableShape) => void,
     onTableDeleteClick: (tableShape: TTableShape) => void,
@@ -701,7 +703,7 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
             <div className={bem()}>
                 <div style={{display: 'none'}} id="for_export">
                     <Scheme
-                        style={schemeStyle}
+                        style={this.props.style}
                         size={{width, height}}
                         tables={this.props.tables}
                         links={this.props.links}
@@ -739,7 +741,7 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                             onAttrCreateClick={this.handleAttrCreateClick}
                         />
                         <Scheme
-                            style={schemeStyle}
+                            style={this.props.style}
                             size={{width, height}}
                             tables={this.props.tables}
                             links={this.props.links}
