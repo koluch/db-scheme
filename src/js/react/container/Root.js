@@ -30,12 +30,11 @@ import AttrPropsModal from '~/react/presentational/modals/AttrPropsModal'
 import TablePropsModal from '~/react/presentational/modals/TablePropsModal'
 import JsonExportModal from '~/react/presentational/modals/JsonExportModal'
 import JsonImportModal from '~/react/presentational/modals/JsonImportModal'
-import ToolPanel from '~/react/presentational/ToolPanel'
+import ToolPanel from '~/react/presentational/tools/ToolPanel'
+import SettingsPanel from '~/react/presentational/tools/SettingsPanel'
 import Scroll from '~/react/presentational/Scroll'
 import History from '~/react/presentational/History'
 import Button from '~/react/presentational/Button'
-import NumberInput from '~/react/presentational/inputs/NumberInput'
-
 
 const calcConnections = (p1: TPoint, p2: TPoint, direct: boolean): Array<TPath> => {
     if (direct) {
@@ -782,36 +781,22 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                                                         />}
 
                 <div className={bem('tools')}>
-                    <ToolPanel title={'Export'}>
-                        <div style={{margin: '20px', display: 'flex'}}>
+                    <ToolPanel title={'Export'} closed>
+                        <div style={{display: 'flex'}}>
                             <Button onClick={this.handleExportToPngButton}>{'PNG'}</Button>
                             <Button onClick={this.handleExportToJsonButton}>{'JSON'}</Button>
                         </div>
                     </ToolPanel>
-                    <ToolPanel title={'Import'}>
-                        <div style={{padding: '20px', display: 'flex'}}>
+                    <ToolPanel title={'Import'} closed>
+                        <div style={{display: 'flex'}}>
                             <Button onClick={this.handleImportFromJsonButton}>{'JSON'}</Button>
                         </div>
                     </ToolPanel>
-                    <ToolPanel title={'Settings'}>
-                        <div style={{padding: '20px', display: 'flex'}}>
-                            <label>
-                                <div>{'Size:'}</div>
-                                <NumberInput
-                                    size="5"
-                                    value={this.props.size.width}
-                                    onChange={(value) => { this.props.onChangeSchemeSize({...this.props.size, width: value}) }}
-                                />
-                                {' x '}
-                                <NumberInput
-                                    size="5"
-                                    value={this.props.size.height}
-                                    onChange={(value) => { this.props.onChangeSchemeSize({...this.props.size, height: value}) }}
-                                />
-                            </label>
-                        </div>
-                    </ToolPanel>
-                    <ToolPanel title={'History'}>
+                    <SettingsPanel
+                        size={this.props.size}
+                        onChangeSize={this.props.onChangeSchemeSize}
+                    />
+                    <ToolPanel title={'History'} closed={false}>
                         <Scroll>
                             <History
                                 records={this.props.historyRecords}
