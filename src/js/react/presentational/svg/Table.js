@@ -59,6 +59,8 @@ class Table extends React.Component {
 
         const {padding} = style.header
 
+        const textHeight = height - padding.top - padding.bottom
+
         return (<g>
             <rect
                 x={x}
@@ -71,10 +73,12 @@ class Table extends React.Component {
                 dominantBaseline="middle"
                 fontFamily={style.header.font.family}
                 x={x + padding.left}
-                y={y + height / 2}
+                y={y + padding.top + textHeight / 2}
                 width={width}
                 height={height}
                 fontSize={style.header.font.size}
+                fontStyle={style.header.font.style}
+                fontWeight={style.header.font.weight}
                 fill={style.header.font.color}
             >
                 {table.name}

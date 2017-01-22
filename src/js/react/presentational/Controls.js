@@ -65,7 +65,9 @@ const Panel = (props: TPanelProps) => {
     )
 }
 
-const SELECTED_BORDER_MARGIN = 2
+const SELECTED_BORDER_WIDTH = 4
+const HIGHLIGHTED_BORDER_WIDTH = 1
+const SELECTED_BORDER_MARGIN = 0
 
 class Controls extends React.Component {
 
@@ -145,10 +147,11 @@ class Controls extends React.Component {
 
         const {width, height} = tableMetrics.size
         const style = {
-            top: y - SELECTED_BORDER_MARGIN,
-            left: x - SELECTED_BORDER_MARGIN,
-            width: width + (SELECTED_BORDER_MARGIN * 2),
-            height: height + (SELECTED_BORDER_MARGIN * 2),
+            borderWidth: SELECTED_BORDER_WIDTH,
+            top: y - SELECTED_BORDER_WIDTH / 2 - SELECTED_BORDER_MARGIN,
+            left: x - SELECTED_BORDER_WIDTH / 2 - SELECTED_BORDER_MARGIN,
+            width: width + SELECTED_BORDER_MARGIN * 2,
+            height: height + SELECTED_BORDER_MARGIN * 2,
         }
         return (
             <div className={bem('border')} style={style}/>
@@ -224,10 +227,11 @@ class Controls extends React.Component {
 
         const {width, height, x, y} = bounds
         const style = {
-            top: y - SELECTED_BORDER_MARGIN,
-            left: x - SELECTED_BORDER_MARGIN,
-            width: width + (SELECTED_BORDER_MARGIN * 2),
-            height: height + (SELECTED_BORDER_MARGIN * 2),
+            borderWidth: SELECTED_BORDER_WIDTH,
+            top: y - SELECTED_BORDER_WIDTH / 2 - SELECTED_BORDER_MARGIN,
+            left: x - SELECTED_BORDER_WIDTH / 2 - SELECTED_BORDER_MARGIN,
+            width: width + SELECTED_BORDER_MARGIN * 2,
+            height: height + SELECTED_BORDER_MARGIN * 2,
         }
         return (
             <div className={bem('border')} style={style}/>
@@ -303,10 +307,11 @@ class Controls extends React.Component {
 
         const {width, height, x, y} = bounds
         const style = {
-            top: y - SELECTED_BORDER_MARGIN,
-            left: x - SELECTED_BORDER_MARGIN,
-            width: width + (SELECTED_BORDER_MARGIN * 2),
-            height: height + (SELECTED_BORDER_MARGIN * 2),
+            borderWidth: HIGHLIGHTED_BORDER_WIDTH,
+            top: y - HIGHLIGHTED_BORDER_WIDTH / 2,
+            left: x - HIGHLIGHTED_BORDER_WIDTH / 2,
+            width,
+            height,
         }
         return (
             <div key={`${tableShape.table.name}.${attr.name}`} className={bem('attr-highlight')} style={style}/>

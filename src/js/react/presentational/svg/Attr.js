@@ -33,6 +33,8 @@ class Attr extends React.Component {
             position: {x, y},
         } = this.props
 
+        const textHeight = height - style.padding.top - style.padding.bottom
+
         return (<g
             key={`attr-${name}`}
             x={x}
@@ -58,8 +60,11 @@ class Attr extends React.Component {
                     fontFamily={style.font.family}
                     dominantBaseline="middle"
                     x={x + style.padding.left}
-                    y={y + height / 2}
+                    y={y + style.padding.top + textHeight / 2}
                     fontSize={style.font.size}
+                    fontStyle={style.font.style}
+                    fontWeight={style.font.weight}
+                    fill={style.font.color}
                 >
                     {name}
                 </text>
