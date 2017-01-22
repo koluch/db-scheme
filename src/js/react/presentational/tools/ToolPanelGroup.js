@@ -5,29 +5,59 @@ import cn from 'bem-cn'
 const bem = cn('tool-panel-group')
 
 class ToolPanelGroup extends React.Component {
+    static defaultProps = {
+        mode: 'MULTIPLE',
+    }
+
     constructor(props: *) {
         super(props)
-        const firstOpenedItem = props.children
-            .map((item, i) => ({item, i}))
-            .filter(({item}) => item.props.opened)[0]
 
-        this.state = {
-            opened: firstOpenedItem ? firstOpenedItem.i : -1,
-        }
+        const opened = {}
+
+        props.children.forEach((item, i) => {
+            opened[i] = item.props.opened
+        })
+
+        // const firstOpenedItem = props.children
+        //     .map((item, i) => ({item, i}))
+        //     .filter(({item}) => item.props.opened)[0]
+
+
+        this.state = {opened}
     }
 
     state: {
-        opened: number,
+        opened: {[id: number]: number},
     }
 
     props: {
+        mode: 'SINGLE' | 'MULTIPLE',
         children?: *, //todo: investigate, how to specify exact type of children (e.g. React.Element<ToolPanel>)
     }
 
     handleTitleClick = (i: number) => {
-        this.setState({
-            opened: i === this.state.opened ? -1 : i,
-        })
+        if (this.props.mode === 'SINGLE') {
+            const newOpened = {...this.state.opened}
+            Object.keys(newOpened).forEach((key) => {
+                newOpened[key] = false
+            })
+            newOpened[i] = true
+
+            this.setState({
+                opened: newOpened,
+            })
+        }
+        else {
+            this.setState({
+                opened: {
+                    ...this.state.opened,
+                    [i]: !this.state.opened[i],
+                },
+            })
+        }
+        // this.setState({
+        //     opened: i === this.state.opened ? -1 : i,
+        // })
     }
 
     render() {
@@ -39,7 +69,7 @@ class ToolPanelGroup extends React.Component {
                 {(children ? children : []).map((child: *, i) => {
                     return React.cloneElement(child, {
                         key: child.props.title,
-                        opened: i === opened,
+                        opened: opened[i],
                         onTitleClick: this.handleTitleClick.bind(this, i),
                     })
                 })}
@@ -49,47 +79,3 @@ class ToolPanelGroup extends React.Component {
 }
 
 export default ToolPanelGroup
-
-//
-// class ToolPanelGroup extends React.Component {
-//     constructor(props: *) {
-//         super(props)
-//         const {data} = props
-//         const firstOpenedItem = data
-//             .map(({opened}, i) => ({i, opened}))
-//             .filter(({opened}) => opened !== null ? opened : false)[0]
-//         this.state = {
-//             opened: firstOpenedItem ? firstOpenedItem.i : -1,
-//         }
-//     }
-//
-//     state: {
-//         opened: number,
-//     }
-//
-//     props: {
-//         data: Array<{title: string, body: *, opened?: boolean}>,
-//     }
-//
-//     handleTitleClick = (i: number) => {
-//         this.setState({
-//             opened: i,
-//         })
-//     }
-//
-//     render() {
-//         const {data} = this.props
-//         const {opened} = this.state
-//         return (
-//             <div className={bem()}>
-//                 {data.map(({title, body}, i) => (
-//                     <ToolPanel key={i} title={title} closed={i !== opened} onTitleClick={this.handleTitleClick.bind(this, i)}>
-//                         {body}
-//                     </ToolPanel>
-//                 ))}
-//             </div>
-//         )
-//     }
-// }
-//
-// export default ToolPanelGroup

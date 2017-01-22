@@ -49,6 +49,10 @@ body {
         min-width: 300px;
         display: flex;
         flex-direction: column;
+
+        > * {
+            min-height: 100%;
+        }
     }
 }
 

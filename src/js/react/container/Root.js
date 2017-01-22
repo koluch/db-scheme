@@ -767,21 +767,25 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
     renderSettingsPanel() {
         return (
             <ToolPanel title={'Settings'} opened={false}>
-                <label>
-                    <div>{'Size:'}</div>
-                    <NumberInput
-                        size="5"
-                        value={this.props.size.width}
-                        onChange={(value) => { this.props.onChangeSchemeSize({...this.props.size, width: value}) }}
-                    />
-                    {' x '}
-                    <NumberInput
-                        size="5"
-                        value={this.props.size.height}
-                        onChange={(value) => { this.props.onChangeSchemeSize({...this.props.size, height: value}) }}
-                    />
-                </label>
-                {this.renderSettingsStyle()}
+                <Scroll>
+                    <div style={{padding: '10px'}}>
+                        <label>
+                            <div>{'Size:'}</div>
+                            <NumberInput
+                                size="5"
+                                value={this.props.size.width}
+                                onChange={(value) => { this.props.onChangeSchemeSize({...this.props.size, width: value}) }}
+                            />
+                            {' x '}
+                            <NumberInput
+                                size="5"
+                                value={this.props.size.height}
+                                onChange={(value) => { this.props.onChangeSchemeSize({...this.props.size, height: value}) }}
+                            />
+                        </label>
+                        {this.renderSettingsStyle()}
+                    </div>
+                </Scroll>
             </ToolPanel>
         )
     }
@@ -852,7 +856,7 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                 </div>
 
                 <div className={bem('tools')}>
-                    <ToolPanelGroup>
+                    <ToolPanelGroup mode="SINGLE">
                         <ToolPanel title="Export / Import" opened={false}>
                             <p><b>{'Export'}</b></p>
                             <div style={{display: 'flex'}}>
