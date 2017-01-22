@@ -38,7 +38,7 @@ import Button from '~/react/presentational/Button'
 import NumberInput from '~/react/presentational/inputs/NumberInput'
 import TextInput from '~/react/presentational/inputs/TextInput'
 import ColorInput from '~/react/presentational/inputs/ColorInput'
-import FieldSet from '~/react/presentational/tools/FieldSet'
+import FieldSet, {Field} from '~/react/presentational/tools/FieldSet'
 
 const calcConnections = (p1: TPoint, p2: TPoint, direct: boolean): Array<TPath> => {
     if (direct) {
@@ -715,60 +715,59 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                         <ToolPanel title="Attributes" opened={false}>
                             <ToolPanelGroup>
                                 <ToolPanel title="Font" opened={false}>
-                                    <FieldSet fields={[
-                                        ['Color', <ColorInput size="10" value={style.table.attrs.font.color} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_COLOR', value}) }}/>],
-                                        ['Size', <NumberInput size="10" value={style.table.attrs.font.size} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_SIZE', value}) }}/>],
-                                        ['Style', <TextInput size="10" value={style.table.attrs.font.style} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_STYLE', value}) }}/>],
-                                        ['Weight', <TextInput size="10" value={style.table.attrs.font.weight} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_WEIGHT', value}) }}/>],
-                                        ['Family', <TextInput size="10" value={style.table.attrs.font.family} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_FAMILY', value}) }}/>],
-                                    ]}/>
+                                    <FieldSet>
+                                        <Field title="Color"><ColorInput size="10" value={style.table.attrs.font.color} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_COLOR', value}) }}/></Field>
+                                        <Field title="Size"><NumberInput size="10" value={style.table.attrs.font.size} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_SIZE', value}) }}/></Field>
+                                        <Field title="Style"><TextInput size="10" value={style.table.attrs.font.style} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_STYLE', value}) }}/></Field>
+                                        <Field title="Weight"><TextInput size="10" value={style.table.attrs.font.weight} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_WEIGHT', value}) }}/></Field>
+                                        <Field title="Family"><TextInput size="10" value={style.table.attrs.font.family} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_FAMILY', value}) }}/></Field>
+                                    </FieldSet>
                                 </ToolPanel>
                                 <ToolPanel title="Paddings" opened={false}>
-                                    <FieldSet fields={[
-                                        ['Top', <NumberInput size="10" value={style.table.attrs.padding.top} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_PADDING_TOP', value}) }}/>],
-                                        ['Right', <NumberInput size="10" value={style.table.attrs.padding.right} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_PADDING_RIGHT', value}) }}/>],
-                                        ['Bottom', <NumberInput size="10" value={style.table.attrs.padding.bottom} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_PADDING_BOTTOM', value}) }}/>],
-                                        ['Left', <NumberInput size="10" value={style.table.attrs.padding.left} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_PADDING_LEFT', value}) }}/>],
-                                    ]}/>
+                                    <FieldSet>
+                                        <Field title="Top"><NumberInput size="10" value={style.table.attrs.padding.top} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_PADDING_TOP', value}) }}/></Field>
+                                        <Field title="Right"><NumberInput size="10" value={style.table.attrs.padding.right} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_PADDING_RIGHT', value}) }}/></Field>
+                                        <Field title="Bottom"><NumberInput size="10" value={style.table.attrs.padding.bottom} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_PADDING_BOTTOM', value}) }}/></Field>
+                                        <Field title="Left"><NumberInput size="10" value={style.table.attrs.padding.left} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_PADDING_LEFT', value}) }}/></Field>
+                                    </FieldSet>
                                 </ToolPanel>
                             </ToolPanelGroup>
                         </ToolPanel>
-
                         <ToolPanel title="Header" opened={false}>
-                            <label>
-                                <FieldSet fields={[
-                                    ['Background color', <ColorInput value={style.table.header.backgroundColor} size="10" onChange={(value) => { changeStyle({field: 'TABLE_HEADER_BACKGROUND_COLOR', value}) }}/>],
-                                ]}/>
-                            </label>
+                            <FieldSet>
+                                <Field title="Background color"><ColorInput value={style.table.header.backgroundColor} size="10" onChange={(value) => { changeStyle({field: 'TABLE_HEADER_BACKGROUND_COLOR', value}) }}/></Field>
+                            </FieldSet>
                             <ToolPanelGroup>
                                 <ToolPanel title="Font" opened={false}>
-                                    <FieldSet fields={[
-                                        ['Color', <ColorInput size="10" value={style.table.header.font.color} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_COLOR', value}) }}/>],
-                                        ['Size', <NumberInput size="10" value={style.table.header.font.size} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_SIZE', value}) }}/>],
-                                        ['Style', <TextInput size="10" value={style.table.header.font.style} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_STYLE', value}) }}/>],
-                                        ['Weight', <TextInput size="10" value={style.table.header.font.weight} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_WEIGHT', value}) }}/>],
-                                        ['Family', <TextInput size="10" value={style.table.header.font.family} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_FAMILY', value}) }}/>],
-                                    ]}/>
+                                    <FieldSet>
+                                        <Field title="Color"><ColorInput size="10" value={style.table.header.font.color} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_COLOR', value}) }}/></Field>
+                                        <Field title="Size"><NumberInput size="10" value={style.table.header.font.size} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_SIZE', value}) }}/></Field>
+                                        <Field title="Style"><TextInput size="10" value={style.table.header.font.style} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_STYLE', value}) }}/></Field>
+                                        <Field title="Weight"><TextInput size="10" value={style.table.header.font.weight} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_WEIGHT', value}) }}/></Field>
+                                        <Field title="Family"><TextInput size="10" value={style.table.header.font.family} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_FAMILY', value}) }}/></Field>
+                                    </FieldSet>
                                 </ToolPanel>
                                 <ToolPanel title="Paddings" opened={false}>
-                                    <FieldSet fields={[
-                                        ['Top', <NumberInput size="10" value={style.table.header.padding.top} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_PADDING_TOP', value}) }}/>],
-                                        ['Right', <NumberInput size="10" value={style.table.header.padding.right} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_PADDING_RIGHT', value}) }}/>],
-                                        ['Bottom', <NumberInput size="10" value={style.table.header.padding.bottom} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_PADDING_BOTTOM', value}) }}/>],
-                                        ['Left', <NumberInput size="10" value={style.table.header.padding.left} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_PADDING_LEFT', value}) }}/>],
-                                    ]}/>
+                                    <FieldSet>
+                                        <Field title="Top"><NumberInput size="10" value={style.table.header.padding.top} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_PADDING_TOP', value}) }}/></Field>
+                                        <Field title="Right"><NumberInput size="10" value={style.table.header.padding.right} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_PADDING_RIGHT', value}) }}/></Field>
+                                        <Field title="Bottom"><NumberInput size="10" value={style.table.header.padding.bottom} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_PADDING_BOTTOM', value}) }}/></Field>
+                                        <Field title="Left"><NumberInput size="10" value={style.table.header.padding.left} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_PADDING_LEFT', value}) }}/></Field>
+                                    </FieldSet>
                                 </ToolPanel>
                             </ToolPanelGroup>
                         </ToolPanel>
                         <ToolPanel title="Border" opened={false}>
-                            <FieldSet fields={[
-                                ['Color', <ColorInput value={style.table.border.color} onChange={(value) => { changeStyle({field: 'TABLE_BORDER_COLOR', value}) }}/>],
-                            ]}/>
+                            <FieldSet>
+                                <Field title="Color"><ColorInput value={style.table.border.color} onChange={(value) => { changeStyle({field: 'TABLE_BORDER_COLOR', value}) }}/></Field>
+                            </FieldSet>
                         </ToolPanel>
                     </ToolPanelGroup>
                 </ToolPanel>
                 <ToolPanel title="Links" opened={false}>
-                    <label>{'Stroke style: '}<input size="10"/></label>
+                    <FieldSet>
+                        <Field title="Stroke style:"><input size="10"/></Field>
+                    </FieldSet>
                 </ToolPanel>
             </ToolPanelGroup>
         )

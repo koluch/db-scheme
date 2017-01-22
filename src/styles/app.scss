@@ -327,9 +327,15 @@ svg.scheme {
 }
 
 .field-set {
+    display: table;
     margin: 5px 0;
 
+    &__row {
+        display: table-row;
+    }
+
     &__label-cell, &__input-cell {
+        display: table-cell;
         padding: 3px 2px;
     }
 
