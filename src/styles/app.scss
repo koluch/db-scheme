@@ -46,7 +46,7 @@ body {
     }
 
     &__tools {
-        min-width: 300px;
+        min-width: 350px;
         display: flex;
         flex-direction: column;
 
@@ -309,10 +309,6 @@ svg.scheme {
         background: white;
         border: 1px solid #363636;
         position: relative;
-
-        label {
-            margin: 5px 0;
-        }
     }
 
     &_opened {
@@ -328,4 +324,17 @@ svg.scheme {
     display: flex;
     min-height: 100%;
     flex-direction: column;
+}
+
+.field-set {
+    margin: 5px 0;
+
+    &__label-cell, &__input-cell {
+        padding: 3px 2px;
+    }
+
+    &__label-cell {
+        padding-left: 5px;
+        text-align: right;
+    }
 }

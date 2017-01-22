@@ -38,6 +38,7 @@ import Button from '~/react/presentational/Button'
 import NumberInput from '~/react/presentational/inputs/NumberInput'
 import TextInput from '~/react/presentational/inputs/TextInput'
 import ColorInput from '~/react/presentational/inputs/ColorInput'
+import FieldSet from '~/react/presentational/tools/FieldSet'
 
 const calcConnections = (p1: TPoint, p2: TPoint, direct: boolean): Array<TPath> => {
     if (direct) {
@@ -714,46 +715,55 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                         <ToolPanel title="Attributes" opened={false}>
                             <ToolPanelGroup>
                                 <ToolPanel title="Font" opened={false}>
-                                    <label>{'Color: '}<ColorInput size="10" value={style.table.attrs.font.color} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_COLOR', value}) }}/></label>
-                                    <label>{'Size: '}<NumberInput size="10" value={style.table.attrs.font.size} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_SIZE', value}) }}/></label>
-                                    <label>{'Style: '}<TextInput size="10" value={style.table.attrs.font.style} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_STYLE', value}) }}/></label>
-                                    <label>{'Weight: '}<TextInput size="10" value={style.table.attrs.font.weight} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_WEIGHT', value}) }}/></label>
-                                    <label>{'Family: '}<TextInput size="10" value={style.table.attrs.font.family} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_FAMILY', value}) }}/></label>
+                                    <FieldSet fields={[
+                                        ['Color', <ColorInput size="10" value={style.table.attrs.font.color} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_COLOR', value}) }}/>],
+                                        ['Size', <NumberInput size="10" value={style.table.attrs.font.size} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_SIZE', value}) }}/>],
+                                        ['Style', <TextInput size="10" value={style.table.attrs.font.style} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_STYLE', value}) }}/>],
+                                        ['Weight', <TextInput size="10" value={style.table.attrs.font.weight} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_WEIGHT', value}) }}/>],
+                                        ['Family', <TextInput size="10" value={style.table.attrs.font.family} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_FAMILY', value}) }}/>],
+                                    ]}/>
                                 </ToolPanel>
                                 <ToolPanel title="Paddings" opened={false}>
-                                    <label>{'Top: '}<NumberInput size="10" value={style.table.attrs.padding.top} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_PADDING_TOP', value}) }}/></label>
-                                    <label>{'Right: '}<NumberInput size="10" value={style.table.attrs.padding.right} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_PADDING_RIGHT', value}) }}/></label>
-                                    <label>{'Bottom: '}<NumberInput size="10" value={style.table.attrs.padding.bottom} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_PADDING_BOTTOM', value}) }}/></label>
-                                    <label>{'Left: '}<NumberInput size="10" value={style.table.attrs.padding.left} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_PADDING_LEFT', value}) }}/></label>
+                                    <FieldSet fields={[
+                                        ['Top', <NumberInput size="10" value={style.table.attrs.padding.top} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_PADDING_TOP', value}) }}/>],
+                                        ['Right', <NumberInput size="10" value={style.table.attrs.padding.right} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_PADDING_RIGHT', value}) }}/>],
+                                        ['Bottom', <NumberInput size="10" value={style.table.attrs.padding.bottom} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_PADDING_BOTTOM', value}) }}/>],
+                                        ['Left', <NumberInput size="10" value={style.table.attrs.padding.left} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_PADDING_LEFT', value}) }}/>],
+                                    ]}/>
                                 </ToolPanel>
                             </ToolPanelGroup>
                         </ToolPanel>
 
                         <ToolPanel title="Header" opened={false}>
                             <label>
-                                {'Background color: '}
-                                <ColorInput value={style.table.header.backgroundColor} size="10" onChange={(value) => { changeStyle({field: 'TABLE_HEADER_BACKGROUND_COLOR', value}) }}/>
+                                <FieldSet fields={[
+                                    ['Background color', <ColorInput value={style.table.header.backgroundColor} size="10" onChange={(value) => { changeStyle({field: 'TABLE_HEADER_BACKGROUND_COLOR', value}) }}/>],
+                                ]}/>
                             </label>
                             <ToolPanelGroup>
                                 <ToolPanel title="Font" opened={false}>
-                                    <label>{'Color: '}<ColorInput size="10" value={style.table.header.font.color} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_COLOR', value}) }}/></label>
-                                    <label>{'Size: '}<NumberInput size="10" value={style.table.header.font.size} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_SIZE', value}) }}/></label>
-                                    <label>{'Style: '}<TextInput size="10" value={style.table.header.font.style} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_STYLE', value}) }}/></label>
-                                    <label>{'Weight: '}<TextInput size="10" value={style.table.header.font.weight} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_WEIGHT', value}) }}/></label>
-                                    <label>{'Family: '}<TextInput size="10" value={style.table.header.font.family} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_FAMILY', value}) }}/></label>
+                                    <FieldSet fields={[
+                                        ['Color', <ColorInput size="10" value={style.table.header.font.color} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_COLOR', value}) }}/>],
+                                        ['Size', <NumberInput size="10" value={style.table.header.font.size} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_SIZE', value}) }}/>],
+                                        ['Style', <TextInput size="10" value={style.table.header.font.style} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_STYLE', value}) }}/>],
+                                        ['Weight', <TextInput size="10" value={style.table.header.font.weight} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_WEIGHT', value}) }}/>],
+                                        ['Family', <TextInput size="10" value={style.table.header.font.family} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_FAMILY', value}) }}/>],
+                                    ]}/>
                                 </ToolPanel>
                                 <ToolPanel title="Paddings" opened={false}>
-                                    <label>{'Top: '}<NumberInput size="10" value={style.table.header.padding.top} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_PADDING_TOP', value}) }}/></label>
-                                    <label>{'Right: '}<NumberInput size="10" value={style.table.header.padding.right} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_PADDING_RIGHT', value}) }}/></label>
-                                    <label>{'Bottom: '}<NumberInput size="10" value={style.table.header.padding.bottom} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_PADDING_BOTTOM', value}) }}/></label>
-                                    <label>{'Left: '}<NumberInput size="10" value={style.table.header.padding.left} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_PADDING_LEFT', value}) }}/></label>
+                                    <FieldSet fields={[
+                                        ['Top', <NumberInput size="10" value={style.table.header.padding.top} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_PADDING_TOP', value}) }}/>],
+                                        ['Right', <NumberInput size="10" value={style.table.header.padding.right} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_PADDING_RIGHT', value}) }}/>],
+                                        ['Bottom', <NumberInput size="10" value={style.table.header.padding.bottom} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_PADDING_BOTTOM', value}) }}/>],
+                                        ['Left', <NumberInput size="10" value={style.table.header.padding.left} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_PADDING_LEFT', value}) }}/>],
+                                    ]}/>
                                 </ToolPanel>
                             </ToolPanelGroup>
                         </ToolPanel>
                         <ToolPanel title="Border" opened={false}>
-                            <label>{'Color: '}
-                                <ColorInput value={style.table.border.color} onChange={(value) => { changeStyle({field: 'TABLE_BORDER_COLOR', value}) }}/>
-                            </label>
+                            <FieldSet fields={[
+                                ['Color', <ColorInput value={style.table.border.color} onChange={(value) => { changeStyle({field: 'TABLE_BORDER_COLOR', value}) }}/>],
+                            ]}/>
                         </ToolPanel>
                     </ToolPanelGroup>
                 </ToolPanel>
@@ -769,20 +779,24 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
             <ToolPanel title={'Settings'} opened={false}>
                 <Scroll>
                     <div style={{padding: '10px'}}>
-                        <label>
-                            <div>{'Size:'}</div>
-                            <NumberInput
-                                size="5"
-                                value={this.props.size.width}
-                                onChange={(value) => { this.props.onChangeSchemeSize({...this.props.size, width: value}) }}
-                            />
-                            {' x '}
-                            <NumberInput
-                                size="5"
-                                value={this.props.size.height}
-                                onChange={(value) => { this.props.onChangeSchemeSize({...this.props.size, height: value}) }}
-                            />
-                        </label>
+                        <FieldSet fields={[
+                            [
+                                'Size',
+                                <div>
+                                    <NumberInput
+                                        size="5"
+                                        value={this.props.size.width}
+                                        onChange={(value) => { this.props.onChangeSchemeSize({...this.props.size, width: value}) }}
+                                    />
+                                    {' x '}
+                                    <NumberInput
+                                        size="5"
+                                        value={this.props.size.height}
+                                        onChange={(value) => { this.props.onChangeSchemeSize({...this.props.size, height: value}) }}
+                                    />
+                                </div>,
+                            ],
+                        ]}/>
                         {this.renderSettingsStyle()}
                     </div>
                 </Scroll>

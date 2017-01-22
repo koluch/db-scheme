@@ -173,7 +173,6 @@
     "no-multiple-empty-lines": "error",
     "no-nested-ternary": "error",
     "no-new-object": "error",
-    "no-plusplus": ["error", {"allowForLoopAfterthoughts":true}],
     "no-restricted-syntax": "error",
     "no-trailing-spaces": "error",
     "no-underscore-dangle": "error",
@@ -207,6 +206,7 @@
     "max-depth": "warn",
     "max-len": ["warn", 120],
 
+    "no-plusplus": "off",
     "wrap-regex": "off",
     "complexity": "off",
     "no-process-env": "off",
@@ -287,7 +287,6 @@
     "react/jsx-handler-names": "error",
     "react/jsx-indent": "error",
     "react/jsx-indent-props": "error",
-    "react/jsx-key": "error",
     "react/jsx-max-props-per-line": ["error", { "maximum": 5}],
     "react/jsx-no-comment-textnodes": "error",
     "react/jsx-no-duplicate-props": "error",
@@ -301,6 +300,7 @@
     "react/jsx-uses-vars": "error",
     "react/jsx-wrap-multilines": "error",
 
+    "react/jsx-key": "off",
     "react/jsx-closing-bracket-location": "off",
     "react/no-unused-prop-types": ["off"],
     "react/jsx-no-bind": "off",
