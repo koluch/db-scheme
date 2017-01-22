@@ -305,6 +305,10 @@ svg.scheme {
         background: white;
         border: 1px solid #363636;
         position: relative;
+
+        label {
+            margin: 5px 0;
+        }
     }
 
     &_opened {

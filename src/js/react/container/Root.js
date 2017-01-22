@@ -714,17 +714,17 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                         <ToolPanel title="Attributes" opened={false}>
                             <ToolPanelGroup>
                                 <ToolPanel title="Font" opened={false}>
-                                    <div><label>{'Color: '}<ColorInput size="10" value={style.table.attrs.font.color} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_COLOR', value}) }}/></label></div>
-                                    <div><label>{'Size: '}<NumberInput size="10" value={style.table.attrs.font.size} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_SIZE', value}) }}/></label></div>
-                                    <div><label>{'Style: '}<TextInput size="10" value={style.table.attrs.font.style} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_STYLE', value}) }}/></label></div>
-                                    <div><label>{'Weight: '}<TextInput size="10" value={style.table.attrs.font.weight} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_WEIGHT', value}) }}/></label></div>
-                                    <div><label>{'Family: '}<TextInput size="10" value={style.table.attrs.font.family} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_FAMILY', value}) }}/></label></div>
+                                    <label>{'Color: '}<ColorInput size="10" value={style.table.attrs.font.color} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_COLOR', value}) }}/></label>
+                                    <label>{'Size: '}<NumberInput size="10" value={style.table.attrs.font.size} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_SIZE', value}) }}/></label>
+                                    <label>{'Style: '}<TextInput size="10" value={style.table.attrs.font.style} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_STYLE', value}) }}/></label>
+                                    <label>{'Weight: '}<TextInput size="10" value={style.table.attrs.font.weight} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_WEIGHT', value}) }}/></label>
+                                    <label>{'Family: '}<TextInput size="10" value={style.table.attrs.font.family} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_FAMILY', value}) }}/></label>
                                 </ToolPanel>
-                                <ToolPanel title="Padding" opened={false}>
-                                    <div><label>{'Top: '}<NumberInput size="10" value={style.table.attrs.padding.top} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_PADDING_TOP', value}) }}/></label></div>
-                                    <div><label>{'Right: '}<NumberInput size="10" value={style.table.attrs.padding.right} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_PADDING_RIGHT', value}) }}/></label></div>
-                                    <div><label>{'Bottom: '}<NumberInput size="10" value={style.table.attrs.padding.bottom} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_PADDING_BOTTOM', value}) }}/></label></div>
-                                    <div><label>{'Left: '}<NumberInput size="10" value={style.table.attrs.padding.left} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_PADDING_LEFT', value}) }}/></label></div>
+                                <ToolPanel title="Paddings" opened={false}>
+                                    <label>{'Top: '}<NumberInput size="10" value={style.table.attrs.padding.top} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_PADDING_TOP', value}) }}/></label>
+                                    <label>{'Right: '}<NumberInput size="10" value={style.table.attrs.padding.right} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_PADDING_RIGHT', value}) }}/></label>
+                                    <label>{'Bottom: '}<NumberInput size="10" value={style.table.attrs.padding.bottom} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_PADDING_BOTTOM', value}) }}/></label>
+                                    <label>{'Left: '}<NumberInput size="10" value={style.table.attrs.padding.left} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_PADDING_LEFT', value}) }}/></label>
                                 </ToolPanel>
                             </ToolPanelGroup>
                         </ToolPanel>
@@ -732,7 +732,7 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                         <ToolPanel title="Header" opened={false}>
                             <label>
                                 {'Background color: '}
-                                <ColorInput value={style.table.header.backgroundColor} size="15" onChange={(value) => { changeStyle({field: 'TABLE_HEADER_BACKGROUND_COLOR', value}) }}/>
+                                <ColorInput value={style.table.header.backgroundColor} size="10" onChange={(value) => { changeStyle({field: 'TABLE_HEADER_BACKGROUND_COLOR', value}) }}/>
                             </label>
                             <ToolPanelGroup>
                                 <ToolPanel title="Font" opened={false}>
@@ -742,11 +742,11 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                                     <label>{'Weight: '}<TextInput size="10" value={style.table.header.font.weight} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_WEIGHT', value}) }}/></label>
                                     <label>{'Family: '}<TextInput size="10" value={style.table.header.font.family} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_FAMILY', value}) }}/></label>
                                 </ToolPanel>
-                                <ToolPanel title="Padding" opened={false}>
-                                    <div><label>{'Top: '}<NumberInput size="10" value={style.table.header.padding.top} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_PADDING_TOP', value}) }}/></label></div>
-                                    <div><label>{'Right: '}<NumberInput size="10" value={style.table.header.padding.right} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_PADDING_RIGHT', value}) }}/></label></div>
-                                    <div><label>{'Bottom: '}<NumberInput size="10" value={style.table.header.padding.bottom} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_PADDING_BOTTOM', value}) }}/></label></div>
-                                    <div><label>{'Left: '}<NumberInput size="10" value={style.table.header.padding.left} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_PADDING_LEFT', value}) }}/></label></div>
+                                <ToolPanel title="Paddings" opened={false}>
+                                    <label>{'Top: '}<NumberInput size="10" value={style.table.header.padding.top} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_PADDING_TOP', value}) }}/></label>
+                                    <label>{'Right: '}<NumberInput size="10" value={style.table.header.padding.right} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_PADDING_RIGHT', value}) }}/></label>
+                                    <label>{'Bottom: '}<NumberInput size="10" value={style.table.header.padding.bottom} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_PADDING_BOTTOM', value}) }}/></label>
+                                    <label>{'Left: '}<NumberInput size="10" value={style.table.header.padding.left} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_PADDING_LEFT', value}) }}/></label>
                                 </ToolPanel>
                             </ToolPanelGroup>
                         </ToolPanel>
@@ -766,7 +766,7 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
 
     renderSettingsPanel() {
         return (
-            <ToolPanel title={'Settings'}>
+            <ToolPanel title={'Settings'} opened={false}>
                 <label>
                     <div>{'Size:'}</div>
                     <NumberInput
