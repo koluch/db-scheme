@@ -112,10 +112,14 @@ export const TSBorder = object({
     color: TSColor,
 })
 
-export const TSLinkStyle = oneOf(
+export const TSStrokeStyle = oneOf(
     constant('solid'),
     constant('dashed')
 )
+
+export const TSLinkStyle = object({
+    strokeStyle: TSStrokeStyle,
+})
 
 export const TSAttrStyle = object({
     font: TSFontStyle,
@@ -123,7 +127,6 @@ export const TSAttrStyle = object({
 })
 
 export const TSTableStyle = object({
-    font: TSFontStyle,
     header: TSTableHeaderStyle,
     border: TSBorder,
     attrs: TSAttrStyle,
