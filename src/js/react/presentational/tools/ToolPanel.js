@@ -6,43 +6,26 @@ const bem = cn('tool-panel')
 
 class ToolPanel extends React.Component {
     static defaultProps = {
-        closed: false,
-    }
-
-    constructor(props: *) {
-        super(props)
-        const {closed} = props
-        this.state = {
-            closed,
-        }
-    }
-
-    state: {
-        closed: boolean,
+        opened: true,
+        onTitleClick: () => {},
     }
 
     props: {
         title: string,
-        closed: boolean,
+        opened: boolean,
         children?: *,
-    }
-
-    handleClose = () => {
-        this.setState({
-            closed: !this.state.closed,
-        })
+        onTitleClick?: () => void,
     }
 
     render() {
-        const {title, children} = this.props
-        const {closed} = this.state
+        const {title, children, opened} = this.props
         return (
-            <div className={bem()}>
-                <div className={bem('title')} onClick={this.handleClose}>
-                    <span className={bem('triangle')}>{closed ? '\u25B6' : '\u25BC'}</span>
+            <div className={bem({opened})}>
+                <div className={bem('title')} onClick={this.props.onTitleClick}>
+                    <span className={bem('triangle')}>{opened ? '\u25BC' : '\u25B6'}</span>
                     {title}
                 </div>
-                <div style={{display: closed ? 'none' : 'block'}} className={bem('body')}>
+                <div className={bem('body')}>
                     {children}
                 </div>
             </div>

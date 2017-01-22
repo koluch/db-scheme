@@ -1,6 +1,7 @@
 // @flow
 import type {TSchemeState, TTableState} from '~/types/TSchemeState'
 import type {TAction} from '~/types/TAction'
+import type {TColor} from '~/types/TColor'
 
 const fontStyle = {
     color: 'black',
@@ -16,7 +17,6 @@ const headerFontStyle = {
 }
 
 const tableStyle = {
-    font: fontStyle,
     attrs: {
         font: fontStyle,
         padding: {
@@ -548,6 +548,92 @@ const reducer: TSchemeReducer = (state: TSchemeState = initialState, action: TAc
             size: action.size,
         }
     }
+    else if (action.type === 'CHANGE_STYLE') {
+        const {change} = action
+        const tableStyle = state.style.table
+        let linkStyle = state.style.link
+        let borderStyle = tableStyle.border
+        let headerStyle = tableStyle.header
+        let attrsStyle = tableStyle.attrs
+        if (change.field === 'TABLE_BORDER_COLOR') {
+            borderStyle = {...borderStyle, color: change.value}
+        }
+        else if (change.field === 'TABLE_HEADER_BACKGROUND_COLOR') {
+            headerStyle = {...headerStyle, backgroundColor: change.value}
+        }
+        else if (change.field === 'TABLE_HEADER_PADDING_TOP') {
+            headerStyle = {...headerStyle, padding: {...headerStyle.padding, top: change.value}}
+        }
+        else if (change.field === 'TABLE_HEADER_PADDING_RIGHT') {
+            headerStyle = {...headerStyle, padding: {...headerStyle.padding, right: change.value}}
+        }
+        else if (change.field === 'TABLE_HEADER_PADDING_BOTTOM') {
+            headerStyle = {...headerStyle, padding: {...headerStyle.padding, bottom: change.value}}
+        }
+        else if (change.field === 'TABLE_HEADER_PADDING_LEFT') {
+            headerStyle = {...headerStyle, padding: {...headerStyle.padding, left: change.value}}
+        }
+        else if (change.field === 'TABLE_HEADER_FONT_COLOR') {
+            headerStyle = {...headerStyle, font: {...headerStyle.font, color: change.value}}
+        }
+        else if (change.field === 'TABLE_HEADER_FONT_SIZE') {
+            headerStyle = {...headerStyle, font: {...headerStyle.font, size: change.value}}
+        }
+        else if (change.field === 'TABLE_HEADER_FONT_WEIGHT') {
+            headerStyle = {...headerStyle, font: {...headerStyle.font, weight: change.value}}
+        }
+        else if (change.field === 'TABLE_HEADER_FONT_FAMILY') {
+            headerStyle = {...headerStyle, font: {...headerStyle.font, family: change.value}}
+        }
+        else if (change.field === 'TABLE_HEADER_FONT_STYLE') {
+            headerStyle = {...headerStyle, font: {...headerStyle.font, style: change.value}}
+        }
+        else if (change.field === 'TABLE_ATTRS_PADDING_TOP') {
+            attrsStyle = {...attrsStyle, padding: {...attrsStyle.padding, top: change.value}}
+        }
+        else if (change.field === 'TABLE_ATTRS_PADDING_RIGHT') {
+            attrsStyle = {...attrsStyle, padding: {...attrsStyle.padding, right: change.value}}
+        }
+        else if (change.field === 'TABLE_ATTRS_PADDING_BOTTOM') {
+            attrsStyle = {...attrsStyle, padding: {...attrsStyle.padding, bottom: change.value}}
+        }
+        else if (change.field === 'TABLE_ATTRS_PADDING_LEFT') {
+            attrsStyle = {...attrsStyle, padding: {...attrsStyle.padding, left: change.value}}
+        }
+        else if (change.field === 'TABLE_ATTRS_FONT_COLOR') {
+            attrsStyle = {...attrsStyle, font: {...attrsStyle.font, color: change.value}}
+        }
+        else if (change.field === 'TABLE_ATTRS_FONT_SIZE') {
+            attrsStyle = {...attrsStyle, font: {...attrsStyle.font, size: change.value}}
+        }
+        else if (change.field === 'TABLE_ATTRS_FONT_WEIGHT') {
+            attrsStyle = {...attrsStyle, font: {...attrsStyle.font, weight: change.value}}
+        }
+        else if (change.field === 'TABLE_ATTRS_FONT_FAMILY') {
+            attrsStyle = {...attrsStyle, font: {...attrsStyle.font, family: change.value}}
+        }
+        else if (change.field === 'TABLE_ATTRS_FONT_STYLE') {
+            attrsStyle = {...attrsStyle, font: {...attrsStyle.font, style: change.value}}
+        }
+        else if (change.field === 'LINK_STROKE_STYLE') {
+            linkStyle = {...linkStyle, strokeStyle: change.value}
+        }
+
+        return {
+            ...state,
+            style: {
+                ...state.style,
+                table: {
+                    border: borderStyle,
+                    header: headerStyle,
+                    attrs: attrsStyle,
+                },
+                link: linkStyle,
+            },
+        }
+    }
+
+
     return state
 }
 

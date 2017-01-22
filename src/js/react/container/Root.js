@@ -8,7 +8,7 @@ import type {TTableShape} from '~/types/TTableShape'
 import type {TLinkShape} from '~/types/TLinkShape'
 import type {TSchemeState, TTableState, TSelected, TDndTarget, TTco} from '~/types/TSchemeState'
 import type {TState} from '~/types/TState'
-import type {TAction} from '~/types/TAction'
+import type {TAction, TStyleChange} from '~/types/TAction'
 import type {TAttr} from '~/types/TAttr'
 import type {TBounds} from '~/types/TBounds'
 import type {TSize} from '~/types/TSize'
@@ -31,10 +31,13 @@ import TablePropsModal from '~/react/presentational/modals/TablePropsModal'
 import JsonExportModal from '~/react/presentational/modals/JsonExportModal'
 import JsonImportModal from '~/react/presentational/modals/JsonImportModal'
 import ToolPanel from '~/react/presentational/tools/ToolPanel'
-import SettingsPanel from '~/react/presentational/tools/SettingsPanel'
+import ToolPanelGroup from '~/react/presentational/tools/ToolPanelGroup'
 import Scroll from '~/react/presentational/Scroll'
 import History from '~/react/presentational/History'
 import Button from '~/react/presentational/Button'
+import NumberInput from '~/react/presentational/inputs/NumberInput'
+import TextInput from '~/react/presentational/inputs/TextInput'
+import ColorInput from '~/react/presentational/inputs/ColorInput'
 
 const calcConnections = (p1: TPoint, p2: TPoint, direct: boolean): Array<TPath> => {
     if (direct) {
@@ -343,6 +346,13 @@ const mapDispatchToProps = (dispatch: Dispatch<TAction>): * => {
                 size,
             })
         },
+
+        changeStyle: (change: TStyleChange) => {
+            dispatch({
+                type: 'CHANGE_STYLE',
+                change,
+            })
+        },
     }
 }
 
@@ -520,6 +530,7 @@ type TProps = {
     onHistoryRecordActivate: (record: THistoryStateRecord) => void,
     onImportSchemeState: (schemeState: TSchemeState) => void,
     onChangeSchemeSize: (size: TSize) => void,
+    changeStyle: (action: TStyleChange) => void,
     size: TSize,
 }
 
@@ -693,6 +704,88 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
         this.props.onImportSchemeState(schemeState)
     }
 
+    renderSettingsStyle() {
+        const {style} = this.props
+        const {changeStyle} = this.props
+        return (
+            <ToolPanelGroup>
+                <ToolPanel title="Tables" opened={false}>
+                    <ToolPanelGroup>
+                        <ToolPanel title="Attributes" opened={false}>
+                            <ToolPanelGroup>
+                                <ToolPanel title="Font" opened={false}>
+                                    <div><label>{'Color: '}<ColorInput size="10" value={style.table.attrs.font.color} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_COLOR', value}) }}/></label></div>
+                                    <div><label>{'Size: '}<NumberInput size="10" value={style.table.attrs.font.size} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_SIZE', value}) }}/></label></div>
+                                    <div><label>{'Style: '}<TextInput size="10" value={style.table.attrs.font.style} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_STYLE', value}) }}/></label></div>
+                                    <div><label>{'Weight: '}<TextInput size="10" value={style.table.attrs.font.weight} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_WEIGHT', value}) }}/></label></div>
+                                    <div><label>{'Family: '}<TextInput size="10" value={style.table.attrs.font.family} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_FAMILY', value}) }}/></label></div>
+                                </ToolPanel>
+                                <ToolPanel title="Padding" opened={false}>
+                                    <div><label>{'Top: '}<NumberInput size="10" value={style.table.attrs.padding.top} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_PADDING_TOP', value}) }}/></label></div>
+                                    <div><label>{'Right: '}<NumberInput size="10" value={style.table.attrs.padding.right} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_PADDING_RIGHT', value}) }}/></label></div>
+                                    <div><label>{'Bottom: '}<NumberInput size="10" value={style.table.attrs.padding.bottom} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_PADDING_BOTTOM', value}) }}/></label></div>
+                                    <div><label>{'Left: '}<NumberInput size="10" value={style.table.attrs.padding.left} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_PADDING_LEFT', value}) }}/></label></div>
+                                </ToolPanel>
+                            </ToolPanelGroup>
+                        </ToolPanel>
+
+                        <ToolPanel title="Header" opened={false}>
+                            <label>
+                                {'Background color: '}
+                                <ColorInput value={style.table.header.backgroundColor} size="15" onChange={(value) => { changeStyle({field: 'TABLE_HEADER_BACKGROUND_COLOR', value}) }}/>
+                            </label>
+                            <ToolPanelGroup>
+                                <ToolPanel title="Font" opened={false}>
+                                    <label>{'Color: '}<ColorInput size="10" value={style.table.header.font.color} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_COLOR', value}) }}/></label>
+                                    <label>{'Size: '}<NumberInput size="10" value={style.table.header.font.size} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_SIZE', value}) }}/></label>
+                                    <label>{'Style: '}<TextInput size="10" value={style.table.header.font.style} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_STYLE', value}) }}/></label>
+                                    <label>{'Weight: '}<TextInput size="10" value={style.table.header.font.weight} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_WEIGHT', value}) }}/></label>
+                                    <label>{'Family: '}<TextInput size="10" value={style.table.header.font.family} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_FAMILY', value}) }}/></label>
+                                </ToolPanel>
+                                <ToolPanel title="Padding" opened={false}>
+                                    <div><label>{'Top: '}<NumberInput size="10" value={style.table.header.padding.top} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_PADDING_TOP', value}) }}/></label></div>
+                                    <div><label>{'Right: '}<NumberInput size="10" value={style.table.header.padding.right} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_PADDING_RIGHT', value}) }}/></label></div>
+                                    <div><label>{'Bottom: '}<NumberInput size="10" value={style.table.header.padding.bottom} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_PADDING_BOTTOM', value}) }}/></label></div>
+                                    <div><label>{'Left: '}<NumberInput size="10" value={style.table.header.padding.left} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_PADDING_LEFT', value}) }}/></label></div>
+                                </ToolPanel>
+                            </ToolPanelGroup>
+                        </ToolPanel>
+                        <ToolPanel title="Border" opened={false}>
+                            <label>{'Color: '}
+                                <ColorInput value={style.table.border.color} onChange={(value) => { changeStyle({field: 'TABLE_BORDER_COLOR', value}) }}/>
+                            </label>
+                        </ToolPanel>
+                    </ToolPanelGroup>
+                </ToolPanel>
+                <ToolPanel title="Links" opened={false}>
+                    <label>{'Stroke style: '}<input size="10"/></label>
+                </ToolPanel>
+            </ToolPanelGroup>
+        )
+    }
+
+    renderSettingsPanel() {
+        return (
+            <ToolPanel title={'Settings'}>
+                <label>
+                    <div>{'Size:'}</div>
+                    <NumberInput
+                        size="5"
+                        value={this.props.size.width}
+                        onChange={(value) => { this.props.onChangeSchemeSize({...this.props.size, width: value}) }}
+                    />
+                    {' x '}
+                    <NumberInput
+                        size="5"
+                        value={this.props.size.height}
+                        onChange={(value) => { this.props.onChangeSchemeSize({...this.props.size, height: value}) }}
+                    />
+                </label>
+                {this.renderSettingsStyle()}
+            </ToolPanel>
+        )
+    }
+
     render(): * {
         const bem = cn('root')
 
@@ -757,64 +850,73 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                         />
                     </div>
                 </div>
+
+                <div className={bem('tools')}>
+                    <ToolPanelGroup>
+                        <ToolPanel title="Export / Import" opened={false}>
+                            <p><b>{'Export'}</b></p>
+                            <div style={{display: 'flex'}}>
+                                <Button onClick={this.handleExportToPngButton}>{'PNG'}</Button>
+                                <Button onClick={this.handleExportToJsonButton}>{'JSON'}</Button>
+                            </div>
+                            <br/>
+                            <p><b>{'Import'}</b></p>
+                            <div style={{display: 'flex'}}>
+                                <Button onClick={this.handleImportFromJsonButton}>{'JSON'}</Button>
+                            </div>
+                        </ToolPanel>
+                        {this.renderSettingsPanel()}
+                        <ToolPanel title="History">
+                            <Scroll>
+                                <History
+                                    records={this.props.historyRecords}
+                                    active={this.props.historyActiveRecord}
+                                    onRecordClick={this.props.onHistoryRecordActivate}
+                                />
+                            </Scroll>
+                        </ToolPanel>
+                    </ToolPanelGroup>
+                </div>
+
                 {this.state.attrCreateModal !== false && <AttrPropsModal
                     table={this.state.attrCreateModal.table}
                     onSave={this.handleAttrCreate}
                     onCancel={this.handleAttrCreateCancel}
-                                                         />}
+                />}
                 {this.state.attrEditModal !== false && <AttrPropsModal
                     edit
                     table={this.state.attrEditModal.table}
                     name={this.state.attrEditModal.attr.name}
                     onSave={this.handleAttrEdit}
                     onCancel={this.handleAttrEditCancel}
-                                                       />}
+                />}
                 {this.state.tableCreateModal !== false && <TablePropsModal
                     onSave={this.handleTableCreate}
                     onCancel={this.handleTableCreateCancel}
-                                                          />}
+                />}
                 {this.state.tableEditModal !== false && <TablePropsModal
                     edit
                     name={this.state.tableEditModal.table.name}
                     onSave={this.handleTableEdit}
                     onCancel={this.handleTableEditCancel}
-                                                        />}
+                />}
 
-                <div className={bem('tools')}>
-                    <ToolPanel title={'Export'} closed>
-                        <div style={{display: 'flex'}}>
-                            <Button onClick={this.handleExportToPngButton}>{'PNG'}</Button>
-                            <Button onClick={this.handleExportToJsonButton}>{'JSON'}</Button>
-                        </div>
-                    </ToolPanel>
-                    <ToolPanel title={'Import'} closed>
-                        <div style={{display: 'flex'}}>
-                            <Button onClick={this.handleImportFromJsonButton}>{'JSON'}</Button>
-                        </div>
-                    </ToolPanel>
-                    <SettingsPanel
-                        size={this.props.size}
-                        onChangeSize={this.props.onChangeSchemeSize}
-                    />
-                    <ToolPanel title={'History'} closed={false}>
-                        <Scroll>
-                            <History
-                                records={this.props.historyRecords}
-                                active={this.props.historyActiveRecord}
-                                onRecordClick={this.props.onHistoryRecordActivate}
-                            />
-                        </Scroll>
-                    </ToolPanel>
-
-                    {this.state.jsonExportModal !== false && <JsonExportModal
-                        json={this.state.jsonExportModal.json}
-                        onCancel={() => this.setState({jsonExportModal: false})}
-                                                             />}
-                    {this.state.jsonImportModal !== false && <JsonImportModal
-                        onSave={this.handleImportJson}
-                        onCancel={() => this.setState({jsonImportModal: false})}
-                                                             />}
-                </div>
+                {this.state.jsonExportModal !== false && <JsonExportModal
+                    json={this.state.jsonExportModal.json}
+                    onCancel={() => this.setState({jsonExportModal: false})}
+                />}
+                {this.state.jsonImportModal !== false && <JsonImportModal
+                    onSave={this.handleImportJson}
+                    onCancel={() => this.setState({jsonImportModal: false})}
+                />}
+                {this.state.jsonExportModal !== false && <JsonExportModal
+                    json={this.state.jsonExportModal.json}
+                    onCancel={() => this.setState({jsonExportModal: false})}
+                />}
+                {this.state.jsonImportModal !== false && <JsonImportModal
+                    onSave={this.handleImportJson}
+                    onCancel={() => this.setState({jsonImportModal: false})}
+                />}
             </div>
         )
     }

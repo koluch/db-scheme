@@ -81,6 +81,9 @@ class History extends React.Component {
         else if (action.type === 'CHANGE_SCHEME_SIZE') {
             return renderInfo('Change scheme size', `${action.size.width}x${action.size.height}`)
         }
+        else if (action.type === 'CHANGE_STYLE') {
+            return renderInfo('Change style', null) //todo: add detailed description about changes
+        }
         else if (action.type === '@@redux/INIT') {
             return renderInfo('Scheme created', null)
         }

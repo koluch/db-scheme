@@ -42,8 +42,8 @@ export const getHeaderBounds = (metrics: TTableMetrics, position: TPoint): ?TBou
 }
 
 export const getMetrics = (table: TTable, style: TTableStyle): TTableMetrics => {
-    const headerTextSize = getTextSize(table.name, style.font)
-    const attrTextSizes = table.attrs.map(({name}) => getTextSize(name, style.font))
+    const headerTextSize = getTextSize(table.name, style.header.font)
+    const attrTextSizes = table.attrs.map(({name}) => getTextSize(name, style.attrs.font))
 
     const headerSize = {
         width: headerTextSize.width + style.header.padding.left + style.header.padding.right,

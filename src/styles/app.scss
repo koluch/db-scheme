@@ -240,9 +240,11 @@ svg.scheme {
 }
 
 .scroll {
-    position: relative;
+    position: absolute;
     width: 100%;
     height: 100%;
+    top: 0;
+    left: 0;
 
     &__body {
         position: absolute;
@@ -283,10 +285,6 @@ svg.scheme {
     display: flex;
     flex-direction: column;
 
-    &:last-child {
-        flex: 1;
-    }
-
     &__title {
         display: flex;
         align-items: center;
@@ -304,9 +302,26 @@ svg.scheme {
     }
 
     &__body {
+        flex-direction: column;
+        display: flex;
         flex: 1;
         padding: 10px;
         background: white;
         border: 1px solid #363636;
+        position: relative;
     }
+
+    &_opened {
+        flex: 1;
+    }
+
+    &:not(&_opened) &__body {
+        display: none;
+    }
+}
+
+.tool-panel-group {
+    display: flex;
+    min-height: 100%;
+    flex-direction: column;
 }

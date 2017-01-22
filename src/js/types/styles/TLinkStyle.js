@@ -1,4 +1,6 @@
 // @flow
+import type {TStrokeStyle} from './TStrokeStyle'
+
 export type TLinkStyle = {
-    strokeStyle: 'solid' | 'dashed',
+    strokeStyle: TStrokeStyle,
 }

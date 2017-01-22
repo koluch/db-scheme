@@ -69,7 +69,7 @@ class Table extends React.Component {
             />
             <text
                 dominantBaseline="middle"
-                fontFamily={style.font.family}
+                fontFamily={style.header.font.family}
                 x={x + padding.left}
                 y={y + height / 2}
                 width={width}

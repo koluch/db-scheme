@@ -82,6 +82,9 @@ const mergeStrategy: TMergeStrategy = (action: TAction, lastRecord: THistoryStat
         if (action.type === 'CHANGE_SCHEME_SIZE' && lastAction.type === 'CHANGE_SCHEME_SIZE') {
             return 'REPLACE'
         }
+        if (action.type === 'CHANGE_STYLE' && lastAction.type === 'CHANGE_STYLE') {
+            return action.change.field === lastAction.change.field ? 'REPLACE' : 'ADD'
+        }
         return 'SKIP'
     }
 }
