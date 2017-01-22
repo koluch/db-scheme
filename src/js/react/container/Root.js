@@ -38,6 +38,7 @@ import Button from '~/react/presentational/Button'
 import NumberInput from '~/react/presentational/inputs/NumberInput'
 import TextInput from '~/react/presentational/inputs/TextInput'
 import ColorInput from '~/react/presentational/inputs/ColorInput'
+import SelectInput from '~/react/presentational/inputs/SelectInput'
 import FieldSet, {Field} from '~/react/presentational/tools/FieldSet'
 
 const calcConnections = (p1: TPoint, p2: TPoint, direct: boolean): Array<TPath> => {
@@ -718,9 +719,9 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                                     <FieldSet>
                                         <Field title="Color"><ColorInput size="10" value={style.table.attrs.font.color} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_COLOR', value}) }}/></Field>
                                         <Field title="Size"><NumberInput size="10" value={style.table.attrs.font.size} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_SIZE', value}) }}/></Field>
-                                        <Field title="Style"><TextInput size="10" value={style.table.attrs.font.style} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_STYLE', value}) }}/></Field>
-                                        <Field title="Weight"><TextInput size="10" value={style.table.attrs.font.weight} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_WEIGHT', value}) }}/></Field>
-                                        <Field title="Family"><TextInput size="10" value={style.table.attrs.font.family} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_FAMILY', value}) }}/></Field>
+                                        <Field title="Style"><SelectInput value={style.table.attrs.font.style} options={{'normal': 'Normal', 'italic': 'Italic'}} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_STYLE', value}) }}/></Field>
+                                        <Field title="Weight"><SelectInput value={style.table.attrs.font.weight} options={{'normal': 'Normal', 'bold': 'Bold'}} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_WEIGHT', value}) }}/></Field>
+                                        <Field title="Family"><SelectInput value={style.table.attrs.font.family} options={{'serif': 'Serif', 'sans-serif': 'Sans-serif', 'monospace': 'Monospace'}} onChange={(value) => { changeStyle({field: 'TABLE_ATTRS_FONT_FAMILY', value}) }}/></Field>
                                     </FieldSet>
                                 </ToolPanel>
                                 <ToolPanel title="Paddings" opened={false}>
@@ -742,9 +743,9 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                                     <FieldSet>
                                         <Field title="Color"><ColorInput size="10" value={style.table.header.font.color} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_COLOR', value}) }}/></Field>
                                         <Field title="Size"><NumberInput size="10" value={style.table.header.font.size} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_SIZE', value}) }}/></Field>
-                                        <Field title="Style"><TextInput size="10" value={style.table.header.font.style} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_STYLE', value}) }}/></Field>
-                                        <Field title="Weight"><TextInput size="10" value={style.table.header.font.weight} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_WEIGHT', value}) }}/></Field>
-                                        <Field title="Family"><TextInput size="10" value={style.table.header.font.family} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_FAMILY', value}) }}/></Field>
+                                        <Field title="Style"><SelectInput value={style.table.header.font.style} options={{'normal': 'Normal', 'italic': 'Italic'}} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_STYLE', value}) }}/></Field>
+                                        <Field title="Weight"><SelectInput value={style.table.header.font.weight} options={{'normal': 'Normal', 'bold': 'Bold'}} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_WEIGHT', value}) }}/></Field>
+                                        <Field title="Family"><SelectInput value={style.table.header.font.family} options={{'serif': 'Serif', 'sans-serif': 'Sans-serif', 'monospace': 'Monospace'}} onChange={(value) => { changeStyle({field: 'TABLE_HEADER_FONT_FAMILY', value}) }}/></Field>
                                     </FieldSet>
                                 </ToolPanel>
                                 <ToolPanel title="Paddings" opened={false}>
