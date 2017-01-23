@@ -797,6 +797,21 @@ export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(class ex
                                 </div>,
                             ],
                         ]}/>
+                        <FieldSet>
+                            <Field title="Size">
+                                <NumberInput
+                                    size="5"
+                                    value={this.props.size.width}
+                                    onChange={(value) => { this.props.onChangeSchemeSize({...this.props.size, width: value}) }}
+                                />
+                                {' x '}
+                                <NumberInput
+                                    size="5"
+                                    value={this.props.size.height}
+                                    onChange={(value) => { this.props.onChangeSchemeSize({...this.props.size, height: value}) }}
+                                />
+                            </Field>
+                        </FieldSet>
                         {this.renderSettingsStyle()}
                     </div>
                 </Scroll>

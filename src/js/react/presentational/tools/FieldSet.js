@@ -28,7 +28,7 @@ export class Field extends React.Component {
         const {title, children} = this.props
         return (
             <label className={bem('row')} key={title}>
-                <div className={bem('label-cell')}>{title}</div>
+                <div className={bem('label-cell')}>{`${title}: `}</div>
                 <div className={bem('input-cell')}>{children}</div>
             </label>
         )
