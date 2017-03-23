@@ -99,7 +99,7 @@ class History extends React.Component {
             .map(({i}) => i)[0]
 
         return (
-            <div className="history">
+            <div className={bem({'even-records-number': records.length % 2 === 0})}>
                 {records.map((record, i) => this.renderRecord(record, i < activeIndex, i === activeIndex))}
             </div>
         )

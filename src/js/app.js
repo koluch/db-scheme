@@ -12,6 +12,15 @@ import type {TMergeStrategy} from '~/reducers/history'
 import type {TAction} from '~/types/TAction'
 import type {THistoryStateRecord} from '~/types/THistoryState'
 
+import cn from 'bem-cn'
+
+//set global bem naming settings
+cn.setup({
+    el: '__',
+    mod: '--',
+    modValue: '-',
+})
+
 const mergeStrategy: TMergeStrategy = (action: TAction, lastRecord: THistoryStateRecord): * => {
     // Don't record some actions at all
     switch (action.type) {

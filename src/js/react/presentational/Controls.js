@@ -43,7 +43,7 @@ const Position = (props: TPositionProps) => {
             className={bem('position')}
             style={{left: `${x}px`, top: `${y}px`}}
         >
-            <div className={bem('container', {[`v-${v}`]: true, [`h-${h}`]: true})}>
+            <div className={bem('container', {v, h})}>
                 {children}
             </div>
         </div>
@@ -59,7 +59,7 @@ const Panel = (props: TPanelProps) => {
     const {children, orientation} = props
 
     return (
-        <div className={bem('panel', {[`orientation-${orientation}`]: true})}>
+        <div className={bem('panel', {orientation})}>
             {children}
         </div>
     )

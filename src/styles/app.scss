@@ -138,20 +138,20 @@ svg.scheme {
         display: flex;
         align-items: center;
 
-        &_h-start&_v-center {transform: translateY(-50%);}
-        &_h-start&_v-end {transform: translateY(-100%);}
-        &_h-center {transform: translateX(-50%);}
-        &_h-center&_v-center {transform: translateX(-50%) translateY(-50%);}
-        &_h-center&_v-end {transform: translateX(-50%) translateY(-100%);}
-        &_h-end {transform: translateX(-100%);}
-        &_h-end&_v-center {transform: translateX(-100%) translateY(-50%);}
-        &_h-end&_v-end {transform: translateX(-100%) translateY(-100%);}
+        &--h-start&--v-center {transform: translateY(-50%);}
+        &--h-start&--v-end {transform: translateY(-100%);}
+        &--h-center {transform: translateX(-50%);}
+        &--h-center&--v-center {transform: translateX(-50%) translateY(-50%);}
+        &--h-center&--v-end {transform: translateX(-50%) translateY(-100%);}
+        &--h-end {transform: translateX(-100%);}
+        &--h-end&--v-center {transform: translateX(-100%) translateY(-50%);}
+        &--h-end&--v-end {transform: translateX(-100%) translateY(-100%);}
     }
 
     &__panel {
         display: flex;
 
-        &_orientation-v {
+        &--orientation-v {
             flex-direction: column;
             align-items: center;
         }
@@ -206,7 +206,7 @@ svg.scheme {
         height: 20px;
     }
 
-    &_small {
+    &--small {
         padding: 4px;
         .icon {
             width: 16px;
@@ -214,14 +214,14 @@ svg.scheme {
         }
     }
 
-    &_create {
+    &--create {
         color: green;
         .icon {
             fill: green;
         }
     }
 
-    &_warning {
+    &--warning {
         background: red;
         border: 1px solid #d10000;
         color: white;
@@ -229,7 +229,7 @@ svg.scheme {
             fill: white;
         }
     }
-    &_warning:active:not(&_disabled) {
+    &--warning:active:not(&_disabled) {
         background: #d90000;
     }
 }
@@ -263,20 +263,32 @@ svg.scheme {
     &__record {
         user-select: none;
         cursor: default;
-        &_future {
-            opacity: 0.5;
-        }
-        padding: 5px;
-        border-bottom: 1px solid #e4e4e4;
+        padding: 10px;
 
-        &_active &-title {
+        &--future {
+            opacity: 0.35;
+        }
+
+        &--active &-title {
             font-weight: bold;
         }
+
         &-desc {
             font-size: 12px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+        }
+
+        &:nth-child(odd){
+            background: #f9f9f9;
+        }
+    }
+
+    &--even-records-number &__record {
+        background: white;
+        &:nth-child(even) {
+            background: #f9f9f9;
         }
     }
 }
@@ -311,11 +323,11 @@ svg.scheme {
         position: relative;
     }
 
-    &_opened {
+    &--opened {
         flex: 1;
     }
 
-    &:not(&_opened) &__body {
+    &:not(&--opened) &__body {
         display: none;
     }
 }
