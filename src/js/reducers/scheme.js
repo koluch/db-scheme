@@ -59,7 +59,9 @@ export const initialState = {
                     {name: 'user_id'},
                     {name: 'body'},
                 ],
-                foreignKeys: [],
+                foreignKeys: [
+                    {from: {attr: 'user_id'}, to: {table: 'users', attr: 'id'}},
+                ],
             },
             position: {
                 x: 50,
@@ -75,7 +77,10 @@ export const initialState = {
                     {name: 'title'},
                     {name: 'visible'},
                 ],
-                foreignKeys: [],
+                foreignKeys: [
+                    {from: {attr: 'user_id'}, to: {table: 'users', attr: 'id'}},
+                    {from: {attr: 'post_id'}, to: {table: 'posts', attr: 'id'}},
+                ],
             },
             position: {
                 x: 500,
@@ -100,7 +105,7 @@ export const initialState = {
     tco: false,
     selected: false,
     mousePosition: {x: 0, y: 0},
-    size: {width: 800, height: 600},
+    size: {width: 700, height: 550},
     style: {
         table: tableStyle,
         link: linkStyle,
