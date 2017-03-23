@@ -66,6 +66,7 @@ const Panel = (props: TPanelProps) => {
 }
 
 const SELECTED_BORDER_WIDTH = 4
+const TABLE_BORDER_WIDTH = 1
 const HIGHLIGHTED_BORDER_WIDTH = 1
 const SELECTED_BORDER_MARGIN = 0
 
@@ -148,10 +149,10 @@ class Controls extends React.Component {
         const {width, height} = tableMetrics.size
         const style = {
             borderWidth: SELECTED_BORDER_WIDTH,
-            top: y - SELECTED_BORDER_WIDTH / 2 - SELECTED_BORDER_MARGIN,
-            left: x - SELECTED_BORDER_WIDTH / 2 - SELECTED_BORDER_MARGIN,
-            width: width + SELECTED_BORDER_MARGIN * 2,
-            height: height + SELECTED_BORDER_MARGIN * 2,
+            top: y - SELECTED_BORDER_WIDTH + TABLE_BORDER_WIDTH - SELECTED_BORDER_MARGIN,
+            left: x - SELECTED_BORDER_WIDTH + TABLE_BORDER_WIDTH - SELECTED_BORDER_MARGIN,
+            width: width + SELECTED_BORDER_MARGIN * 2 - TABLE_BORDER_WIDTH,
+            height: height + SELECTED_BORDER_MARGIN * 2 - TABLE_BORDER_WIDTH,
         }
         return (
             <div className={bem('border')} style={style}/>
@@ -228,10 +229,10 @@ class Controls extends React.Component {
         const {width, height, x, y} = bounds
         const style = {
             borderWidth: SELECTED_BORDER_WIDTH,
-            top: y - SELECTED_BORDER_WIDTH / 2 - SELECTED_BORDER_MARGIN,
-            left: x - SELECTED_BORDER_WIDTH / 2 - SELECTED_BORDER_MARGIN,
-            width: width + SELECTED_BORDER_MARGIN * 2,
-            height: height + SELECTED_BORDER_MARGIN * 2,
+            top: y - SELECTED_BORDER_WIDTH + TABLE_BORDER_WIDTH - SELECTED_BORDER_MARGIN,
+            left: x - SELECTED_BORDER_WIDTH + TABLE_BORDER_WIDTH - SELECTED_BORDER_MARGIN,
+            width: width + SELECTED_BORDER_MARGIN * 2 - TABLE_BORDER_WIDTH,
+            height: height + SELECTED_BORDER_MARGIN * 2 - TABLE_BORDER_WIDTH,
         }
         return (
             <div className={bem('border')} style={style}/>
